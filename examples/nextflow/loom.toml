@@ -1,0 +1,5 @@
+schema_version = 1
+name = "nextflow-observation"
+version = "0.1.0"
+description = "Existing-engine lifecycle and host artifact custody acceptance"
+include = ["README.md", "LICENSE", "upstream-hello.nf", "LICENSE.nextflow-hello", "upstream-driver.sh", "files.nf", "observe.py", "summarize.py", "loom.toml"]

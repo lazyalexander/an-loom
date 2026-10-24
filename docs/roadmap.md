@@ -1,7 +1,8 @@
 # Research and next acceptance slices
 
-Status: planned, 2026-10-24. This is an executable work plan, not a list of
-implemented runtime capabilities. Preserve the existing package and host checks.
+Status: mixed implementation/research, 2026-10-24. The Nextflow observation below
+has real native acceptance; other planned slices are not implemented guarantees.
+Preserve the existing package and host checks.
 
 ## Terminology
 
@@ -37,14 +38,14 @@ metadata and task working files. Its [reports](https://docs.seqera.io/nextflow/r
 offer separate execution diagnostics. We should observe these, not replace its
 scheduler, task cache or native logs with an-agent implementations.
 
-This research did not run Nextflow. A local prerequisite check found no usable
-Java runtime. Before running, pin/review an upstream workflow commit and engine
-version, license, configuration, plugins and dependency provenance. Inspect the
-engine's local execution needs and authorize a qualified host route; the current
-Loom Rust build profile does not support arbitrary JVM workflows. Preparation
-downloads and execution should have separate permissions.
+Native execution has now been observed through normal, interrupted and resumed
+runs. See [the evidence and limits](nextflow-observation.md) and
+[the reproducible example](../examples/nextflow/README.md). Java and a digest-pinned
+distribution were installed during preparation; execution remained offline.
+The companion host workspace profile is separate from the narrow Rust build and
+file-kit deployment profiles. No arbitrary JVM/spool runtime support is implied.
 
-The first real observation must inventory files before, during, after and after
+The reproducible observation inventories files before, during, after and after
 an interrupted attempt. Record relative paths, sizes, hashes, file kinds and
 producer/attempt identity, without publishing private contents. Treat symlinks,
 hardlinks and files still being written as hazards to verify at acceptance.
@@ -58,20 +59,21 @@ hardlinks and files still being written as hazards to verify at acceptance.
 | Agent session/tape, if present | Tool-owned private data; optional explicit reference | No required transcript import or completeness claim |
 | Credentials and machine configuration | Trusted service configuration outside payloads | Not copied into releases or artifacts |
 
-For the hello probe, select the four greeting results as a small explicit
-deliverable through a reviewed wrapper; do not promote every work file. Then use
-a pinned, existing file-producing workflow, or a clearly labelled local extension,
-to qualify actual output-file admission. Do not call the extension upstream code.
+The unchanged hello probe exports greeting results through a labelled wrapper.
+A separate local file-producing fixture qualifies output admission, actual CLI
+interruption, three-task cache reuse and pinned-version survival after collection.
+It is explicitly not upstream code or a mature domain workflow.
 
-Derive the **an-agent file-management slice** from the observed boundary:
+The companion **an-agent file-management slice** follows the observed boundary:
 
 1. Give the attempt a disposable work area and immutable selected inputs.
 2. Keep internal paths opaque to downstream spools; receive only declared outputs.
 3. After observed termination, validate/copy/hash outputs into host custody and
    commit an identified acceptance record. A file event is only a candidate signal.
 4. Retain checkpoint/input references, pending delivery references and explicit
-   resume/debug leases. Unknown termination or possible remote writers forbid
-   scratch collection. Leases must be bounded and visible, not permanent defaults.
+   resume/debug retention. Unknown termination or possible remote writers forbid
+   scratch collection. The first profile uses manual abandonment; bounded leases
+   and scheduling remain future work.
 5. Collect eligible scratch without affecting accepted artifacts; reject late
    outputs and test partial writes, failed output checks and repeated acceptance.
 
@@ -102,9 +104,9 @@ integration. Do not silently select a model or upload a workspace during researc
 
 ## Sequence and scope
 
-Complete the identity research and choose the first authority policy; then observe
-one workflow and qualify the minimum host file boundary. Use the operator-filled
-agent step before automating it. Qualify one mature code-agent adapter against the
+Continue identity research and choose the first authority policy. The first
+engine observation and minimum host file boundary now have acceptance evidence.
+Use the operator-filled agent step before automating it. Qualify one mature code-agent adapter against the
 same boundary. These can share a fixture, but need separate evidence.
 
 No new core engine, VM framework, universal workflow DSL, transcript service or

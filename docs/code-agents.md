@@ -48,8 +48,7 @@ Sources: [Codex instruction discovery](https://learn.chatgpt.com/docs/agent-conf
 [Gemini project memory](https://geminicli.com/docs/cli/tutorials/memory-management/)
 and [Gemini policy engine](https://geminicli.com/docs/reference/policy-engine/).
 
-Do not assume singular `agent.md` is automatically loaded. `AGENTS.md` is this
-repository's discovery entrypoint and points to the guide. Avoid generating
+`AGENTS.md` is this repository's single instruction entrypoint. Avoid generating
 competing copies of the same policy for every vendor. An adapter may create a
 reviewed import or explicit instruction reference when the selected tool needs it.
 
