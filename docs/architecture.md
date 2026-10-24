@@ -131,6 +131,12 @@ mechanisms. an-loom supplies a bounded task, relevant project references, allowe
 kit entrypoints and acceptance criteria, and receives editable changes and
 identified results. It does not implement a competing general coding agent.
 
+They also own their native session tape. The host retains execution, authority,
+termination and artifact handoff receipts; it need not ingest every model/tool
+event. Direct model API envelopes are an optional integration choice. Filesystem
+backup does not establish external effects or billing. See the proposed
+[coding-tool contract](code-agents.md); no live provider adapter is qualified yet.
+
 Adapters declare whether a tool's model session is managed by the tool or
 forwarded through a host service. Tool-managed model calls are outside any claim
 of complete host model-call supervision. Credentials stay in the corresponding
@@ -158,6 +164,18 @@ Continuing from a release and checkpoint also requires available dependencies,
 authorized services and valid referenced inputs. It does not guarantee restoration
 of external systems, model behavior or uncommitted actions. Unknown external
 outcomes require reconciliation, never unconditional replay.
+
+An existing workflow may need internal cache and work files together to resume.
+Retain these only under an explicit host-visible resume lease; otherwise the
+default remains disposable scratch after confirmed termination and retention
+checks. A workflow's internal filenames are not downstream artifact contracts.
+The proposed observation and file-management acceptance are in the
+[roadmap](roadmap.md).
+
+Release hashes identify bytes, not authorized spool lineage or upgrade
+compatibility. Keep publisher-scoped logical identity, immutable release identity
+and host instance/checkpoint identity separate. The
+[identity research](spool-identity.md) must precede a new update schema.
 
 ## GUI boundary
 

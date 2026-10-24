@@ -96,3 +96,8 @@ revision and exercises the real CLI. The runtime does not depend on Loom.
 See [the architecture](docs/architecture.md). This project is CLI-first and follows
 a functional core / imperative shell design. All repository prose is English;
 maintainers review and merge pull requests.
+
+For agent-assisted development, start with [AGENTS.md](AGENTS.md) and the
+[working guide](agent.md). The [research roadmap](docs/roadmap.md) covers spool
+update identity, an existing workflow's file lifecycle and mature coding-tool
+integration. These are planned acceptance slices, not supported runtime features.
