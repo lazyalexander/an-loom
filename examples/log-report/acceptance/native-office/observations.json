@@ -1,0 +1,74 @@
+{
+  "schema": "an-native-office-observations-v1",
+  "sample_interval_seconds": 0.25,
+  "roles": {
+    "editor": {
+      "sampled_peak_rss_mib": 617.1875,
+      "observed_cpu_seconds": 8.765623232,
+      "final_alive": 0
+    },
+    "host": {
+      "sampled_peak_rss_mib": 9.53125,
+      "observed_cpu_seconds": 0.019597374,
+      "final_alive": 0
+    },
+    "kit": {
+      "sampled_peak_rss_mib": 41.9375,
+      "observed_cpu_seconds": 0.5291002499999999,
+      "final_alive": 0
+    },
+    "observer": {
+      "sampled_peak_rss_mib": 22.78125,
+      "observed_cpu_seconds": 10.616972672,
+      "final_alive": 1
+    }
+  },
+  "phases": [
+    {
+      "phase": "App launch",
+      "observed_wall_seconds": 10.699663250001322,
+      "sampled_peak_editor_rss_mib": 374.09375,
+      "observed_editor_cpu_seconds": 1.101227744
+    },
+    {
+      "phase": "Document open",
+      "observed_wall_seconds": 160.60815841700241,
+      "sampled_peak_editor_rss_mib": 520.875,
+      "observed_editor_cpu_seconds": 4.5203408959999996
+    },
+    {
+      "phase": "Save v2",
+      "observed_wall_seconds": 11.047914624999976,
+      "sampled_peak_editor_rss_mib": 565.015625,
+      "observed_editor_cpu_seconds": 0.5257213440000008
+    },
+    {
+      "phase": "Save v3",
+      "observed_wall_seconds": 12.475369125000725,
+      "sampled_peak_editor_rss_mib": 555.703125,
+      "observed_editor_cpu_seconds": 0.2490657279999997
+    },
+    {
+      "phase": "Document close",
+      "observed_wall_seconds": 6.23051137499715,
+      "sampled_peak_editor_rss_mib": 617.1875,
+      "observed_editor_cpu_seconds": 0.9637166080000004
+    },
+    {
+      "phase": "App quit",
+      "observed_wall_seconds": 2.046086041998933,
+      "sampled_peak_editor_rss_mib": 617.1875,
+      "observed_editor_cpu_seconds": 0.00034713599999847133
+    }
+  ],
+  "limits": [
+    "Process samples are observations, not lifecycle authority.",
+    "Summed RSS can double-count shared pages; it is not total physical memory.",
+    "Short-lived workers and final CPU bursts may be missed at 250 ms sampling.",
+    "Access-denied measurements remain unknown rather than zero.",
+    "GUI action windows include operator/automation waits; this is not an isolated application benchmark.",
+    "No VM/spool hot-load manager or new backend is measured; GPU and system-wide resource use are not measured.",
+    "This run includes a failed file-dialog attempt and operator-assisted editor restart before successful editing; it is not a clean launch benchmark.",
+    "The document-open interval includes a stalled file dialog. An identical working copy was placed in a dedicated visible temporary folder before the successful GUI open."
+  ]
+}

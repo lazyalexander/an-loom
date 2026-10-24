@@ -1,0 +1,383 @@
+[
+  {
+    "t": 0.0003303749981569126,
+    "name": "measurement.started"
+  },
+  {
+    "t": 0.034238249994814396,
+    "name": "workbook.begin"
+  },
+  {
+    "t": 0.03556991699588252,
+    "name": "host.call.begin",
+    "command": "workspace-run"
+  },
+  {
+    "t": 0.05624891699699219,
+    "name": "host.call.end",
+    "command": "workspace-run",
+    "code": 0
+  },
+  {
+    "t": 0.056393291997665074,
+    "name": "host.call.begin",
+    "command": "workspace-run"
+  },
+  {
+    "t": 0.3477348329979577,
+    "name": "host.call.end",
+    "command": "workspace-run",
+    "code": 0
+  },
+  {
+    "t": 0.34786208299919963,
+    "name": "host.call.begin",
+    "command": "workspace-accept"
+  },
+  {
+    "t": 0.37353199999779463,
+    "name": "host.call.end",
+    "command": "workspace-accept",
+    "code": 0
+  },
+  {
+    "t": 0.3736589999971329,
+    "name": "host.call.begin",
+    "command": "workspace-accept"
+  },
+  {
+    "t": 0.4187904169957619,
+    "name": "host.call.end",
+    "command": "workspace-accept",
+    "code": 0
+  },
+  {
+    "t": 0.4189764999973704,
+    "name": "host.call.begin",
+    "command": "artifact-checkout"
+  },
+  {
+    "t": 0.4395999169937568,
+    "name": "host.call.end",
+    "command": "artifact-checkout",
+    "code": 0
+  },
+  {
+    "t": 0.43988229199749185,
+    "name": "workbook.accepted",
+    "revision": "96eaad42fb3b6a560ceda38cf890fc383aea462c74f6dec67ca36adb901c3a53"
+  },
+  {
+    "t": 0.43995449999783887,
+    "name": "editor.launch.requested"
+  },
+  {
+    "t": 7.591533999999228,
+    "name": "editor.process.observed",
+    "state": "running"
+  },
+  {
+    "t": 11.13961774999916,
+    "name": "editor.window.ready"
+  },
+  {
+    "t": 11.171064249996562,
+    "name": "document.open.requested"
+  },
+  {
+    "t": 119.04078554199805,
+    "name": "editor.process.absent",
+    "state": "exited"
+  },
+  {
+    "t": 141.20673070799967,
+    "name": "editor.process.observed",
+    "state": "running"
+  },
+  {
+    "t": 171.77922266699898,
+    "name": "document.opened"
+  },
+  {
+    "t": 200.1805433329937,
+    "name": "document.save.v2.requested"
+  },
+  {
+    "t": 211.22845795799367,
+    "name": "document.saved.v2"
+  },
+  {
+    "t": 211.69894179199764,
+    "name": "revision.commit.begin",
+    "label": "v2"
+  },
+  {
+    "t": 211.6991645829985,
+    "name": "host.call.begin",
+    "command": "artifact-edit"
+  },
+  {
+    "t": 211.71689883299405,
+    "name": "host.call.end",
+    "command": "artifact-edit",
+    "code": 1
+  },
+  {
+    "t": 218.34494541699678,
+    "name": "revision.commit.begin",
+    "label": "v2"
+  },
+  {
+    "t": 218.3451289999939,
+    "name": "host.call.begin",
+    "command": "artifact-edit"
+  },
+  {
+    "t": 218.3756343749992,
+    "name": "host.call.end",
+    "command": "artifact-edit",
+    "code": 0
+  },
+  {
+    "t": 218.37582141699386,
+    "name": "host.call.begin",
+    "command": "artifact-checkout"
+  },
+  {
+    "t": 218.39738283299812,
+    "name": "host.call.end",
+    "command": "artifact-checkout",
+    "code": 0
+  },
+  {
+    "t": 218.39771770799416,
+    "name": "revision.committed",
+    "label": "v2",
+    "revision": "37b8633bc2a855fd2dbe967512b8ce51d2dc161d14ba0917040ee9b46a2d040d"
+  },
+  {
+    "t": 224.81336774999363,
+    "name": "document.save.v3.requested"
+  },
+  {
+    "t": 237.28873687499436,
+    "name": "document.saved.v3"
+  },
+  {
+    "t": 237.75943470799393,
+    "name": "revision.commit.begin",
+    "label": "v3"
+  },
+  {
+    "t": 237.75960854199366,
+    "name": "host.call.begin",
+    "command": "artifact-edit"
+  },
+  {
+    "t": 237.79006833299354,
+    "name": "host.call.end",
+    "command": "artifact-edit",
+    "code": 0
+  },
+  {
+    "t": 237.7902408749942,
+    "name": "host.call.begin",
+    "command": "artifact-checkout"
+  },
+  {
+    "t": 237.81183954199514,
+    "name": "host.call.end",
+    "command": "artifact-checkout",
+    "code": 0
+  },
+  {
+    "t": 237.81212566699833,
+    "name": "revision.committed",
+    "label": "v3",
+    "revision": "48c282cc56655949dbd13d6b0dd2dfbd6ac5f7472de47e2609db21c63dc9eda0"
+  },
+  {
+    "t": 237.8446209169997,
+    "name": "document.close.requested"
+  },
+  {
+    "t": 244.07513229199685,
+    "name": "document.closed"
+  },
+  {
+    "t": 244.10381637499813,
+    "name": "editor.quit.requested"
+  },
+  {
+    "t": 246.14990241699707,
+    "name": "editor.process.absent",
+    "state": "exited"
+  },
+  {
+    "t": 251.5169309579942,
+    "name": "host.call.begin",
+    "command": "artifact-checkout"
+  },
+  {
+    "t": 251.53990241699648,
+    "name": "host.call.end",
+    "command": "artifact-checkout",
+    "code": 0
+  },
+  {
+    "t": 251.54004229199927,
+    "name": "downstream.begin",
+    "selected_revision": "37b8633bc2a855fd2dbe967512b8ce51d2dc161d14ba0917040ee9b46a2d040d"
+  },
+  {
+    "t": 251.5408052079947,
+    "name": "host.call.begin",
+    "command": "workspace-run"
+  },
+  {
+    "t": 251.56451591699442,
+    "name": "host.call.end",
+    "command": "workspace-run",
+    "code": 0
+  },
+  {
+    "t": 251.5646687499975,
+    "name": "host.call.begin",
+    "command": "workspace-run"
+  },
+  {
+    "t": 252.00903233299323,
+    "name": "host.call.end",
+    "command": "workspace-run",
+    "code": 0
+  },
+  {
+    "t": 252.0091637919977,
+    "name": "host.call.begin",
+    "command": "workspace-accept"
+  },
+  {
+    "t": 252.03569058299763,
+    "name": "host.call.end",
+    "command": "workspace-accept",
+    "code": 0
+  },
+  {
+    "t": 252.0358176669979,
+    "name": "host.call.begin",
+    "command": "workspace-accept"
+  },
+  {
+    "t": 252.08217158299522,
+    "name": "host.call.end",
+    "command": "workspace-accept",
+    "code": 0
+  },
+  {
+    "t": 252.08235416699608,
+    "name": "host.call.begin",
+    "command": "artifact-checkout"
+  },
+  {
+    "t": 252.10377049999806,
+    "name": "host.call.end",
+    "command": "artifact-checkout",
+    "code": 0
+  },
+  {
+    "t": 252.18842279199453,
+    "name": "downstream.accepted",
+    "revision": "815fe53b03692e996522f99322d0c37188a115a03846ca3f01435872f034f0f9"
+  },
+  {
+    "t": 252.18857474999822,
+    "name": "workspace.reclaim.begin"
+  },
+  {
+    "t": 252.18887045799784,
+    "name": "host.call.begin",
+    "command": "workspace-reclaim"
+  },
+  {
+    "t": 252.21184970799368,
+    "name": "host.call.end",
+    "command": "workspace-reclaim",
+    "code": 0
+  },
+  {
+    "t": 252.21193991699693,
+    "name": "host.call.begin",
+    "command": "workspace-reclaim"
+  },
+  {
+    "t": 252.24677954199433,
+    "name": "host.call.end",
+    "command": "workspace-reclaim",
+    "code": 0
+  },
+  {
+    "t": 252.24690520799777,
+    "name": "host.call.begin",
+    "command": "workspace-reclaim"
+  },
+  {
+    "t": 252.26826095799333,
+    "name": "host.call.end",
+    "command": "workspace-reclaim",
+    "code": 0
+  },
+  {
+    "t": 252.268383249997,
+    "name": "host.call.begin",
+    "command": "workspace-reclaim"
+  },
+  {
+    "t": 252.29678466699988,
+    "name": "host.call.end",
+    "command": "workspace-reclaim",
+    "code": 0
+  },
+  {
+    "t": 252.29695983299462,
+    "name": "host.call.begin",
+    "command": "artifact-checkout"
+  },
+  {
+    "t": 252.3168510829928,
+    "name": "host.call.end",
+    "command": "artifact-checkout",
+    "code": 0
+  },
+  {
+    "t": 252.31700387499586,
+    "name": "host.call.begin",
+    "command": "artifact-checkout"
+  },
+  {
+    "t": 252.33756658299535,
+    "name": "host.call.end",
+    "command": "artifact-checkout",
+    "code": 0
+  },
+  {
+    "t": 252.33769716699317,
+    "name": "host.call.begin",
+    "command": "artifact-checkout"
+  },
+  {
+    "t": 252.35868708299677,
+    "name": "host.call.end",
+    "command": "artifact-checkout",
+    "code": 0
+  },
+  {
+    "t": 252.358797916997,
+    "name": "workspace.reclaimed",
+    "artifacts": "retained"
+  },
+  {
+    "t": 253.56318412499968,
+    "name": "measurement.stopped",
+    "reason": "requested"
+  }
+]

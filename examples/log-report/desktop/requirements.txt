@@ -1,0 +1,3 @@
+# Optional operator measurement/reporting only. Not needed by the business kit.
+psutil==7.2.2
+matplotlib==3.10.8

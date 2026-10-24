@@ -75,3 +75,11 @@ checks. It does not widen the existing fixed Rust `file-kit-v1` deployment adapt
 or grant runtime permissions from package metadata. The optional `tools/host.py`
 adapter is an explicit host contract dependency; replace it without changing the
 business kit.
+
+## Real desktop save acceptance
+
+The optional [desktop operator tools](desktop/README.md) keep GUI interaction
+replaceable and record actual saves separately from scripted fixtures. See the
+[measured LibreOffice roundtrip](acceptance/native-office/README.md) for saved
+revision evidence, a fixed v2 downstream run and load/unload observations. This
+manual acceptance supplements CI; CI does not claim to operate a real desktop.
