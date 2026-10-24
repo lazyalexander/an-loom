@@ -110,3 +110,9 @@ kit calls, source proposals, separate reviewed builds and cancellation without
 replacing the coding tool's native session. [Platform boundaries](docs/platforms.md)
 distinguish control-host distribution, application shuttles and CPU Linux workflows.
 `cargo quality --base origin/main` enforces the repository's [TOML quality policy](docs/quality.md).
+
+The [log report example](examples/log-report/README.md) exercises log → editable
+XLSX → editable PPTX with a separately saved workbook revision, pinned downstream
+consumption and cancelled binary-output refusal. The kit runs independently;
+[the boundary report](docs/log-report-workflow.md) distinguishes support, explicit
+adapter coupling and domain invasion.
