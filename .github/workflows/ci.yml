@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@1.98.0
+        with:
+          components: rustfmt, clippy
+      - run: cargo fmt --all -- --check
+      - run: cargo test --locked
+      - run: cargo clippy --all-targets --locked -- -D warnings
+
+  host-handoff:
+    runs-on: macos-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: lazyalexander/an-agent
+          ref: deb3721e0429bd31f325ba3b55d8c646af1eacdf
+          path: .host-runtime
+      - uses: dtolnay/rust-toolchain@1.98.0
+      - run: cargo build --manifest-path .host-runtime/Cargo.toml -p an-agent-host --bin an-agent-host --locked
+      - run: mkdir .local
+      - run: cargo test --test host_handoff --locked -- --ignored --nocapture
+        env:
+          AN_AGENT_HOST_BIN: ${{ github.workspace }}/.host-runtime/target/debug/an-agent-host
+          LOOM_ACCEPTANCE_DIR: ${{ github.workspace }}/.local/acceptance
+      - uses: actions/upload-artifact@v4
+        with:
+          name: portable-host-acceptance
+          path: .local/acceptance/acceptance.json
+          if-no-files-found: error
