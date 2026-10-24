@@ -27,8 +27,9 @@ model/context command briefs and old command spellings are not advertised as
 compatible interfaces. Host-owned model/context commands remain host services.
 No model calls or live coding-tool orchestration are claimed by this slice.
 
-The old repository remains available during review. After the replacement PR is
-reviewed, required usage/CI references have moved and the acceptance gates pass,
-the maintainer can complete the requested transition: mark an-waver superseded,
-make it private and archive it. Preserve history and its license. No retirement
-operation is performed by this implementation PR before review.
+The replacement implementation PR has been merged with its required checks
+passing. At the maintainer's explicit request, an-waver was made private on
+2026-10-24; its history is preserved. It has not been archived. Archive retirement
+remains a separate follow-up after checking remaining usage references. The
+provenance above remains useful even when a public reader cannot access the old
+repository. Loom has no build or runtime dependency on that repository's visibility.
