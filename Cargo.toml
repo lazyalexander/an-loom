@@ -28,3 +28,6 @@ unwrap_used = "deny"
 expect_used = "deny"
 dbg_macro = "deny"
 todo = "deny"
+
+[workspace]
+resolver = "2"

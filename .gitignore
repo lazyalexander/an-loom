@@ -8,3 +8,6 @@
 .env.*
 .DS_Store
 /.host-workspace-runtime/
+
+/tools/quality/target/
+__pycache__/

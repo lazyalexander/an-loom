@@ -1,0 +1,4 @@
+# Repository quality policy, never project execution authority or shell commands.
+version = 1
+forbidden_runtime_dependencies = ["an-agent-core", "an-agent-host", "an-agent-factory", "an-agent-spool", "reqwest", "pplx-space-archcheck"]
+# The SPACE checker belongs only to the isolated developer tool above.

@@ -1,0 +1,4 @@
+# No grandfathered violations. Never add an exception to pass a feature.
+[file_size]
+[pattern_ratchet.command_construction]
+[crate_names]

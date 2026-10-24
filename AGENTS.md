@@ -74,6 +74,12 @@ Before committing:
 - `cargo fmt --all -- --check`
 - `cargo test --locked`
 - `cargo clippy --all-targets --locked -- -D warnings`
+- `cargo quality --base origin/main`
+- `cargo test --manifest-path tools/quality/Cargo.toml --locked`
+
+The TOML quality policy and empty baseline are merge gates, not sandbox grants.
+Do not raise limits or add exceptions to make a feature pass. See
+[quality rules](docs/quality.md).
 
 Real host acceptance is required before claiming a new execution guarantee.
 Fixtures alone are insufficient. Follow [the roadmap](docs/roadmap.md): research

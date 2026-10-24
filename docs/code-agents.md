@@ -1,9 +1,11 @@
 # Working with existing coding agents
 
 Status: research and proposed integration contract, 2026-10-24. The current
-implementation prepares `generation.md` and a controlled host build plan. No live
-coding-tool adapter is qualified by this document. Provider features below are
-documentation findings, not a compatibility claim for an installed CLI version.
+implementation prepares `generation.md` and a controlled host build plan. The
+[finite Kimi route](../examples/kimi-kit/README.md) now has scoped native acceptance;
+this does not qualify arbitrary native shells, plugins or client configurations.
+Other provider features below remain documentation findings, not compatibility
+claims for installed CLI versions.
 
 ## What Loom standardizes
 
@@ -127,3 +129,18 @@ Record native tape as tool-managed and demonstrate the route without importing i
 
 Only then add another provider. Keep vendor-specific patches at the adapter
 boundary; do not reduce every permission system to a misleading common allow flag.
+
+### Qualified scope and provider choice
+
+Kimi Code 2.3.1 uses a tool-only custom agent and a reviewed local MCP fixture.
+The host offers selected source, inert proposals and pinned kit handles, not a
+command tool. Real K3 development and K3-256k cancellation are recorded separately.
+A code proposal crosses another review/build boundary before packaging. This
+route deliberately trusts the native client and its original authentication.
+
+Grok Build was inspected but not selected for this macOS boundary: its documented
+child network restriction is a no-op on macOS, and in-process model/web access is
+outside that child control. This is not a claim that Grok cannot be integrated;
+it needs a separately qualified finite-tool profile or stronger outer isolation.
+See [Grok sandbox semantics](https://docs.x.ai/build/features/sandbox). Neither
+provider's prompt or permission label substitutes for host-enforced kit limits.

@@ -104,3 +104,9 @@ normal/interrupted/resumed acceptance through a separately reviewed host profile
 Its [example package](examples/nextflow/README.md) leaves runtime authority with
 the host; Loom only packages its selected sources. Other roadmap slices remain
 planned, and the existing file-kit deployment adapter is unchanged.
+
+A [qualified Kimi example](examples/kimi-kit/README.md) demonstrates finite host
+kit calls, source proposals, separate reviewed builds and cancellation without
+replacing the coding tool's native session. [Platform boundaries](docs/platforms.md)
+distinguish control-host distribution, application shuttles and CPU Linux workflows.
+`cargo quality --base origin/main` enforces the repository's [TOML quality policy](docs/quality.md).

@@ -1,0 +1,72 @@
+{
+  "schema": "an-loom-kimi-acceptance-v1",
+  "host_revision": "588d6c0652f7c2347b9255da677002e2c35dfa98",
+  "platform": {
+    "os": "macos",
+    "architecture": "aarch64",
+    "gpu_required": false
+  },
+  "client": {
+    "name": "Kimi Code",
+    "version": "2.3.1",
+    "source_revision_inspected": "911d41b0f6aa83ef08b2ee5fe8d055218c0951b2",
+    "native_tape": "tool-managed",
+    "model_usage": "not-collected; provider-managed",
+    "authentication": "original official-client location",
+    "credential_material_copied_or_linked": false,
+    "native_executable_is_trusted": true
+  },
+  "selected_files_sha256": {
+    "host": "a9d31ed95e1cdd0397f23e7fe8c4dd51ad1fc7e644c613275e9458280550ee20",
+    "bridge": "e9cfaca4f8f2c187f23ebaf4bf74de29b0541ac49c6c108060399ac5e39219b0",
+    "kimi": "f06ba6a3bb7ed2fc1f82590f7c22570736d9ee7344059fa92404ca75dc2d5b45",
+    "instructions": "c2c620630557a7000f28c2022afa29c156e0cdccfce6039d3ab70f47da3d1331"
+  },
+  "development": {
+    "model": "kimi-code/k3",
+    "source_reviewed": true,
+    "proposal_sha256": "e4d572d40b48487679b6eabd00b65459bf43cc3fb979ed9e89a701480e938699",
+    "release": "fdb9f6039adc72d557dc6a2249d96799dabbc2eab53b5a648a3fe511f8e7ebae",
+    "tests": "passed",
+    "candidate_was_not_executed_by_agent": true,
+    "ungranted_kit_refused": true,
+    "result_sha256": "e49c81e2d2f84e259d40e2fb8192f3bcd198b355184845d76d8f58807d0d78ee",
+    "native_tape": "tool-managed"
+  },
+  "kit_call": {
+    "status": "succeeded",
+    "reaped": true,
+    "receipt_sha256": "adf927cd8ebcbb63bc18e0ecd259ec1c21299e4545d1141a1dc0a2a1fe56381b",
+    "artifact_revision": "99bf857212875cb9fa77683f89beb036352a62d5422de5f57fffc49d869451b2",
+    "text": "alpha\nbeta\n"
+  },
+  "cancellation": {
+    "model": "kimi-code/k3-256k",
+    "status": "cancelled",
+    "reaped": true,
+    "artifact_exists": false,
+    "client_exit": 130,
+    "receipt_sha256": "0cc7b402acad2474cb42fd90469df77bfbbddaebe4042ab28813b72cbe7b6112",
+    "observed_actual_kit_before_sigint": true
+  },
+  "credential_free_host_regression": [
+    "closed tool schemas and extra-path refusal",
+    "candidate is not compiled or executed",
+    "ungranted kit handle rejected before process launch",
+    "accepted artifact checked out by immutable revision",
+    "duplicate invocation refused",
+    "MCP notification cancellation confirms reaped process without accepted partial output",
+    "transport EOF cancels active work and waits for termination"
+  ],
+  "preflight_observation": {
+    "stale_host_binary_approval": "refused before job creation during concurrent local rebuild",
+    "reconciliation": "no job created; inspected refusal; fresh explicit attempt after builds settled"
+  },
+  "limits": [
+    "native coding client is trusted; not a malicious-client sandbox",
+    "no broad shell or arbitrary filesystem capability",
+    "paid model acceptance qualified on macOS only",
+    "no remote model cancellation or Linux workspace qualification",
+    "source and result hashes are not publisher signatures"
+  ]
+}

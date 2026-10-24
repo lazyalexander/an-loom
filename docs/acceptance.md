@@ -50,3 +50,13 @@ and both explicit native host tests pass locally; formatting and clippy pass.
 Remote CI independently qualifies the PR commit. The first, nested execution
 environment refused native sandbox creation, which was recorded locally and was
 not counted as successful native qualification.
+
+## Finite coding-tool acceptance
+
+The [Kimi development fixture](../examples/kimi-kit/README.md) uses a tool-only
+custom agent and the host MCP bridge. Its [portable record](acceptance/kimi-development.json)
+separates real K3 source/kit work, independently reviewed development and K3-256k
+active-kit cancellation. Native client tape and machine profiles remain private.
+The fixture does not qualify an untrusted native client sandbox, Linux development
+or remote model cancellation. Credential-free MCP permission/cancellation/EOF
+regressions run in the coordinated host's Linux/macOS CI.

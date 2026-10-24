@@ -135,7 +135,9 @@ They also own their native session tape. The host retains execution, authority,
 termination and artifact handoff receipts; it need not ingest every model/tool
 event. Direct model API envelopes are an optional integration choice. Filesystem
 backup does not establish external effects or billing. See the proposed
-[coding-tool contract](code-agents.md); no live provider adapter is qualified yet.
+[coding-tool contract](code-agents.md) and the scoped
+[Kimi qualification](../examples/kimi-kit/README.md). The native CLI is trusted
+operator software; its model requests receive only finite host capabilities.
 
 Adapters declare whether a tool's model session is managed by the tool or
 forwarded through a host service. Tool-managed model calls are outside any claim
@@ -222,3 +224,11 @@ The first milestone is complete when a developer can inspect and reproduce the
 project-to-release route, replace its domain code without editing an-loom, and
 consume the release without depending on the workbench. Supported refusal,
 cancellation and acceptance behavior must come from the actual host contract.
+
+## Platform policy
+
+See [platform boundaries](platforms.md). Host, shuttle and workload targets are
+independent. CPU Linux is the workflow deployment default; a per-target binary
+does not imply portable sandbox or GUI semantics. GPU/platform variants must be
+explicit. Loom describes and validates requirements; the host grants execution
+and the backend enforces the selected boundary.
