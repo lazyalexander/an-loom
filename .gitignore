@@ -1,0 +1,9 @@
+/target/
+/dist/
+/.local/
+/.host-runtime/
+*.tar.gz
+*.local.json
+.env
+.env.*
+.DS_Store
