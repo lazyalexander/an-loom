@@ -48,3 +48,37 @@ jobs:
           name: portable-host-acceptance
           path: .local/acceptance/acceptance.json
           if-no-files-found: error
+
+  nextflow-observation:
+    runs-on: macos-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: lazyalexander/an-agent
+          ref: fa8cc05e981e743bcc3cfc94fd04efd732827a6b
+          path: .host-workspace-runtime
+      - uses: dtolnay/rust-toolchain@1.98.0
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Prepare pinned Nextflow distribution
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p .local/dependencies
+          gh release download v26.10.3 --repo nextflow-io/nextflow --pattern nextflow-26.10.3-dist --dir .local/dependencies
+          python3 -c "import hashlib,pathlib; assert hashlib.sha256(pathlib.Path('.local/dependencies/nextflow-26.10.3-dist').read_bytes()).hexdigest() == 'e0d46f3274882e73abfb0672cf84b04c6f408b1882d11b51e50dcd533b707da6'"
+          chmod 700 .local/dependencies/nextflow-26.10.3-dist
+      - run: cargo build --manifest-path .host-workspace-runtime/Cargo.toml -p an-agent-host --bin an-agent-host --locked
+      - name: Observe native execution, interruption, resume and custody
+        run: |
+          python3 examples/nextflow/observe.py --host .host-workspace-runtime/target/debug/an-agent-host --nextflow .local/dependencies/nextflow-26.10.3-dist --java-home "$JAVA_HOME" --output .local/nextflow-acceptance
+          python3 examples/nextflow/summarize.py .local/nextflow-acceptance/observation.json fa8cc05e981e743bcc3cfc94fd04efd732827a6b .local/nextflow-summary.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: portable-nextflow-acceptance
+          path: .local/nextflow-summary.json
+          if-no-files-found: error

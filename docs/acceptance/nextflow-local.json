@@ -1,0 +1,133 @@
+{
+  "schema": "an-nextflow-observation-v1",
+  "nextflow": "26.10.3",
+  "distribution_sha256": "e0d46f3274882e73abfb0672cf84b04c6f408b1882d11b51e50dcd533b707da6",
+  "upstream_commit": "3c2cdc9823c2b4636e5e3e73e223878099ff5dc9",
+  "host_binary_sha256": "d77bd60349cd8f7ff303f91099ef9e90f88717a33402356d7be05d508f27d341",
+  "model_calls": 0,
+  "host_source_revision": "fa8cc05e981e743bcc3cfc94fd04efd732827a6b",
+  "cases": {
+    "upstream": {
+      "phases": {
+        "before": {
+          "entries": 0,
+          "files": 0,
+          "symlinks": 0,
+          "bytes": 0
+        },
+        "after": {
+          "entries": 55,
+          "files": 37,
+          "symlinks": 0,
+          "bytes": 27588
+        }
+      },
+      "artifacts": [
+        {
+          "path": "greetings.txt",
+          "revision": "ecf46c01bf111af21f24b06a23356b1f44ca4df30af2934cd28e2d3eeffe3bb1",
+          "content_sha256": "6c42c53be61edb912fc683dcbce128331e81003434705a96eb682edbdf8e0172"
+        }
+      ],
+      "scratch_collected": true,
+      "accepted_revisions_survived": true
+    },
+    "normal": {
+      "phases": {
+        "before": {
+          "entries": 0,
+          "files": 0,
+          "symlinks": 0,
+          "bytes": 0
+        },
+        "after": {
+          "entries": 68,
+          "files": 47,
+          "symlinks": 2,
+          "bytes": 61548
+        }
+      },
+      "artifacts": [
+        {
+          "path": "results/alpha.result.txt",
+          "revision": "2d5302e14a62411335c3517b5802e6f69b90531705d4b6631b34b9f6fd7f2c0c",
+          "content_sha256": "1921b918b15842c7fdb115078e610263fac85f159c1d8e0ecec3d89a0faa4005"
+        },
+        {
+          "path": "results/beta.result.txt",
+          "revision": "8beeb1df544ecd4b2107856362453fbbe7e27c141147f4d0b694e574eb8a3558",
+          "content_sha256": "a0d89cbe67e84a23d7de399463e2e9a6fb702a6c8acaab0dcdf36b32c2656d82"
+        }
+      ],
+      "scratch_collected": true,
+      "accepted_revisions_survived": true
+    },
+    "interrupted": {
+      "phases": {
+        "during": {
+          "entries": 63,
+          "files": 41,
+          "symlinks": 1,
+          "bytes": 2152250
+        },
+        "interrupted": {
+          "entries": 67,
+          "files": 44,
+          "symlinks": 2,
+          "bytes": 2152754
+        },
+        "resumed": {
+          "entries": 84,
+          "files": 58,
+          "symlinks": 3,
+          "bytes": 84516
+        }
+      },
+      "artifacts": [
+        {
+          "path": "results/alpha.result.txt",
+          "revision": "111103da4fb92e12a772a7c82d8ae7f352e88e7700fd5b4bfb343d46ec795326",
+          "content_sha256": "1921b918b15842c7fdb115078e610263fac85f159c1d8e0ecec3d89a0faa4005"
+        },
+        {
+          "path": "results/beta.result.txt",
+          "revision": "47e8243fc793ff97b5813abd4f9c556066f9b1ce270266cdac56a2172ddf9b92",
+          "content_sha256": "a0d89cbe67e84a23d7de399463e2e9a6fb702a6c8acaab0dcdf36b32c2656d82"
+        }
+      ],
+      "scratch_collected": true,
+      "accepted_revisions_survived": true,
+      "active_reclaim_refused": true,
+      "cancelled_outputs_refused": true,
+      "cache_preserved_for_resume": true,
+      "resume_after_collection_refused": true,
+      "resume_trace": [
+        {
+          "name": "PREPARE (2)",
+          "status": "CACHED",
+          "hash": "87/2723a6"
+        },
+        {
+          "name": "PREPARE (1)",
+          "status": "CACHED",
+          "hash": "f6/e89696"
+        },
+        {
+          "name": "FINISH (2)",
+          "status": "CACHED",
+          "hash": "10/2387dc"
+        },
+        {
+          "name": "FINISH (2)",
+          "status": "COMPLETED",
+          "hash": "38/46aa6c"
+        }
+      ]
+    }
+  },
+  "fixture_sha256": {
+    "upstream-hello.nf": "b15f1bc449255488e5f0e79a511d61799d9832c19e710b080da6427ba3c6cb2d",
+    "files.nf": "5a3d3f04f509e887a0c90f7c753198225d300ea3befbd86d3901e46591551b5b",
+    "observe.py": "ed598f7fa959c1d60c465be76b504068342b6da85aed590e1215f92f52365842"
+  }
+}

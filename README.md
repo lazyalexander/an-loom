@@ -97,7 +97,10 @@ See [the architecture](docs/architecture.md). This project is CLI-first and foll
 a functional core / imperative shell design. All repository prose is English;
 maintainers review and merge pull requests.
 
-For agent-assisted development, start with [AGENTS.md](AGENTS.md) and the
-[working guide](agent.md). The [research roadmap](docs/roadmap.md) covers spool
+For agent-assisted development, start with [AGENTS.md](AGENTS.md). The [research roadmap](docs/roadmap.md) covers spool
 update identity, an existing workflow's file lifecycle and mature coding-tool
-integration. These are planned acceptance slices, not supported runtime features.
+integration. The [Nextflow observation](docs/nextflow-observation.md) now has real
+normal/interrupted/resumed acceptance through a separately reviewed host profile.
+Its [example package](examples/nextflow/README.md) leaves runtime authority with
+the host; Loom only packages its selected sources. Other roadmap slices remain
+planned, and the existing file-kit deployment adapter is unchanged.
