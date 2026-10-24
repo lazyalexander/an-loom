@@ -42,7 +42,7 @@ def run(root, output):
     roles = {role: [s for s in samples if s["role"] == role] for role in COLORS}
     if not roles["editor"] or max(s["alive"] for s in roles["editor"]) == 0:
         raise ValueError("No actual selected editor process was observed")
-    if roles["editor"][-1]["alive"] != 0 or first("editor.process.absent") is None:
+    if roles["editor"][-1].get("unknown", False) or roles["editor"][-1]["alive"] != 0 or first("editor.process.absent") is None:
         raise ValueError("Editor unload not confirmed; do not label retained processes as unloaded")
     output.mkdir(parents=True)
     labels = dict(ACTIONS)
@@ -60,7 +60,7 @@ def run(root, output):
     fig, axes=plt.subplots(6,1,figsize=(12,8),sharex=True)
     for ax,role in zip(axes[:3],["editor","host","kit"]):
         rows=roles[role]
-        ax.step([r["t"] for r in rows],[r["alive"] for r in rows],where="post",color=COLORS[role])
+        ax.step([r["t"] for r in rows],[float("nan") if r["unknown"] else r["alive"] for r in rows],where="post",color=COLORS[role])
         ax.set_ylabel(NAMES[role]+"\ncount");ax.grid(axis="x",alpha=.18);ax.set_ylim(bottom=-.1)
     end=max(e["t"] for e in events)
     for ax,label,start,stop,color in [

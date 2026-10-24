@@ -121,7 +121,7 @@ def finish(a, root, state):
     events = [json.loads(line) for line in (root / "events.jsonl").read_text().splitlines()]
     editor_samples = [json.loads(line) for line in (root / "samples.jsonl").read_text().splitlines() if json.loads(line)["role"] == "editor"]
     closed = [e["t"] for e in events if e["name"] == "document.closed"]
-    if ((root / "done").exists() or not editor_samples or editor_samples[-1]["alive"] != 0
+    if ((root / "done").exists() or not editor_samples or editor_samples[-1]["unknown"] or editor_samples[-1]["alive"] != 0
             or not closed or not any(e["name"] == "editor.process.absent" and e["t"] >= closed[-1] for e in events)):
         raise RuntimeError("A live capture and observed editor exit are required")
     h = host(root, state)

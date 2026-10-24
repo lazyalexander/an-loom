@@ -86,9 +86,10 @@ def run(root, executable, interval):
         alive = aggregate["editor"]["alive"] > 0
         if alive and missing_editor:
             event(root, "editor.process.observed", state="running")
-        if not alive and not missing_editor:
+        if not alive and not missing_editor and not aggregate["editor"]["unknown"]:
             event(root, "editor.process.absent", state="exited")
-        missing_editor = not alive
+        if not aggregate["editor"]["unknown"]:
+            missing_editor = not alive
         for role, values in aggregate.items():
             if values["unknown"]:
                 values["rss_bytes"] = None
