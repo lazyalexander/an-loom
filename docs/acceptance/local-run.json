@@ -1,0 +1,36 @@
+{
+  "architecture": "aarch64",
+  "assertions": [
+    "preview creates no job",
+    "stale approval refused without execution",
+    "host-isolated compilation and domain tests pass",
+    "duplicate build submission refused",
+    "portable release verifies",
+    "private job and home paths absent from package payloads",
+    "real host registration and file execution",
+    "input unchanged",
+    "accepted output matches",
+    "process reaped and artifact hash verified"
+  ],
+  "build_backend": "macos-rust-build-v1",
+  "deployment_digest": "ac03b33d43882dd0dd0e71cebb4aecc22ac5e00f3288b9d49684faa0d6b18ef2",
+  "host_revision": "deb3721e0429bd31f325ba3b55d8c646af1eacdf",
+  "model_calls": 0,
+  "os": "macos",
+  "release": {
+    "archive_sha256": "620b248907a39bc681008b36580ac2e97f7e41cca363610b36cc36f8bf3f47c9",
+    "bundle_sha256": "d2b3effe29ac38ee261007b8886e510b1f24f1635398b026bf436aaf719a59a6",
+    "declaration_sha256": "ac03b33d43882dd0dd0e71cebb4aecc22ac5e00f3288b9d49684faa0d6b18ef2",
+    "package": {
+      "description": "A developer-owned CLI component",
+      "name": "file-list",
+      "version": "0.1.0"
+    },
+    "profile": "file-kit-v1",
+    "program_sha256": "4ecb237547d8d85b5f99918fb53947a4c91e0376627d6fcfa149821fe7383fe8",
+    "schema": "an-loom-release-v1",
+    "source_sha256": "d936cb1fba9f09a9643336f31f21e873d16e00fcb7cb697f883f66f26299146b"
+  },
+  "runtime_backend": "macos-file-kit-v1",
+  "schema": "an-loom-acceptance-v1"
+}

@@ -1,0 +1,18 @@
+schema_version = 1
+name = "file-list"
+version = "0.1.0"
+description = "A developer-owned CLI component"
+include = [
+    "loom.toml",
+    "README.md",
+    "kit",
+    "generation.md",
+]
+
+[kit]
+source = "kit/main.rs"
+program = "kit/program"
+build_record = "kit/build.json"
+declaration = "kit/spool.yaml"
+analysis = "kit/analysis.json"
+profile = "file-kit-v1"
