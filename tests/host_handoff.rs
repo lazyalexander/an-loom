@@ -8,7 +8,7 @@ use std::{
     process::Command,
 };
 type Result<T = ()> = std::result::Result<T, Box<dyn std::error::Error>>;
-const HOST_REVISION: &str = "deb3721e0429bd31f325ba3b55d8c646af1eacdf";
+const HOST_REVISION: &str = "588d6c0652f7c2347b9255da677002e2c35dfa98";
 
 fn call(executable: &Path, args: &[&str]) -> Result<Value> {
     let output = Command::new(executable).args(args).output()?;

@@ -1,0 +1,37 @@
+# The pinned SPACE engine checks source structure; this is not a sandbox.
+[rules.file_size]
+limit = 500
+[rules.file_size.no_crossing]
+mode = "required"
+[rules.file_size.no_new_entries]
+mode = "required"
+[rules.file_size.no_raised_caps]
+mode = "required"
+[rules.file_size.listed_no_growth]
+mode = "required"
+[rules.file_size.stale_entries]
+mode = "required"
+
+[rules.pattern_ratchet.command_construction]
+patterns = ['\bCommand\s*::\s*new\s*\(']
+allow = ["src/adapters/**"]
+[rules.pattern_ratchet.command_construction.no_crossing]
+mode = "required"
+[rules.pattern_ratchet.command_construction.no_new_entries]
+mode = "required"
+[rules.pattern_ratchet.command_construction.no_raised_caps]
+mode = "required"
+[rules.pattern_ratchet.command_construction.listed_no_growth]
+mode = "required"
+[rules.pattern_ratchet.command_construction.stale_entries]
+mode = "required"
+
+[rules.crate_names]
+banned_tokens = ["common", "shared", "util", "utils", "misc"]
+allow = []
+[rules.crate_names.no_new]
+mode = "required"
+[rules.crate_names.stale_entries]
+mode = "required"
+[rules.crate_names.policy_changed]
+mode = "required"
