@@ -1,5 +1,5 @@
 /target/
-/dist/
+dist/
 /.local/
 /.host-runtime/
 *.tar.gz

@@ -232,3 +232,12 @@ independent. CPU Linux is the workflow deployment default; a per-target binary
 does not imply portable sandbox or GUI semantics. GPU/platform variants must be
 explicit. Loom describes and validates requirements; the host grants execution
 and the backend enforces the selected boundary.
+
+## Support, coupling and invasion
+
+The [log report acceptance](log-report-workflow.md) distinguishes generic support
+from explicit adapter coupling and domain invasion. Host byte/version/execution
+contracts support any admitted kit; document libraries and format rules stay in
+the example. An optional CLI adapter may depend on a qualified host contract,
+while the kit remains independently callable. New backend types are not required
+to demonstrate this division.

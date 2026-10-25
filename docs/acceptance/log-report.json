@@ -1,0 +1,72 @@
+{
+  "schema": "an-log-report-acceptance-v1",
+  "platform": "darwin",
+  "host_revision": "1fafa4cb53930aec777094223d94f253918db4e5",
+  "host_binary_sha256": "5f7769f358c7eb74a2746f0fb73f1f2b7a6f16787394654756d6d8ca2cdda8ac",
+  "dependencies": {
+    "openpyxl": "3.1.5",
+    "python-pptx": "1.0.2",
+    "defusedxml": "0.7.1"
+  },
+  "model_calls": 0,
+  "gpu_required": false,
+  "edit_method": "operator fixture simulates a saved edit; no human GUI interaction claimed",
+  "xlsx": {
+    "original": {
+      "bytes": 6437,
+      "content_sha256": "75a70eb08f667b4514031d02b75e02cce7dd235589dd7dc254c46d9f53df685a",
+      "encoding": "bytes",
+      "parent": null,
+      "revision": "6fb4d32a596a42a5e01a7c2d9b6f7bca55cb7712f152a3d828e7d6a03cb2d200",
+      "status": "succeeded"
+    },
+    "edited": {
+      "bytes": 6474,
+      "content_sha256": "d293c1cf6f8443964dc116a3ed50c0a9270ab0e2f5437cc243e1fb99e4134852",
+      "encoding": "bytes",
+      "parent": "6fb4d32a596a42a5e01a7c2d9b6f7bca55cb7712f152a3d828e7d6a03cb2d200",
+      "revision": "951441398e054fce1d3f8dc20d55a618f4a22416ba66c6f0b8c8734712bcd0fb",
+      "status": "succeeded"
+    },
+    "later": {
+      "bytes": 6478,
+      "content_sha256": "8615e8149439035544d07945e15b6bc94ad8a99d4574036ca94cd17ed370ca62",
+      "encoding": "bytes",
+      "parent": "951441398e054fce1d3f8dc20d55a618f4a22416ba66c6f0b8c8734712bcd0fb",
+      "revision": "550408142eef4c66d848e1a3ed6108799dfae8227627284356089ae1a819d33c",
+      "status": "succeeded"
+    }
+  },
+  "pptx": {
+    "bytes": 31071,
+    "content_sha256": "ca19a0039573d2ea629ecbd21c3467d1e1d6dab5496f7b0f29bab79f306d87e8",
+    "encoding": "bytes",
+    "parent": null,
+    "revision": "6ee7ecfa8c41236060d157d6fef2e2d46cfe4bdbdfd7e9c27ef337ed91ee4f06",
+    "status": "succeeded"
+  },
+  "selected_input_revision": "951441398e054fce1d3f8dc20d55a618f4a22416ba66c6f0b8c8734712bcd0fb",
+  "editable_slides": 3,
+  "native_tables": 1,
+  "assertions": [
+    "standalone domain kit has no host or Loom imports",
+    "actual binary outputs accepted only with explicit declaration",
+    "saved edit creates immutable child revision",
+    "stale edit digest rejected",
+    "later edit does not redirect consumer",
+    "substituted pinned snapshot rejected before execution",
+    "downstream provenance binds selected revision",
+    "edited note reaches editable PPT",
+    "active and cancelled outputs refused",
+    "late output refused",
+    "termination confirmed after cancellation",
+    "formal artifact survives scratch reclamation"
+  ],
+  "qualification": {
+    "host_profile": "native macOS reviewed-tool workspace",
+    "native_editor_operation": "saved edit simulated by fixture; documents rendered with LibreOffice for compatibility",
+    "new_backends": 0,
+    "host_dependencies_added": 0,
+    "loom_runtime_dependencies_added": 0
+  }
+}
