@@ -13,12 +13,14 @@ pub struct Project {
     pub version: String,
     pub description: Option<String>,
     pub include: Vec<String>,
-    pub kit: Option<Kit>,
+    /// Legacy Rust field; new authoring output uses `[silk]`. Both keys cannot coexist.
+    #[serde(rename = "silk", alias = "kit")]
+    pub kit: Option<Silk>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize, PartialEq)]
 #[serde(deny_unknown_fields)]
-pub struct Kit {
+pub struct Silk {
     pub source: String,
     pub program: String,
     pub build_record: String,
@@ -27,7 +29,10 @@ pub struct Kit {
     pub profile: String,
 }
 
-impl Kit {
+/// Source compatibility for callers using the former authoring type.
+pub type Kit = Silk;
+
+impl Silk {
     pub fn files(&self) -> [&str; 5] {
         [
             &self.source,
@@ -117,10 +122,15 @@ impl Project {
         Ok(())
     }
 
-    pub fn kit(&self) -> Result<&Kit> {
+    pub fn silk(&self) -> Result<&Silk> {
         self.kit
             .as_ref()
-            .ok_or_else(|| fail("project has no kit binding"))
+            .ok_or_else(|| fail("project has no silk binding"))
+    }
+
+    /// Legacy accessor retained for existing integration code.
+    pub fn kit(&self) -> Result<&Kit> {
+        self.silk()
     }
 }
 
@@ -180,9 +190,9 @@ pub fn scaffold(target: &Path, file_kit: bool) -> Result<()> {
     } else {
         crate::package::write_new(
             &target.join("README.md"),
-            b"# Component\n\nDescribe this project's inputs, outputs and acceptance.\n",
+            b"# Spool project\n\nDescribe its internal silks, inputs, outputs and acceptance. The host owns the spool execution boundary.\n",
         )?;
-        crate::package::write_new(&target.join("kit/README.md"), b"# Component files\n\nLoom packages selected files; it does not run project commands.\n")?;
+        crate::package::write_new(&target.join("kit/README.md"), b"# Internal silk files\n\nThis legacy directory name is not an independent runtime boundary. Loom packages selected files; it does not run project commands.\n")?;
     }
     Ok(())
 }

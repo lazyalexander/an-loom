@@ -3,6 +3,16 @@
 Status: accepted direction, 2026-10-24. Implementation and migration acceptance
 are tracked separately; a target capability is not an implemented guarantee.
 
+## Spool execution boundary
+
+A spool attempt owns the granted execution environment and lifecycle. Its
+internal **silks** are callable CLI/tool/agent computations; they do not each
+receive a VM or independent grant. OpenShell is a replaceable host backend,
+never a Loom or semantic dependency. Existing one-program profiles are bounded
+specializations, not a completed multi-silk runtime. See the
+[implementation audit and staged migration](spool-boundary.md). Legacy `kit`
+spellings and historical Silk communication records remain compatibility data.
+
 ## Purpose
 
 an-loom helps developers turn domain knowledge, existing programs, skills and
@@ -38,9 +48,9 @@ tool must not advertise a general runtime that the host cannot admit or execute.
 | --- | --- |
 | an-loom | Authoring contracts, scaffolds, explicit component bindings, code-tool adapters, build/check plans, package evidence, release assembly and delivery clients |
 | an-agent host | Admission, grants, scoped model/context services, execution coordination, durable instance/checkpoint publication, artifact custody, delivery evidence, retention decisions and audit |
-| Execution backend | Enforced process/VM isolation, execution lifecycle and observed termination; backend-specific snapshot operations where supported |
+| Execution backend | Enforces the spool attempt boundary and reports environment lifecycle/termination; OpenShell is one replaceable implementation |
 | Spool release | Domain workflow, skills, agent instructions, business decisions, state schemas, migrations and domain acceptance rules |
-| Kit | A callable domain computation with declared inputs and outputs; normally exposed by a CLI |
+| Silk | An internal callable computation with declared inputs and outputs; runs under its owning spool attempt |
 | Shuttle | Application integration, including native APIs or GUI interaction, target revision checks and actual-effect receipts |
 | an-agent-shuttle repository | A collection of domain integrations and reusable components; it is not a runtime layer |
 
@@ -81,7 +91,7 @@ flowchart TB
 
 an-loom constructs development plans; an-agent admits and supervises actual
 controlled executions. A package remains usable without linking the developer
-tool, and a kit can retain a standalone CLI. Offline authoring and package
+tool, and a silk can retain a standalone CLI. Offline authoring and package
 verification do not require a running an-agent service.
 
 ## Project, release and instance
@@ -96,7 +106,7 @@ Keep these objects distinct:
   committed checkpoint. Live state and credentials are not release payloads.
 - **Attempt:** one admitted execution with its own identity and outcome.
 
-A spool may contain several kits and agent instructions. It requests shuttle
+A spool may contain several silks and agent instructions. It requests shuttle
 capabilities; every application bridge does not need to be copied into every
 spool. A bounded internal workflow may initially use an ordinary reviewed runner
 inside the spool. A new runtime workflow language is not required for the first
@@ -128,7 +138,7 @@ sharing business logic or requiring a common release cycle.
 
 External coding tools keep their own model loops, context compaction and editing
 mechanisms. an-loom supplies a bounded task, relevant project references, allowed
-kit entrypoints and acceptance criteria, and receives editable changes and
+silk entrypoints and acceptance criteria, and receives editable changes and
 identified results. It does not implement a competing general coding agent.
 
 They also own their native session tape. The host retains execution, authority,
@@ -145,7 +155,7 @@ of complete host model-call supervision. Credentials stay in the corresponding
 trusted service and do not enter spool payloads or untrusted build environments.
 Deployed spools request host model services under their runtime grants.
 
-Invoking an existing kit should be simpler than asking a coding tool to recreate
+Invoking an existing silk should be simpler than asking a coding tool to recreate
 it. Expose its contract, approved host invocation and bounded result references.
 Prompt instructions are guidance; the execution boundary enforces permissions.
 
@@ -209,12 +219,12 @@ outside the workbench.
 2. Port useful an-waver validation and archive code with its license and source
    attribution. Reorganize around projects and plans; avoid copying all historical
    commands or changing the host deployment format without demonstrated need.
-3. Adopt an existing lightweight file kit as a project. Generate a reviewable
+3. Adopt an existing lightweight file silk as a project. Generate a reviewable
    change using one mature coding tool, invoke host-controlled build/check,
    receive verified output, assemble a release, register and run it through the
    real host. Record unsupported host capabilities as gaps.
 4. Validate the same authoring-to-release route with an independently structured
-   existing kit. This is the evidence for generality before adding a visual
+   existing silk. This is the evidence for generality before adding a visual
    editor, provider catalog or a more elaborate workflow language.
 5. Move required examples, CI references and design evidence. Then mark an-waver
    superseded, make it private and archive it. Preserve history; avoid deleting
@@ -237,7 +247,7 @@ and the backend enforces the selected boundary.
 
 The [log report acceptance](log-report-workflow.md) distinguishes generic support
 from explicit adapter coupling and domain invasion. Host byte/version/execution
-contracts support any admitted kit; document libraries and format rules stay in
+contracts support any admitted silk; document libraries and format rules stay in
 the example. An optional CLI adapter may depend on a qualified host contract,
-while the kit remains independently callable. New backend types are not required
+while the silk remains independently callable. New backend types are not required
 to demonstrate this division.

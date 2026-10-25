@@ -31,7 +31,7 @@ version = "0.1.0"
 description = "A developer-owned CLI component"
 include = ["loom.toml", "README.md", "kit", "generation.md"]
 
-[kit]
+[silk]
 source = "kit/main.rs"
 program = "kit/program"
 build_record = "kit/build.json"
@@ -39,6 +39,10 @@ declaration = "kit/spool.yaml"
 analysis = "kit/analysis.json"
 profile = "file-kit-v1"
 ```
+
+The canonical authoring key is `[silk]`; old `[kit]` remains readable, but
+using both is refused. The legacy `kit/` paths and `file-kit-v1` token do not
+create a separate runtime boundary. See [the spool contract](spool-boundary.md).
 
 These paths are explicit authoring bindings, not hardcoded source names. Every
 binding must be inside the include list; files must be distinct and cannot

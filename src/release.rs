@@ -21,7 +21,7 @@ pub fn create(project: &Path, destination: &Path) -> Result<ReleaseRecord> {
     let bytes = read(&archive, 101 * 1024 * 1024)?;
     let verified = crate::read_archive(&archive)?;
     let (project, yaml) = crate::spool::validate(&verified)?;
-    let kit = project.kit()?;
+    let kit = project.silk()?;
     let program = verified
         .files
         .get(&kit.program)
@@ -59,7 +59,7 @@ pub fn verify(root: &Path) -> Result<ReleaseRecord> {
     let record: ReleaseRecord = serde_json::from_slice(&read(&root.join("release.json"), 16384)?)?;
     let archive = crate::read_archive(&root.join("spool.tar.gz"))?;
     let (project, yaml) = crate::spool::validate(&archive)?;
-    let kit = project.kit()?;
+    let kit = project.silk()?;
     let program = read(&root.join("deployment/program"), 20 * 1024 * 1024)?;
     if record.schema != "an-loom-release-v1"
         || record.package != archive.manifest.package

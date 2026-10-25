@@ -11,12 +11,14 @@ spool releases. It scaffolds, prepares bounded coding tasks, requests checks,
 validates evidence and packages selected bytes. Reuse mature coding tools and
 workflow engines; do not implement competing editing or model loops.
 
-- A **kit** is a callable computation, normally a CLI, with explicit inputs and
-  outputs. It can also be used independently.
-- A **workflow** describes a domain process combining kits, agents and human
+- A **silk** is a callable computation inside an owning spool, normally a CLI,
+  with explicit inputs and outputs. It does not receive a separate VM or grant.
+  Independent CLI use outside the host carries no managed-execution guarantee.
+- A **workflow** describes a domain process combining silks, agents and human
   decisions. This is terminology, not a new runtime or schema.
-- A **spool release** carries domain implementation, instructions, configuration,
-  state schemas, migrations and acceptance rules.
+- A **spool release** carries domain implementation, silks, instructions,
+  configuration, state schemas, migrations and acceptance rules. A spool execution
+  attempt is the isolation and lifecycle unit, distinct from committed state.
 - **an-agent** owns runtime authority, model/context services, execution supervision,
   committed state, accepted artifacts, retention and boundary evidence.
 - A **backend** enforces isolation and confirms execution termination. A
@@ -26,6 +28,11 @@ Keep domain decisions in spool projects, host implementation outside Loom and
 runtime dependencies one-way: an-agent must not depend on Loom. Use Rust 2024 and
 FP style: deterministic planning/validation at the center, explicit effect
 adapters at the edge. Payload languages are open.
+
+See [spool boundaries and naming compatibility](docs/spool-boundary.md). Existing
+`kit` CLI/profile/API tokens and historical Silk communication records remain
+compatibility identities; never globally replace them or rewrite old releases.
+OpenShell belongs behind the host backend adapter, not in Loom or semantic logic.
 
 ## Changes and review
 
@@ -46,7 +53,7 @@ adapters at the edge. Payload languages are open.
 
 Prepare bounded tasks with relevant input references, editable paths, reusable
 kit entrypoints, acceptance commands and expected outputs. Prefer calling an
-existing kit over asking the agent to recreate it. Keep vendor-specific behavior
+existing silk over asking the agent to recreate it. Keep vendor-specific behavior
 in qualified adapters; do not infer support from another CLI's flags.
 
 Repository hooks, plugins, MCP servers, agent overrides and build scripts are

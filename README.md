@@ -6,10 +6,13 @@ Loom helps developers turn domain knowledge, existing CLI programs, skills and
 application integrations into inspectable releases. It owns authoring, assembly,
 validation orchestration and packaging. Domain behavior belongs to spool projects;
 an-agent owns runtime authority, model/context services, state and artifact
-custody. Execution backends enforce isolation; shuttles connect applications.
+custody. A spool execution attempt is the isolation and lifecycle unit. Internal **silks**
+are callable steps sharing its granted environment. OpenShell is an optional,
+replaceable backend; shuttles connect applications through host authorization.
+See [the boundary, implementation audit and migration](docs/spool-boundary.md).
 
 The first slice migrates identified packaging and validation code from an-waver
-and connects a lightweight CLI kit to the independent host. `loom.toml` binds
+and connects a lightweight CLI silk to the independent host. `loom.toml` binds
 selected project paths. An operator reviews a development plan before the host
 compiles and tests the selected Rust source. Loom receives matching output, emits
 the fixed host declaration, and assembles a portable local release.
@@ -24,11 +27,11 @@ This is not yet a general multi-stage workflow executor or a code-generation age
 
 ```sh
 cargo install --path . --locked
-an-loom init ./my-kit
-an-loom check ./my-kit
+an-loom init ./my-spool
+an-loom check ./my-spool
 ```
 
-The starter is [the existing file-list kit](examples/file-list/README.md), not a
+The starter is [the existing file-list silk](examples/file-list/README.md), not a
 model-generated program. Its pure transformation and domain tests live in the
 example, outside Loom's generic implementation. Give `generation.md` to an
 existing coding tool when adapting it to your own domain.

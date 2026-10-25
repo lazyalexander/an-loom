@@ -27,7 +27,7 @@ fn project(files: &BTreeMap<String, Vec<u8>>, package: &PackageIdentity) -> Resu
 
 /// Pure, profile-bound emission. The host's parser remains authoritative.
 fn generated(project: &Project, files: &BTreeMap<String, Vec<u8>>) -> Result<(String, Vec<u8>)> {
-    let kit = project.kit()?;
+    let kit = project.silk()?;
     let source = required(files, &kit.source)?;
     let report = analyze(source)?;
     let program = required(files, &kit.program)?;
@@ -70,7 +70,7 @@ pub(crate) fn check_inputs(
 
 pub fn validate(archive: &VerifiedArchive) -> Result<(Project, String)> {
     let project = project(&archive.files, &archive.manifest.package)?;
-    let kit = project.kit()?;
+    let kit = project.silk()?;
     let (yaml, report) = generated(&project, &archive.files)?;
     if required(&archive.files, &kit.declaration)? != yaml.as_bytes()
         || required(&archive.files, &kit.analysis)? != report
@@ -88,7 +88,7 @@ pub fn declare(root: &Path) -> Result<()> {
         .map(|file| (file.inventory.path, file.bytes))
         .collect();
     let project = project(&files, &inspected.manifest.package_identity())?;
-    let kit = project.kit()?;
+    let kit = project.silk()?;
     let (yaml, report) = generated(&project, &files)?;
     for (path, bytes) in [
         (&kit.declaration, yaml.as_bytes()),
@@ -114,7 +114,7 @@ pub fn export(archive: &Path, destination: &Path) -> Result<()> {
     crate::package::write_new(&destination.join("spool.yaml"), yaml.as_bytes())?;
     crate::package::write_new(
         &destination.join("program"),
-        required(&archive.files, &project.kit()?.program)?,
+        required(&archive.files, &project.silk()?.program)?,
     )?;
     Ok(())
 }
