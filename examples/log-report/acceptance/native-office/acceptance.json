@@ -1,0 +1,59 @@
+{
+  "schema": "an-native-office-acceptance-v1",
+  "host_revision": "1fafa4cb53930aec777094223d94f253918db4e5",
+  "revisions": {
+    "v1": {
+      "bytes": 6438,
+      "content_sha256": "7ce01e92f8863f1c933ea030a126e81ae6b1e19c4729fbf14240a75aaa0a2d16",
+      "encoding": "bytes",
+      "parent": null,
+      "revision": "96eaad42fb3b6a560ceda38cf890fc383aea462c74f6dec67ca36adb901c3a53",
+      "status": "succeeded"
+    },
+    "v2": {
+      "bytes": 9779,
+      "content_sha256": "0ce8daf7f9f726f79e8e26acbf14cbe512f1ffcf3d9ac426372be66f4a19e6f8",
+      "encoding": "bytes",
+      "parent": "96eaad42fb3b6a560ceda38cf890fc383aea462c74f6dec67ca36adb901c3a53",
+      "revision": "37b8633bc2a855fd2dbe967512b8ce51d2dc161d14ba0917040ee9b46a2d040d",
+      "status": "succeeded"
+    },
+    "v3": {
+      "bytes": 9785,
+      "content_sha256": "dc65d39c498328350fd1e2ab2f4490baea388cafa8bc073a8a99f53547a09456",
+      "encoding": "bytes",
+      "parent": "37b8633bc2a855fd2dbe967512b8ce51d2dc161d14ba0917040ee9b46a2d040d",
+      "revision": "48c282cc56655949dbd13d6b0dd2dfbd6ac5f7472de47e2609db21c63dc9eda0",
+      "status": "succeeded"
+    }
+  },
+  "selected_input_revision": "37b8633bc2a855fd2dbe967512b8ce51d2dc161d14ba0917040ee9b46a2d040d",
+  "ppt": {
+    "bytes": 31079,
+    "content_sha256": "c289fad8dc8c18538ed76c0bc667faeabe84838c96092602aec46204d43af338",
+    "encoding": "bytes",
+    "parent": null,
+    "revision": "815fe53b03692e996522f99322d0c37188a115a03846ca3f01435872f034f0f9",
+    "status": "succeeded"
+  },
+  "editor_evidence": {
+    "v2": {
+      "method": "native GUI edit/save observed by operator",
+      "producer_hint": "LibreOffice"
+    },
+    "v3": {
+      "method": "native GUI edit/save observed by operator",
+      "producer_hint": "LibreOffice"
+    }
+  },
+  "native_slide_count": 3,
+  "model_calls": 0,
+  "assertions": [
+    "real desktop GUI saves create child revisions",
+    "v3 exists while downstream consumes v2",
+    "PPT contains v2 note, not v3",
+    "input provenance binds v2",
+    "formal revisions survive workspace collection"
+  ],
+  "scope": "native editor is trusted; operator-observed UI actions are not authenticated human authorship"
+}
