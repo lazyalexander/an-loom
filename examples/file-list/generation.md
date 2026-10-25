@@ -1,4 +1,12 @@
-# File-list kit development brief
+# Internal silk development contract
+
+Develop an internal silk for the owning spool. Reuse existing programs where
+appropriate. Do not create a VM, select an execution backend, acquire host
+credentials or widen the spool grant from domain code. Call external capabilities
+only through the host-authorized interface. Internal subprocess completion is
+not whole-spool termination. Legacy paths and host profile names below remain
+compatibility tokens; preserve them until a separately reviewed migration.
+
 
 Use an existing code-generation tool to edit kit/main.rs if requirements
 change. The initial scaffold is deterministic, not a model-generated result.

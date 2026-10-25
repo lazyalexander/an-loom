@@ -181,3 +181,46 @@ fn source_signals_reject_known_incompatible_operations_without_claiming_complete
     }
     Ok(())
 }
+
+#[test]
+fn silk_authoring_preserves_legacy_binding_checks_and_rejects_ambiguity() -> Result {
+    let temp = tempfile::tempdir()?;
+    let root = temp.path().join("spool");
+    an_loom::project::scaffold(&root, true)?;
+    let canonical = fs::read_to_string(root.join(FILE))?;
+    assert!(canonical.contains("[silk]"));
+    assert!(!canonical.contains("[kit]"));
+    let legacy = canonical.replace("[silk]", "[kit]");
+    let current = Project::parse(&canonical)?;
+    let old = Project::parse(&legacy)?;
+    assert_eq!(current, old);
+    assert_eq!(current.silk()?, old.kit()?);
+    let duplicate = format!(
+        "{canonical}\n[kit]\n{}",
+        legacy.split("[kit]").nth(1).ok_or("binding")?
+    );
+    assert!(Project::parse(&duplicate).is_err());
+    for text in [&canonical, &legacy] {
+        let escaped = text.replace("kit/main.rs", "../outside.rs");
+        assert!(Project::parse(&escaped).is_err());
+        let wrong_profile = text.replace("file-kit-v1", "unrestricted");
+        assert!(Project::parse(&wrong_profile).is_err());
+    }
+    Ok(())
+}
+
+#[test]
+fn legacy_project_bytes_survive_release_and_verification() -> Result {
+    let temp = tempfile::tempdir_in(std::env::temp_dir().canonicalize()?)?;
+    let root = temp.path().join("legacy");
+    fixture(&root)?;
+    let legacy = fs::read_to_string(root.join(FILE))?.replace("[silk]", "[kit]");
+    fs::write(root.join(FILE), &legacy)?;
+    let destination = temp.path().join("release");
+    let record = an_loom::release::create(&root, &destination)?;
+    let archive = an_loom::read_archive(&destination.join("spool.tar.gz"))?;
+    assert_eq!(archive.files.get(FILE), Some(&legacy.as_bytes().to_vec()));
+    assert_eq!(fs::read(root.join(FILE))?, legacy.as_bytes());
+    assert_eq!(an_loom::release::verify(&destination)?, record);
+    Ok(())
+}

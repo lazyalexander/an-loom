@@ -9,7 +9,7 @@ include = [
     "generation.md",
 ]
 
-[kit]
+[silk]
 source = "kit/main.rs"
 program = "kit/program"
 build_record = "kit/build.json"

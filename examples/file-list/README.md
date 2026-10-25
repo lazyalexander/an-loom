@@ -1,4 +1,12 @@
-# File-list kit
+# File-list silk
+
+A silk is a callable step inside a spool. This starter's single program is the
+entry silk of the current one-program spool deployment profile. New authoring
+manifests use `[silk]`; `kit/`, `file-kit-v1` and existing host CLI/event tokens
+remain compatibility spellings. Packaging requests no VM per internal step.
+Loom develops and packages; the host owns execution grants and backend choice.
+A CLI invoked independently is outside those managed-execution guarantees.
+
 
 A CLI-first file transformer: input.txt to output.txt. Unit tests cover the
 pure transform. The host supplies a private read-only input snapshot and permits
