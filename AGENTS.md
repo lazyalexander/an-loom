@@ -93,3 +93,12 @@ Fixtures alone are insufficient. Follow [the roadmap](docs/roadmap.md): research
 release lineage before changing identity, observe real workflows before growing
 file management, and qualify one coding-tool adapter before adding a catalog.
 Report changes, actual verification and remaining limitations in the PR.
+
+## Test placement
+
+Follow [the test map](tests/README.md). Private unit tests live in adjacent
+`tests.rs`/`tests/` modules behind `cfg(test)`; public contract suites live under
+`tests/` with focused local support. Preserve Cargo target names, assertions and
+ignored real-host coverage when moving files. Domain tests stay with examples;
+quality-tool tests stay in their independent workspace. Generated output and
+private acceptance data never become source fixtures.
