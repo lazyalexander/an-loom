@@ -1,5 +1,5 @@
 //! Portable, exclusive local release delivery; registration remains a host request.
-use crate::{Result, build_artifacts::read, fail, manifest::sha256_hex};
+use crate::{Result, fail, files::read, manifest::sha256_hex};
 use serde::{Deserialize, Serialize};
 use std::{fs, path::Path};
 

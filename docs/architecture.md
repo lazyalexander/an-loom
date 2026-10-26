@@ -253,3 +253,46 @@ contracts support any admitted silk; document libraries and format rules stay in
 the example. An optional CLI adapter may depend on a qualified host contract,
 while the silk remains independently callable. New backend types are not required
 to demonstrate this division.
+
+## Implementation boundary audit
+
+The developer/runtime division remains intentional: Loom has no runtime-crate or
+model-client dependency; an-agent does not depend on Loom. The current build
+handoff and file deployment profile are qualified adapter contracts, not a generic
+runtime implementation. Domain source and acceptance rules stay in the project.
+
+| Module | Owns |
+| --- | --- |
+| `project`, `manifest`, `package` | Editable declarations, include/path/secret rules, inventory, archive identity and verification |
+| `files` | Bounded regular-file reads shared by authoring and packaging; no host protocol |
+| `plan` | Pure development-request binding and explicit operator approval checks; no runtime grant |
+| `adapters/host/development` | One approved build request and reception/declaration sequencing |
+| `adapters/host/transport` | Explicit invocation of the operator-selected host CLI |
+| `adapters/host/build_artifacts` | Qualified build-receipt validation and portable artifact reception |
+| `adapters/host/file_profile` | Source signals, deterministic file-profile YAML, validation and deployment export |
+| `release` | Exclusive local release delivery and identity checks; no host activation |
+
+Public `build_artifacts`, `spool`, and `adapters::develop` paths remain compatible
+facades. Existing profile strings, YAML bytes, release digests and CLI commands
+are unchanged. The generic package code uses a deliberate offline profile-check
+call; it never launches the host while inspecting or verifying an archive. The
+profile adapter can in turn request package inspection for explicit authoring
+operations. This is bounded implementation coupling, not a new extension system.
+
+The file reader no longer lives inside build-evidence reception: general archive
+and project operations should not depend on a particular host's receipt format
+just to read a file. Conversely, moving a host schema behind an adapter does not
+make its validation authoritative. an-agent must still validate/admit the release,
+supervise execution and accept outputs under its own grants and settlement gates.
+
+The host CLI adapter invokes trusted operator software. Its output cap is checked
+after capture, and it is not an untrusted-agent sandbox or a competing cancellation
+supervisor. Backend cancellation, termination evidence, artifact versions and
+retention stay in an-agent. Native coding-agent context and logs stay with those
+tools unless an explicit integration contract says otherwise.
+
+Verification keeps the existing test target names and ignored real-host suites.
+In addition to ordinary unit/contract checks, run the current Loom against the
+current host through `tests/host_handoff.rs` before claiming coordinated acceptance.
+The CI-pinned historical host remains a separate compatibility check; do not
+rewrite its historical evidence or silently turn its pin into a moving branch.

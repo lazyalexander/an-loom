@@ -38,7 +38,7 @@ pub(crate) fn inspect_project(project_path: &Path) -> Result<InspectedProject> {
                 "selected input changed or became a symlink: {relative}"
             )));
         }
-        let bytes = crate::build_artifacts::read(&full_path, MAX_FILE_BYTES)?;
+        let bytes = crate::files::read(&full_path, MAX_FILE_BYTES)?;
         if bytes.len() > MAX_FILE_BYTES {
             return Err(fail(format!("file exceeds the 20 MiB limit: {relative}")));
         }
@@ -76,7 +76,7 @@ pub(crate) fn inspect_project(project_path: &Path) -> Result<InspectedProject> {
             bytes,
         });
     }
-    crate::spool::check_inputs(&manifest.package_identity(), &files, false)?;
+    crate::adapters::host::file_profile::check_inputs(&manifest.package_identity(), &files, false)?;
     Ok(InspectedProject { manifest, files })
 }
 

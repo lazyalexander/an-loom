@@ -51,7 +51,7 @@ fn create_archive(file: File, build_directory: &Path, manifest: &BundleManifest)
     builder.mode(tar::HeaderMode::Deterministic);
     for payload in &manifest.files {
         let path = build_directory.join(Path::new(&payload.path));
-        let bytes = crate::build_artifacts::read(&path, MAX_FILE_BYTES)?;
+        let bytes = crate::files::read(&path, MAX_FILE_BYTES)?;
         if bytes.len() != payload.size || sha256_hex(&bytes) != payload.sha256 {
             return Err(fail(format!(
                 "build payload changed before packaging: {}",

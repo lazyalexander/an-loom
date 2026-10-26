@@ -55,7 +55,7 @@ impl Project {
     }
 
     pub fn read(root: &Path) -> Result<Self> {
-        let bytes = crate::build_artifacts::read(&root.join(FILE), 1024 * 1024)?;
+        let bytes = crate::files::read(&root.join(FILE), 1024 * 1024)?;
         Self::parse(std::str::from_utf8(&bytes).map_err(|_| fail("project must be UTF-8"))?)
     }
 
