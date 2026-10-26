@@ -76,7 +76,7 @@ pub(crate) fn inspect_project(project_path: &Path) -> Result<InspectedProject> {
             bytes,
         });
     }
-    crate::spool::check_inputs(&manifest.package_identity(), &files, false)?;
+    crate::adapters::host::file_profile::check_inputs(&manifest.package_identity(), &files, false)?;
     Ok(InspectedProject { manifest, files })
 }
 

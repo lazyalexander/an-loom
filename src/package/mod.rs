@@ -45,7 +45,7 @@ pub(crate) use storage::write_new;
 use storage::{ensure_directory, set_file_mode, unique_directory, unique_file};
 pub(crate) fn build_project(project_path: &Path) -> Result<BuildResult> {
     let inspected = inspect_project(project_path)?;
-    crate::spool::check_inputs(
+    crate::adapters::host::file_profile::check_inputs(
         &inspected.manifest.package_identity(),
         &inspected.files,
         true,
