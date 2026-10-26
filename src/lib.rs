@@ -2,6 +2,7 @@
 pub mod adapters;
 pub mod build_artifacts;
 mod cli;
+mod files;
 mod manifest;
 pub mod package;
 pub mod plan;

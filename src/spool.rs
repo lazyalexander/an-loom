@@ -96,7 +96,7 @@ pub fn declare(root: &Path) -> Result<()> {
     ] {
         let path = root.join(path);
         if path.try_exists()? {
-            if crate::build_artifacts::read(&path, 65536)? != bytes {
+            if crate::files::read(&path, 65536)? != bytes {
                 return Err(fail("refusing to overwrite stale generated evidence"));
             }
         } else {

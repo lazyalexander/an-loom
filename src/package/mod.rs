@@ -109,10 +109,8 @@ fn verify_build_directory(directory: &Path, expected: &BundleManifest) -> Result
     if !metadata.is_file() || metadata.file_type().is_symlink() {
         return Err(fail("existing build bundle is not a regular file"));
     }
-    let actual: BundleManifest = serde_json::from_slice(&crate::build_artifacts::read(
-        &bundle_path,
-        MAX_BUNDLE_BYTES,
-    )?)?;
+    let actual: BundleManifest =
+        serde_json::from_slice(&crate::files::read(&bundle_path, MAX_BUNDLE_BYTES)?)?;
     actual.validate()?;
     if &actual != expected {
         return Err(fail(format!(
@@ -129,7 +127,7 @@ fn verify_build_directory(directory: &Path, expected: &BundleManifest) -> Result
                 file.path
             )));
         }
-        let bytes = crate::build_artifacts::read(&path, MAX_FILE_BYTES)?;
+        let bytes = crate::files::read(&path, MAX_FILE_BYTES)?;
         if bytes.len() != file.size || sha256_hex(&bytes) != file.sha256 {
             return Err(fail(format!(
                 "existing build payload was modified: {}",

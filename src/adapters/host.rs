@@ -1,7 +1,6 @@
 use crate::{
-    Result,
-    build_artifacts::read,
-    fail,
+    Result, fail,
+    files::read,
     manifest::sha256_hex,
     plan::{DevelopmentPlan, HostCall},
     project::{FILE, Project},

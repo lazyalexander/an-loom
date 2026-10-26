@@ -1,13 +1,9 @@
 //! Receive a fixed host build handoff. No code execution or runtime dependency.
-use crate::{LoomError, Result};
+use crate::{LoomError, Result, files::read};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use sha2::{Digest, Sha256};
-use std::{
-    fs,
-    io::{Read, Write},
-    path::{Component, Path, PathBuf},
-};
+use std::{fs, io::Write, path::Path};
 
 fn fail(message: &str) -> LoomError {
     LoomError::Message(message.into())
@@ -45,38 +41,6 @@ pub(crate) fn validate(bytes: &[u8], source: &[u8], program: &[u8]) -> Result<Bu
         return Err(fail("stale or invalid accepted build evidence"));
     }
     Ok(manifest)
-}
-
-pub(crate) fn read(path: &Path, limit: usize) -> Result<Vec<u8>> {
-    let mut cursor = PathBuf::new();
-    for part in path.components() {
-        if part == Component::ParentDir {
-            return Err(fail("parent traversal in build artifact"));
-        }
-        cursor.push(part);
-        if fs::symlink_metadata(&cursor)?.file_type().is_symlink() {
-            return Err(fail("symlink in build artifact"));
-        }
-    }
-    let metadata = fs::metadata(path)?;
-    if !metadata.is_file() {
-        return Err(fail("expected regular build artifact"));
-    }
-    #[cfg(unix)]
-    {
-        use std::os::unix::fs::MetadataExt;
-        if metadata.nlink() != 1 {
-            return Err(fail("hard-linked build artifact"));
-        }
-    }
-    let mut bytes = vec![];
-    fs::File::open(path)?
-        .take(limit as u64 + 1)
-        .read_to_end(&mut bytes)?;
-    if bytes.len() > limit {
-        return Err(fail("build artifact exceeds limit"));
-    }
-    Ok(bytes)
 }
 
 pub fn receive(project: &Path, job: &Path) -> Result<()> {
