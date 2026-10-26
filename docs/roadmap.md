@@ -7,7 +7,8 @@ Preserve the existing package and host checks.
 ## Terminology
 
 Use **workflow** for the domain process, including branches, agents and human
-decisions. Keep **kit** for a callable component and **spool** for its deployable
+decisions. Use the [code contract](spool-code.md): **silk** is stable core code, **kit** is
+adaptable glue, and **spool** is the deployable
 domain carrier. No additional machine abstraction or execution engine is needed
 to adopt an existing workflow. A workflow need not be a static DAG.
 

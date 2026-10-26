@@ -1,4 +1,4 @@
-# A lightweight CLI kit from development to release
+# A lightweight CLI silk from development to release
 
 ## Requirements
 

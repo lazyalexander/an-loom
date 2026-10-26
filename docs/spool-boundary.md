@@ -1,6 +1,6 @@
 # Spool boundary, internal silks and backend independence
 
-Status: architecture and first naming migration. No new runtime or isolation
+Status: target code-role contract with existing naming compatibility. No new runtime or isolation
 promise is introduced. Loom remains a Rust developer/packaging tool.
 
 ## Canonical terms
@@ -9,8 +9,11 @@ promise is introduced. Loom remains a Rust developer/packaging tool.
   skills, configuration, dependency bindings, state formats and domain checks.
 - **Spool instance:** a release-bound business identity and committed state.
 - **Spool attempt:** the host-owned execution isolation and lifecycle unit.
-- **Silk:** an internal callable step implemented by a CLI, script, binary,
-  existing tool or agent. Internal calls do not allocate independent VMs/grants.
+- **Silk:** release-bound core code and pipeline skeleton, read-only during an
+  attempt. Development changes require validation and a new release.
+- **Kit:** internal glue; agents may adapt explicitly editable working copies.
+  Packaged baselines remain immutable, temporary copies are scratch by default.
+  See [the code contract](spool-code.md). Neither class gets its own VM/grant.
 - **Shuttle:** a bridge for separately authorized external application access.
 - **Backend:** implementation of the host's execution boundary. OpenShell is
   optional and replaceable; it is not a package dependency or semantic engine.
@@ -35,7 +38,8 @@ flowchart TB
     Backend --> Spool[One spool execution boundary]
     Spool --> A[Silk A: existing CLI]
     Spool --> B[Silk B: agent or computation]
-    A --> B
+    A --> K[Kit working copy: bounded glue]
+    K --> B
     Spool --> Candidates[Candidate state and outputs]
     Candidates --> Custody[Host settlement and artifact custody]
     Spool --> Requests[External capability requests]
@@ -61,10 +65,10 @@ A silk exit is not evidence that the whole spool attempt has terminated.
 | Reviewed workspace examples | Trusted operator-selected workflows, binary custody and native editor evidence | Production spool identity/authority binding; not a hostile-agent sandbox |
 | OpenShell adapter | Optional qualified single-program file profile | Broad agent/network/credential coverage must not be inferred from upstream support |
 
-## First naming migration
+## Existing authoring compatibility
 
 New generated `loom.toml` files emit `[silk]`. The parser accepts either `[silk]`
-or the old `[kit]`, never both; duplicate declarations are rejected even when
+or the old `[kit]`, never both; this alias does not declare editable glue; duplicate declarations are rejected even when
 identical. Both forms undergo the same path containment, allowlist and fixed
 profile validation. This is naming compatibility, not a new host deployment ABI.
 
