@@ -134,3 +134,5 @@ The [native spool adapter](docs/native-spool.md) exports read-only silk code and
 kit baselines for an-agent's bounded macOS instance lifecycle. The included
 [lightweight text spool](examples/native-spool/README.md) needs no model or install
 hook. Packaging remains independent from host authorization and execution.
+
+The [native spool acceptance](docs/native-spool.md#optional-weaver-and-the-two-instance-acceptance-path) also covers an optional host-owned weaver proposal slot, two independent instances, fixed artifact handoff, cancellation and baseline restoration. Loom supplies packaging; it does not run the agent or own runtime permission.

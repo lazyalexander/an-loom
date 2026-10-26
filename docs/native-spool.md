@@ -76,3 +76,44 @@ Loom may later prepare bounded weaver edit tasks and resolve declared dependenci
 The host must still grant and enforce execution, checkpoint, artifact and shuttle
 access. Supporting a code tool must not move its model loop into Loom or grant it
 unrestricted host CLI access.
+
+
+## Optional weaver and the two-instance acceptance path
+
+The host provides a file proposal slot, independently of Loom. Request one kit with
+`spool-weaver-request INSTANCE transform.sh`; forward only the returned data to an
+external CLI adapter or an authorized shuttle. Import its proposal with
+`spool-weaver-apply INSTANCE RESPONSE_JSON`, inspect the returned plan, then repeat
+with `--approve HASH`. `spool-weaver-revoke INSTANCE REQUEST_UUID` prevents late
+admission, but does not assert that an external tool has stopped. A proposal grants
+no execution authority. Never give an untrusted agent the unrestricted host CLI.
+
+The response schema is `an-weaver-proposal-v1` with `request` (the request UUID),
+`request_sha256`, `kit` (the selected `kit/BASENAME`), and UTF-8 `content`. The host
+binds it to the instance, release, original kit and run/edit generation. Changed,
+revoked, duplicate, foreign or protected-path proposals are refused. Starting a run
+requires a separate approval after application. The slot launches no model and
+keeps model/context behavior outside Loom.
+
+The real macOS acceptance now exercises this sequence using the actual release
+exported from `examples/native-spool`, without a fake execution backend:
+
+1. Load two independent instances of one release (two silks and one kit).
+2. Import a deterministic file proposal into A, rejecting foreign and silk edits.
+3. Run A and accept a versioned report; checkout that exact artifact revision.
+4. Publish a newer report from A, refuse an old receipt claiming the new candidate,
+   and run B against the earlier checked-out version.
+5. Reclaim A's accepted scratch and unload it; load a fresh instance and verify the
+   original kit behavior.
+6. Hold B in real execution while the fresh instance completes another run; refuse
+   B's unload, reclamation and weaver request while it is active.
+7. Signal B's CLI, require confirmed cancellation, refuse cancelled output acceptance,
+   accept B's successful downstream report before reclaiming it, and unload B.
+8. Verify the pinned earlier artifact remains unchanged.
+
+The test's file proposal is explicitly deterministic test input, not an LLM or a
+claim of coding-tool security. `LOOM_NATIVE_EVIDENCE` retains identities, receipts,
+fixed handoff revision, cancellation and independent execution evidence. This is
+an operator validation route: run the ignored integration test with a qualified
+`AN_AGENT_HOST_BIN`. Domain code is still packaged independently, and no runtime
+Rust dependency connects Loom to an-agent.
