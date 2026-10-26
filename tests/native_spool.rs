@@ -84,7 +84,7 @@ fn native_host_consumes_export_edits_kit_and_reloads_baseline() -> Result {
         let output = Command::new(&host).args(args).output()?;
         if !output.status.success() {
             return Err(format!(
-                "host failed: {} {}",
+                "host failed for {args:?}: {} {}",
                 String::from_utf8_lossy(&output.stdout),
                 String::from_utf8_lossy(&output.stderr)
             )
@@ -119,7 +119,21 @@ fn native_host_consumes_export_edits_kit_and_reloads_baseline() -> Result {
     let input = text(&input)?;
     let patch = text(&patch)?;
     let loaded = call(&["spool-load", &delivery, &a])?;
-    approve(&["spool-kit-update", &a, "transform.sh", &patch])?;
+    let second = call(&["spool-load", &delivery, &b])?;
+    assert_ne!(second["instance"], loaded["instance"]);
+    // A deterministic file adapter exercises the slot, not model quality or containment.
+    let request = call(&["spool-weaver-request", &a, "transform.sh"])?;
+    let response = text(&base.join("response.json"))?;
+    let mut proposal = serde_json::json!({"schema":"an-weaver-proposal-v1",
+        "request":request["request"]["request"],"request_sha256":request["request_sha256"],
+        "kit":"silk/main.sh","content":fs::read_to_string(&patch)?});
+    fs::write(&response, serde_json::to_vec(&proposal)?)?;
+    assert!(call(&["spool-weaver-apply", &a, &response]).is_err());
+    proposal["kit"] = serde_json::json!("kit/transform.sh");
+    fs::write(&response, serde_json::to_vec(&proposal)?)?;
+    assert!(call(&["spool-weaver-apply", &b, &response]).is_err());
+    approve(&["spool-weaver-apply", &a, &response])?;
+    assert!(call(&["spool-weaver-apply", &a, &response]).is_err());
     let run = approve(&["spool-start", &a, "first", &input, "15"])?;
     assert_eq!(run["status"], "succeeded");
     let accepted = approve(&["spool-accept", &a, "first"])?;
@@ -128,14 +142,36 @@ fn native_host_consumes_export_edits_kit_and_reloads_baseline() -> Result {
         fs::read_to_string(Path::new(&a).join("runs/first/job/work/report.txt"))?,
         "Report\nedited:hello\n"
     );
+    let revision = accepted["result"]["outputs"][0]["binding"]["revision"]
+        .as_str()
+        .ok_or("revision")?;
+    let pinned = text(&base.join("pinned.txt"))?;
+    let catalog = text(&Path::new(&a).join("runs/first/job/artifacts"))?;
+    let checkout = call(&["artifact-checkout", &catalog, revision, &pinned])?;
+    fs::write(&input, "new material\n")?;
+    approve(&["spool-start", &a, "new", &input, "15"])?;
+    let result_path = Path::new(&a).join("runs/new/result.json");
+    let current = fs::read(&result_path)?;
+    fs::copy(Path::new(&a).join("runs/first/result.json"), &result_path)?;
+    assert!(call(&["spool-accept", &a, "new"]).is_err());
+    fs::write(result_path, current)?;
+    approve(&["spool-accept", &a, "new"])?;
+    approve(&["spool-start", &b, "consume", &pinned, "15"])?;
+    assert_eq!(
+        fs::read_to_string(Path::new(&b).join("runs/consume/job/work/report.txt"))?,
+        "Report\nREPORT\nEDITED:HELLO\n"
+    );
+    approve(&["spool-reclaim", &a, "new"])?;
     approve(&["spool-reclaim", &a, "first"])?;
     approve(&["spool-unload", &a])?;
-    let fresh = call(&["spool-load", &delivery, &b])?;
+    let reloaded = text(&base.join("reloaded"))?;
+    let fresh = call(&["spool-load", &delivery, &reloaded])?;
+    fs::write(&input, "hello\n")?;
     assert_eq!(fresh["release"], loaded["release"]);
     assert_ne!(fresh["instance"], loaded["instance"]);
-    approve(&["spool-start", &b, "fresh", &input, "15"])?;
+    approve(&["spool-start", &reloaded, "fresh", &input, "15"])?;
     assert_eq!(
-        fs::read_to_string(Path::new(&b).join("runs/fresh/job/work/report.txt"))?,
+        fs::read_to_string(Path::new(&reloaded).join("runs/fresh/job/work/report.txt"))?,
         "Report\nHELLO\n"
     );
     // Cancellation must pass through the public CLI, not only an in-process flag.
@@ -162,6 +198,13 @@ fn native_host_consumes_export_edits_kit_and_reloads_baseline() -> Result {
         }
         std::thread::sleep(std::time::Duration::from_millis(10));
     }
+    // B remains blocked while the independently reloaded instance completes.
+    let active_refusals = [
+        call(&["spool-unload", &b]).is_err(),
+        call(&["spool-reclaim", &b, "cancelled"]).is_err(),
+        call(&["spool-weaver-request", &b, "transform.sh"]).is_err(),
+    ];
+    let independent = approve(&["spool-start", &reloaded, "independent", &input, "15"]);
     if child.try_wait()?.is_none() {
         let sent = Command::new("/bin/kill")
             .args(["-TERM", &child.id().to_string()])
@@ -171,6 +214,8 @@ fn native_host_consumes_export_edits_kit_and_reloads_baseline() -> Result {
         }
     }
     let stopped = child.wait_with_output()?;
+    let independent = independent?;
+    assert!(active_refusals.into_iter().all(|denied| denied));
     assert!(
         ready.exists(),
         "host did not reach the controlled cancellation point"
@@ -180,7 +225,16 @@ fn native_host_consumes_export_edits_kit_and_reloads_baseline() -> Result {
     assert_eq!(cancelled["status"], "cancelled");
     assert_eq!(cancelled["workspace"]["termination_confirmed"], true);
     approve(&["spool-reclaim", &b, "cancelled"])?;
-    let evidence = serde_json::json!({"load":loaded,"run":run,"accepted":accepted,"reload":fresh,"cancelled":cancelled});
+    assert!(call(&["spool-accept", &b, "cancelled"]).is_err());
+    assert!(call(&["spool-reclaim", &b, "consume"]).is_err());
+    let downstream = approve(&["spool-accept", &b, "consume"])?;
+    approve(&["spool-reclaim", &b, "consume"])?;
+    approve(&["spool-unload", &b])?;
+    assert_eq!(fs::read_to_string(&pinned)?, "Report\nedited:hello\n");
+    let evidence = serde_json::json!({"load":loaded,"second":second,"weaver_request":request,
+        "adapter":"deterministic file proposal; no model invoked", "run":run,"accepted":accepted,
+        "fixed_handoff":{"revision":revision,"checkout":checkout},"reload":fresh,
+        "independent_run":independent,"downstream":downstream,"cancelled":cancelled});
     if let Some(path) = std::env::var_os("LOOM_NATIVE_EVIDENCE") {
         fs::write(path, serde_json::to_vec_pretty(&evidence)?)?;
     }

@@ -9,3 +9,5 @@ The `export-native-spool` adapter exports only the explicitly bound code, not th
 whole source archive. See [the native contract](../../docs/native-spool.md) for host compatibility and the
 real two-instance acceptance. Loading is not execution permission. This is a
 reviewed macOS process-group profile, not a hostile-agent sandbox or a VM.
+
+For the real two-instance lifecycle, optional file proposal, fixed-version handoff and cancellation acceptance, see [the native spool guide](../../docs/native-spool.md#optional-weaver-and-the-two-instance-acceptance-path). The weaver fixture emits a deterministic proposal; no model service is required.
