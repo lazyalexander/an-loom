@@ -112,3 +112,28 @@ jobs:
           name: portable-nextflow-acceptance
           path: .local/nextflow-summary.json
           if-no-files-found: error
+
+  native-spool:
+    runs-on: macos-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: lazyalexander/an-agent
+          ref: a95e8b19554005e8cf096b3201af065c54cc9fc7
+          path: .native-host
+      - uses: dtolnay/rust-toolchain@1.98.0
+      - run: cargo build --manifest-path .native-host/Cargo.toml -p an-agent-host --bin an-agent-host --locked
+      - run: mkdir -p .local
+      - name: Export, load, edit, execute, cancel, accept and reload a native spool
+        run: cargo test --test native_spool --locked -- --ignored --nocapture
+        env:
+          AN_AGENT_HOST_BIN: ${{ github.workspace }}/.native-host/target/debug/an-agent-host
+          LOOM_NATIVE_EVIDENCE: ${{ github.workspace }}/.local/native-spool.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: native-spool-acceptance
+          path: .local/native-spool.json
+          if-no-files-found: warn

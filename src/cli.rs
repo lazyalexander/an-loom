@@ -15,6 +15,7 @@ const HELP: &str = "an-loom - inspectable spool development and delivery
   an-loom pack PROJECT
   an-loom verify ARCHIVE
   an-loom export-spool ARCHIVE NEW_DIRECTORY
+  an-loom export-native-spool ARCHIVE NEW_DIRECTORY
   an-loom release PROJECT NEW_DIRECTORY
   an-loom verify-release DIRECTORY
 
@@ -57,6 +58,9 @@ pub(crate) fn run(args: Vec<String>) -> Result<()> {
         ("export-spool", [archive, destination]) => {
             crate::spool::export(Path::new(archive), Path::new(destination))?;
             json!({"exported":true,"registered":false})
+        }
+        ("export-native-spool", [archive, destination]) => {
+            crate::adapters::host::native_spool::export(Path::new(archive), Path::new(destination))?
         }
         ("release", [root, destination]) => serde_json::to_value(crate::release::create(
             Path::new(root),

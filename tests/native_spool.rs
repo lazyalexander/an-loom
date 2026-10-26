@@ -1,0 +1,188 @@
+//! Portable native export checks and an explicitly enabled real host round trip.
+use serde_json::Value;
+use std::{
+    fs,
+    path::{Path, PathBuf},
+};
+type Result<T = ()> = std::result::Result<T, Box<dyn std::error::Error>>;
+fn project(base: &Path) -> Result<PathBuf> {
+    let root = base.join("project");
+    fs::create_dir(&root)?;
+    let sample = Path::new(env!("CARGO_MANIFEST_DIR")).join("examples/native-spool");
+    for dir in ["silk", "kit"] {
+        fs::create_dir(root.join(dir))?;
+    }
+    for file in [
+        "loom.toml",
+        "native-spool.toml",
+        "README.md",
+        "silk/main.sh",
+        "silk/report.sh",
+        "kit/transform.sh",
+    ] {
+        fs::copy(sample.join(file), root.join(file))?;
+    }
+    Ok(root)
+}
+fn export(project: &Path, destination: &Path) -> Result {
+    let archive = an_loom::package::pack_project(project)?;
+    an_loom::run([
+        "export-native-spool".to_owned(),
+        archive.to_string_lossy().into_owned(),
+        destination.to_string_lossy().into_owned(),
+    ])?;
+    Ok(())
+}
+#[test]
+fn native_export_is_deterministic_exclusive_and_separate_from_source_archive() -> Result {
+    let tmp = tempfile::tempdir()?;
+    let base = tmp.path().canonicalize()?;
+    let root = project(&base)?;
+    let a = base.join("a");
+    let b = base.join("b");
+    export(&root, &a)?;
+    export(&root, &b)?;
+    assert_eq!(
+        fs::read(a.join("native-spool.json"))?,
+        fs::read(b.join("native-spool.json"))?
+    );
+    let m: Value = serde_json::from_slice(&fs::read(a.join("native-spool.json"))?)?;
+    assert_eq!(m["schema"], "an-native-spool-v1");
+    assert_eq!(m["files"].as_object().ok_or("missing files")?.len(), 3);
+    assert!(!a.join("loom.toml").exists());
+    assert!(!a.join("README.md").exists());
+    assert!(export(&root, &a).is_err());
+    Ok(())
+}
+#[test]
+fn native_export_refuses_unselected_code_and_ambiguous_roles() -> Result {
+    for change in ["missing", "wrong-role", "output"] {
+        let tmp = tempfile::tempdir()?;
+        let base = tmp.path().canonicalize()?;
+        let root = project(&base)?;
+        let path = root.join("native-spool.toml");
+        let text = fs::read_to_string(&path)?;
+        let text = match change {
+            "missing" => text.replace("kit/transform.sh", "kit/missing.sh"),
+            "wrong-role" => text.replace("kit/transform.sh", "silk/report.sh"),
+            _ => text.replace("report.txt", "../escape"),
+        };
+        fs::write(path, text)?;
+        assert!(export(&root, &base.join("delivery")).is_err());
+        assert!(!base.join("delivery").exists());
+    }
+    Ok(())
+}
+
+#[cfg(target_os = "macos")]
+#[test]
+#[ignore = "requires the qualified an-agent host binary and real macOS execution"]
+fn native_host_consumes_export_edits_kit_and_reloads_baseline() -> Result {
+    use std::process::Command;
+    let host = std::env::var_os("AN_AGENT_HOST_BIN").ok_or("AN_AGENT_HOST_BIN is required")?;
+    let call = |args: &[&str]| -> Result<Value> {
+        let output = Command::new(&host).args(args).output()?;
+        if !output.status.success() {
+            return Err(format!(
+                "host failed: {} {}",
+                String::from_utf8_lossy(&output.stdout),
+                String::from_utf8_lossy(&output.stderr)
+            )
+            .into());
+        }
+        Ok(serde_json::from_slice(&output.stdout)?)
+    };
+    let approve = |args: &[&str]| -> Result<Value> {
+        let preview = call(args)?;
+        let hash = preview["approval_sha256"]
+            .as_str()
+            .ok_or("missing approval")?;
+        let mut execute = args.to_vec();
+        execute.extend(["--approve", hash]);
+        call(&execute)
+    };
+    let tmp = tempfile::tempdir()?;
+    let base = tmp.path().canonicalize()?;
+    let root = project(&base)?;
+    let delivery = base.join("delivery");
+    export(&root, &delivery)?;
+    let a = base.join("a");
+    let b = base.join("b");
+    let input = base.join("input.txt");
+    let patch = base.join("patch.sh");
+    fs::write(&input, b"hello\n")?;
+    fs::write(&patch, b"printf 'edited:'; cat \"$1\"\n")?;
+    let text = |p: &Path| -> Result<String> { Ok(p.to_str().ok_or("non-UTF8 fixture")?.into()) };
+    let delivery = text(&delivery)?;
+    let a = text(&a)?;
+    let b = text(&b)?;
+    let input = text(&input)?;
+    let patch = text(&patch)?;
+    let loaded = call(&["spool-load", &delivery, &a])?;
+    approve(&["spool-kit-update", &a, "transform.sh", &patch])?;
+    let run = approve(&["spool-start", &a, "first", &input, "15"])?;
+    assert_eq!(run["status"], "succeeded");
+    let accepted = approve(&["spool-accept", &a, "first"])?;
+    assert_eq!(accepted["release"], loaded["release"]);
+    assert_eq!(
+        fs::read_to_string(Path::new(&a).join("runs/first/job/work/report.txt"))?,
+        "Report\nedited:hello\n"
+    );
+    approve(&["spool-reclaim", &a, "first"])?;
+    approve(&["spool-unload", &a])?;
+    let fresh = call(&["spool-load", &delivery, &b])?;
+    assert_eq!(fresh["release"], loaded["release"]);
+    assert_ne!(fresh["instance"], loaded["instance"]);
+    approve(&["spool-start", &b, "fresh", &input, "15"])?;
+    assert_eq!(
+        fs::read_to_string(Path::new(&b).join("runs/fresh/job/work/report.txt"))?,
+        "Report\nHELLO\n"
+    );
+    // Cancellation must pass through the public CLI, not only an in-process flag.
+    fs::write(&patch, b"printf ready > ready; sleep 30; printf late\n")?;
+    approve(&["spool-kit-update", &b, "transform.sh", &patch])?;
+    let cancel_args = ["spool-start", &b, "cancelled", &input, "15"];
+    let preview = call(&cancel_args)?;
+    let mut child = Command::new(&host)
+        .args(cancel_args)
+        .args([
+            "--approve",
+            preview["approval_sha256"]
+                .as_str()
+                .ok_or("missing approval")?,
+        ])
+        .stdout(std::process::Stdio::piped())
+        .stderr(std::process::Stdio::piped())
+        .spawn()?;
+    let ready = Path::new(&b).join("runs/cancelled/job/work/ready");
+    let started = std::time::Instant::now();
+    while !ready.exists() && started.elapsed() < std::time::Duration::from_secs(10) {
+        if child.try_wait()?.is_some() {
+            break;
+        }
+        std::thread::sleep(std::time::Duration::from_millis(10));
+    }
+    if child.try_wait()?.is_none() {
+        let sent = Command::new("/bin/kill")
+            .args(["-TERM", &child.id().to_string()])
+            .status()?;
+        if !sent.success() {
+            child.kill()?;
+        }
+    }
+    let stopped = child.wait_with_output()?;
+    assert!(
+        ready.exists(),
+        "host did not reach the controlled cancellation point"
+    );
+    assert!(!stopped.status.success());
+    let cancelled: Value = serde_json::from_slice(&stopped.stdout)?;
+    assert_eq!(cancelled["status"], "cancelled");
+    assert_eq!(cancelled["workspace"]["termination_confirmed"], true);
+    approve(&["spool-reclaim", &b, "cancelled"])?;
+    let evidence = serde_json::json!({"load":loaded,"run":run,"accepted":accepted,"reload":fresh,"cancelled":cancelled});
+    if let Some(path) = std::env::var_os("LOOM_NATIVE_EVIDENCE") {
+        fs::write(path, serde_json::to_vec_pretty(&evidence)?)?;
+    }
+    Ok(())
+}

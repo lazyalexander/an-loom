@@ -127,3 +127,10 @@ consumption and cancelled binary-output refusal. The kit runs independently;
 adapter coupling and domain invasion.
 
 The [implementation boundary audit](docs/architecture.md#implementation-boundary-audit) maps current modules to developer, host, and backend responsibilities and records the remaining limits.
+
+## Reviewed native spool packages
+
+The [native spool adapter](docs/native-spool.md) exports read-only silk code and
+kit baselines for an-agent's bounded macOS instance lifecycle. The included
+[lightweight text spool](examples/native-spool/README.md) needs no model or install
+hook. Packaging remains independent from host authorization and execution.
