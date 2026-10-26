@@ -125,3 +125,5 @@ XLSX → editable PPTX with a separately saved workbook revision, pinned downstr
 consumption and cancelled binary-output refusal. The kit runs independently;
 [the boundary report](docs/log-report-workflow.md) distinguishes support, explicit
 adapter coupling and domain invasion.
+
+The [implementation boundary audit](docs/architecture.md#implementation-boundary-audit) maps current modules to developer, host, and backend responsibilities and records the remaining limits.
