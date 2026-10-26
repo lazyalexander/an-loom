@@ -296,3 +296,10 @@ In addition to ordinary unit/contract checks, run the current Loom against the
 current host through `tests/host_handoff.rs` before claiming coordinated acceptance.
 The CI-pinned historical host remains a separate compatibility check; do not
 rewrite its historical evidence or silently turn its pin into a moving branch.
+
+## First release-bound native spool slice
+
+The [native package adapter](native-spool.md) exports a bounded shell-code release
+for an-agent's reviewed native profile. Host instances own mutable kit copies,
+fixed-code attempts and custody. Loom does not manage running instances. This
+adds no general workflow engine, dependency resolver or agent runtime.

@@ -45,7 +45,9 @@ OpenShell belongs behind the host backend adapter, not in Loom or semantic logic
 - Distinguish implemented guarantees, tool claims and proposed capabilities.
   Preserve existing behavior unless the task explicitly changes it.
 - Generic packaging is broader than controlled execution support. The packaged
-  deployment adapter remains one dependency-free Rust source and `file-kit-v1`.
+  legacy deployment adapter remains one dependency-free Rust source and `file-kit-v1`.
+  The separate native-spool adapter exports bounded shell releases only; its host
+  contract and real acceptance are documented in `docs/native-spool.md`.
   An operator example using a host workspace profile does not add a spool ABI.
 - Preserve include allowlists, path containment, secret checks, deterministic
   identities, exclusive destinations and archive verification.

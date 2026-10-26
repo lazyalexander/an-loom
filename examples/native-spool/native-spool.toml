@@ -1,0 +1,5 @@
+schema = "an-native-spool-v1"
+entry = "silk/main.sh"
+silk = ["silk/main.sh", "silk/report.sh"]
+kit = ["kit/transform.sh"]
+outputs = ["report.txt"]
