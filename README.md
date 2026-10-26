@@ -7,7 +7,8 @@ application integrations into inspectable releases. It owns authoring, assembly,
 validation orchestration and packaging. Domain behavior belongs to spool projects;
 an-agent owns runtime authority, model/context services, state and artifact
 custody. A spool execution attempt is the isolation and lifecycle unit. Internal **silks**
-are callable steps sharing its granted environment. OpenShell is an optional,
+provide stable core steps; editable **kit** working copies provide bounded glue
+within the same granted environment. OpenShell is an optional,
 replaceable backend; shuttles connect applications through host authorization.
 See [the boundary, implementation audit and migration](docs/spool-boundary.md).
 
@@ -22,6 +23,11 @@ Rust source, one executable, `file-kit-v1`, and the host's existing macOS isolat
 build. General packages may contain other languages and files. A new build or
 runtime profile requires a separately qualified adapter and host support.
 This is not yet a general multi-stage workflow executor or a code-generation agent.
+
+The [spool code contract](docs/spool-code.md) distinguishes **silks**, the stable pipeline
+skeleton and core domain code, from **kits**, adaptable internal glue. Published
+packages remain immutable; agent edits apply only to authorized working copies.
+This vocabulary does not add runtime enforcement or change legacy CLI/API tokens.
 
 ## Quick start
 

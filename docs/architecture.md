@@ -6,7 +6,8 @@ are tracked separately; a target capability is not an implemented guarantee.
 ## Spool execution boundary
 
 A spool attempt owns the granted execution environment and lifecycle. Its
-internal **silks** are callable CLI/tool/agent computations; they do not each
+internal **silks** are release-bound core code and pipeline skeleton; **kits** are
+adaptable glue working copies. See [the code contract](spool-code.md). They do not each
 receive a VM or independent grant. OpenShell is a replaceable host backend,
 never a Loom or semantic dependency. Existing one-program profiles are bounded
 specializations, not a completed multi-silk runtime. See the
@@ -50,7 +51,8 @@ tool must not advertise a general runtime that the host cannot admit or execute.
 | an-agent host | Admission, grants, scoped model/context services, execution coordination, durable instance/checkpoint publication, artifact custody, delivery evidence, retention decisions and audit |
 | Execution backend | Enforces the spool attempt boundary and reports environment lifecycle/termination; OpenShell is one replaceable implementation |
 | Spool release | Domain workflow, skills, agent instructions, business decisions, state schemas, migrations and domain acceptance rules |
-| Silk | An internal callable computation with declared inputs and outputs; runs under its owning spool attempt |
+| Silk | Core code and pipeline skeleton with stable contracts; read-only during its owning attempt |
+| Kit | Internal glue whose authorized working copies may be adapted; published baseline bytes remain immutable |
 | Shuttle | Application integration, including native APIs or GUI interaction, target revision checks and actual-effect receipts |
 | an-agent-shuttle repository | A collection of domain integrations and reusable components; it is not a runtime layer |
 

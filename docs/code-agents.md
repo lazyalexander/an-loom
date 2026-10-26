@@ -21,6 +21,10 @@ Use three distinct layers:
 | Native tool policy | Restrict exposed tools, approvals and optional pre-call hooks using the provider's supported controls | Qualified adapter and trusted operator configuration |
 | Execution and acceptance boundary | Limit actual files, network and processes; confirm termination; accept immutable outputs | an-agent and its backend |
 
+See [the code contract](spool-code.md) for kit adaptation, fixed execution bytes
+and explicit retention/promotion. These are authoring requirements, not claims
+that the current deployment adapter enforces arbitrary mutable-kit workloads.
+
 Project text cannot grant runtime authority. A provider hook covers only the
 events it actually receives. Shell redirection, another executable, MCP tools,
 plugins and delegated agents must not acquire a broader host grant through an
@@ -60,7 +64,9 @@ Begin with a versioned brief and a thin CLI adapter, not a universal agent RPC.
 The brief should identify:
 
 - the base source revision and selected input files, with relevant hashes;
-- the task, editable paths, protected contracts and expected patch/output slots;
+- the task, editable kit working-copy paths, protected silk/policy/check paths and
+  expected patch/output slots; silk changes require a separately scoped development
+  task and new release, not in-place runtime repair;
 - existing kit entrypoints and their input/output contracts, with host invocation
   references instead of suggesting the agent recreate those tools;
 - approved checks, resource limits, external-service policy and escalation route;

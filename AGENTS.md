@@ -11,8 +11,11 @@ spool releases. It scaffolds, prepares bounded coding tasks, requests checks,
 validates evidence and packages selected bytes. Reuse mature coding tools and
 workflow engines; do not implement competing editing or model loops.
 
-- A **silk** is a callable computation inside an owning spool, normally a CLI,
-  with explicit inputs and outputs. It does not receive a separate VM or grant.
+- A **silk** is core domain code and pipeline skeleton inside an owning spool,
+  read-only in the selected release/attempt. Development edits require a new release.
+- A **kit** is internal glue: agents may adapt explicitly editable working copies,
+  never immutable packaged baselines. Temporary copies are scratch unless retained.
+  Neither role receives a separate VM or grant. Follow [the code contract](docs/spool-code.md).
   Independent CLI use outside the host carries no managed-execution guarantee.
 - A **workflow** describes a domain process combining silks, agents and human
   decisions. This is terminology, not a new runtime or schema.
