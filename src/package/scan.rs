@@ -77,6 +77,16 @@ pub(crate) fn inspect_project(project_path: &Path) -> Result<InspectedProject> {
         });
     }
     crate::adapters::host::file_profile::check_inputs(&manifest.package_identity(), &files, false)?;
+    if files
+        .iter()
+        .any(|file| file.inventory.path == "native-spool.toml")
+    {
+        let selected: BTreeMap<&str, &[u8]> = files
+            .iter()
+            .map(|file| (file.inventory.path.as_str(), file.bytes.as_slice()))
+            .collect();
+        crate::adapters::host::native_spool::validate(&selected)?;
+    }
     Ok(InspectedProject { manifest, files })
 }
 

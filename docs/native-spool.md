@@ -7,12 +7,22 @@ legacy file-kit deployment adapter and its wire names are unchanged.
 ## Authoring
 
 Use a generic `loom.toml` package with an explicit include allowlist. Include
-`native-spool.toml` and every selected code file. The separate native contract has
-exactly `schema = "an-native-spool-v1"`, `entry`, `silk`, `kit` and `outputs`.
-See `examples/native-spool/` for two domain silk steps and one transform kit.
+`native-spool.toml` and every selected code file. The authoring file has
+`schema = "an-native-spool-v1"`, `runtime`, `entry`, `silk`, `kit`, `editable`,
+`inputs`, `outputs`, `capabilities`, `dependencies` and `acceptance`.
+`loom.toml` `description` carries the domain summary. See
+`examples/native-spool/` for two domain silk steps and one transform kit, and
+for `an-loom init-native`, `check`, `pack` and `verify`.
+
 An entry is one declared silk script. Paths are one role directory plus a unique
-ASCII basename; there are at most 12 files, 1 MiB each and 8 MiB total. Output
-slots are bounded top-level text filenames. No source hook is implicitly executed.
+ASCII basename; there are at most 12 files, 1 MiB each and 8 MiB total. Input
+and output slots are bounded identifiers. `editable` is a subset of `kit`.
+Capability names and acceptance commands are records, not grants and not
+processes. Dependency values are unresolved labels: no URL, path or version
+range is fetched. `check`, `pack` and `verify` refuse a missing entry, a path
+listed in both roles, an escaping path, and a `silk/` or `kit/` file that is
+not listed. They do not spawn acceptance commands or download dependencies.
+`runtime` must be `macos-native-process-v1`; other runtime labels are refused.
 
 ```text
 an-loom pack PROJECT
@@ -21,10 +31,13 @@ an-loom export-native-spool ARCHIVE NEW_DELIVERY
 
 The exporter uses existing archive inventory, allowlist, secret and digest checks.
 It emits only selected silk/kit bytes and `native-spool.json`; README, source build
-files and authoring metadata are not copied into the execution package. Name and
-version come from the verified package identity. The exact emitted manifest bytes
-and selected file hashes determine the release digest. Existing output directories
-are refused. The host parses and verifies this contract independently.
+files and authoring metadata are not copied into the execution package. The host
+JSON keeps `schema`, `name`, `version`, `entry`, `files` and `outputs`. Runtime,
+inputs, editable paths, capability requests, dependency labels and acceptance
+records stay in the source package. Name and version come from the verified
+package identity. The exact emitted manifest bytes and selected file hashes
+determine the release digest. Existing output directories are refused. The host
+parses and verifies this contract independently.
 
 The export result records the source bundle digest. It grants no runtime rights,
 proves no publisher identity and does not resolve version ranges. This is an

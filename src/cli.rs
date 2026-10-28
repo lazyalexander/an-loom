@@ -6,6 +6,7 @@ use std::path::Path;
 const HELP: &str = "an-loom - inspectable spool development and delivery
 
   an-loom init DIRECTORY
+  an-loom init-native DIRECTORY
   an-loom init-package DIRECTORY
   an-loom check PROJECT
   an-loom develop PROJECT HOST_CLI TOOLCHAIN_JSON NEW_JOB [--approve SHA256]
@@ -19,7 +20,9 @@ const HELP: &str = "an-loom - inspectable spool development and delivery
   an-loom release PROJECT NEW_DIRECTORY
   an-loom verify-release DIRECTORY
 
-develop previews a host build; --approve submits the exact reviewed plan once.
+init-native copies the reviewed native text reference. check, pack and verify
+read its acceptance records and dependency labels without running or downloading
+them. develop previews a host build; --approve submits the exact reviewed plan once.
 build snapshots package bytes. release creates a local delivery, not a remote
 publication or runtime grant. The host owns registration and controlled execution.
 ";
@@ -33,6 +36,10 @@ pub(crate) fn run(args: Vec<String>) -> Result<()> {
     let result: Value = match (command.as_str(), args) {
         ("init", [root]) | ("init-package", [root]) => {
             crate::project::scaffold(Path::new(root), command == "init")?;
+            json!({"created":root,"model_generated":false})
+        }
+        ("init-native", [root]) => {
+            crate::project::scaffold_native(Path::new(root))?;
             json!({"created":root,"model_generated":false})
         }
         ("check", [root]) => {

@@ -1,5 +1,15 @@
 schema = "an-native-spool-v1"
+runtime = "macos-native-process-v1"
 entry = "silk/main.sh"
 silk = ["silk/main.sh", "silk/report.sh"]
 kit = ["kit/transform.sh"]
+editable = ["kit/transform.sh"]
+inputs = ["input.txt"]
 outputs = ["report.txt"]
+capabilities = ["read-input", "write-declared-outputs"]
+dependencies = []
+acceptance = [
+    "bash -n silk/main.sh",
+    "bash -n silk/report.sh",
+    "bash -n kit/transform.sh",
+]

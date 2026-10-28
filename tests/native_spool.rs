@@ -48,6 +48,17 @@ fn native_export_is_deterministic_exclusive_and_separate_from_source_archive() -
     );
     let m: Value = serde_json::from_slice(&fs::read(a.join("native-spool.json"))?)?;
     assert_eq!(m["schema"], "an-native-spool-v1");
+    let mut keys = m
+        .as_object()
+        .ok_or("object")?
+        .keys()
+        .cloned()
+        .collect::<Vec<_>>();
+    keys.sort();
+    assert_eq!(
+        keys,
+        ["entry", "files", "name", "outputs", "schema", "version"]
+    );
     assert_eq!(m["files"].as_object().ok_or("missing files")?.len(), 3);
     assert!(!a.join("loom.toml").exists());
     assert!(!a.join("README.md").exists());
@@ -71,6 +82,122 @@ fn native_export_refuses_unselected_code_and_ambiguous_roles() -> Result {
         assert!(export(&root, &base.join("delivery")).is_err());
         assert!(!base.join("delivery").exists());
     }
+    Ok(())
+}
+fn native_root(base: &Path) -> Result<PathBuf> {
+    let root = base.join("spool");
+    an_loom::run([
+        "init-native".to_owned(),
+        root.to_str().ok_or("non-UTF8 path")?.to_owned(),
+    ])?;
+    Ok(root)
+}
+fn check_error(root: &Path) -> Result<String> {
+    Ok(an_loom::run([
+        "check".to_owned(),
+        root.to_str().ok_or("non-UTF8 path")?.to_owned(),
+    ])
+    .map(|()| "check unexpectedly succeeded".to_owned())
+    .unwrap_or_else(|error| error.to_string()))
+}
+#[test]
+fn native_scaffold_checks_packs_and_verifies_without_running_domain_code() -> Result {
+    let tmp = tempfile::tempdir()?;
+    let base = tmp.path().canonicalize()?;
+    let root = native_root(&base)?;
+    an_loom::run([
+        "check".to_owned(),
+        root.to_str().ok_or("non-UTF8 path")?.to_owned(),
+    ])?;
+    fs::write(root.join("kit/transform.sh"), b"printf 'changed\\n'\n")?;
+    an_loom::run([
+        "check".to_owned(),
+        root.to_str().ok_or("non-UTF8 path")?.to_owned(),
+    ])?;
+    let archive = an_loom::package::pack_project(&root)?;
+    let manifest = an_loom::package::verify_archive(&archive)?;
+    assert_eq!(manifest.package.name, "native-text-spool");
+    assert!(!root.join("side-effect.txt").exists());
+    assert!(!root.join("transformed.txt").exists());
+    assert!(!root.join("report.txt").exists());
+    Ok(())
+}
+#[test]
+fn native_check_refuses_bad_structure_and_does_not_execute_records() -> Result {
+    let cases = [
+        (
+            "entry = \"silk/main.sh\"",
+            "entry = \"silk/absent.sh\"",
+            "missing native entry",
+        ),
+        (
+            "kit = [\"kit/transform.sh\"]",
+            "kit = [\"kit/transform.sh\", \"silk/main.sh\"]",
+            "native role conflict",
+        ),
+        (
+            "outputs = [\"report.txt\"]",
+            "outputs = [\"../escape\"]",
+            "invalid output slot",
+        ),
+        (
+            "editable = [\"kit/transform.sh\"]",
+            "editable = [\"silk/main.sh\"]",
+            "editable path is outside the kit role",
+        ),
+        (
+            "dependencies = []",
+            "dependencies = [\"https://example.invalid/pkg\"]",
+            "native dependency must be an unresolved label",
+        ),
+        (
+            "runtime = \"macos-native-process-v1\"",
+            "runtime = \"linux-gpu\"",
+            "native runtime is not qualified for this adapter",
+        ),
+    ];
+    for (from, to, expected) in cases {
+        let tmp = tempfile::tempdir()?;
+        let base = tmp.path().canonicalize()?;
+        let root = native_root(&base)?;
+        let path = root.join("native-spool.toml");
+        let text = fs::read_to_string(&path)?.replace(from, to);
+        fs::write(&path, text)?;
+        let error = check_error(&root)?;
+        if !error.contains(expected) {
+            return Err(format!("{expected} not in {error}").into());
+        }
+        assert!(an_loom::package::pack_project(&root).is_err());
+    }
+    let tmp = tempfile::tempdir()?;
+    let base = tmp.path().canonicalize()?;
+    let root = native_root(&base)?;
+    fs::write(root.join("silk/extra.sh"), b"printf extra\n")?;
+    let error = check_error(&root)?;
+    assert!(
+        error.contains("undeclared native code file: silk/extra.sh"),
+        "{error}"
+    );
+    assert!(an_loom::package::pack_project(&root).is_err());
+    let marker = base.join("acceptance-ran");
+    let command = format!("touch {}", marker.display());
+    assert!(
+        command.len() <= 256,
+        "acceptance record longer than the contract allows"
+    );
+    let path = root.join("native-spool.toml");
+    let text = fs::read_to_string(&path)?.replace(
+        "acceptance = [\n    \"bash -n silk/main.sh\",\n    \"bash -n silk/report.sh\",\n    \"bash -n kit/transform.sh\",\n]",
+        &format!("acceptance = [\"{command}\"]"),
+    );
+    fs::write(&path, text)?;
+    fs::remove_file(root.join("silk/extra.sh"))?;
+    an_loom::run([
+        "check".to_owned(),
+        root.to_str().ok_or("non-UTF8 path")?.to_owned(),
+    ])?;
+    an_loom::package::pack_project(&root)?;
+    assert!(!marker.exists(), "acceptance command was executed");
     Ok(())
 }
 
