@@ -124,6 +124,25 @@ tool/provider. Host-observed usage can be advisory; it must not claim exact
 costs or a hard budget without an enforced, qualified mechanism. Backup protects
 retained bytes; it does not replace effect receipts or termination confirmation.
 
+## Native kit task
+
+`an-loom task`, `receive-task` and `revoke-task` prepare one kit assignment for
+the native text project. The assignment directory is outside the project. Loom
+checks the editable path, the project baseline and revocation before copying a
+candidate into that directory. It does not update the project, a release, or an
+accepted artifact. It does not spawn the acceptance records, download dependency
+labels, invoke a model, read a native session store, or pass through a host CLI.
+
+Changing protected silk or policy files requires a new task whose result is a
+new release. A runtime kit repair cannot carry a silk edit. Rewriting
+`authority/task.json` or the workspace brief does not widen the editable set:
+receipt compares the stored contract with the project.
+
+Grok Build 1.0.70 can run a headless turn. Its documented child-network
+restriction remains a no-op on macOS, and in-process model access sits outside
+that control. This task gate does not qualify that CLI. A deterministic fixture
+that submits a candidate is a simulation, not adapter completion.
+
 ## First adapter acceptance
 
 Select one already available CLI after inspecting its actual version/help and

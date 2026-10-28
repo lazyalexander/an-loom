@@ -19,12 +19,18 @@ const HELP: &str = "an-loom - inspectable spool development and delivery
   an-loom export-native-spool ARCHIVE NEW_DIRECTORY
   an-loom release PROJECT NEW_DIRECTORY
   an-loom verify-release DIRECTORY
+  an-loom task PROJECT NEW_DIRECTORY
+  an-loom receive-task TASK EDITABLE_PATH CANDIDATE
+  an-loom revoke-task TASK
 
 init-native copies the reviewed native text reference. check, pack and verify
 read its acceptance records and dependency labels without running or downloading
 them. develop previews a host build; --approve submits the exact reviewed plan once.
 build snapshots package bytes. release creates a local delivery, not a remote
 publication or runtime grant. The host owns registration and controlled execution.
+task writes a kit assignment outside the project. receive-task copies one
+candidate into that assignment and does not change the project or any release.
+revoke-task rejects a later candidate. Neither command invokes a model or a host CLI.
 ";
 
 pub(crate) fn run(args: Vec<String>) -> Result<()> {
@@ -75,6 +81,17 @@ pub(crate) fn run(args: Vec<String>) -> Result<()> {
         )?)?,
         ("verify-release", [root]) => {
             serde_json::to_value(crate::release::verify(Path::new(root))?)?
+        }
+        ("task", [project, destination]) => serde_json::to_value(crate::task::prepare(
+            Path::new(project),
+            Path::new(destination),
+        )?)?,
+        ("receive-task", [task, editable, candidate]) => serde_json::to_value(
+            crate::task::receive(Path::new(task), editable, Path::new(candidate))?,
+        )?,
+        ("revoke-task", [task]) => {
+            crate::task::revoke(Path::new(task))?;
+            json!({"revoked":true,"model_invoked":false})
         }
         ("develop", [root, host, tools, job]) => crate::adapters::develop(
             Path::new(root),

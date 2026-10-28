@@ -37,6 +37,36 @@ pub(crate) fn validate(files: &BTreeMap<&str, &[u8]>) -> Result<()> {
     load(files).map(|_| ())
 }
 
+#[derive(Clone, PartialEq, Eq)]
+pub(crate) struct Authoring {
+    pub entry: String,
+    pub runtime: String,
+    pub silk: Vec<String>,
+    pub kit: Vec<String>,
+    pub editable: Vec<String>,
+    pub inputs: Vec<String>,
+    pub outputs: Vec<String>,
+    pub capabilities: Vec<String>,
+    pub dependencies: Vec<String>,
+    pub acceptance: Vec<String>,
+}
+
+pub(crate) fn authoring(files: &BTreeMap<&str, &[u8]>) -> Result<Authoring> {
+    let native = load(files)?;
+    Ok(Authoring {
+        entry: native.entry,
+        runtime: native.runtime,
+        silk: native.silk,
+        kit: native.kit,
+        editable: native.editable,
+        inputs: native.inputs,
+        outputs: native.outputs,
+        capabilities: native.capabilities,
+        dependencies: native.dependencies,
+        acceptance: native.acceptance,
+    })
+}
+
 fn load(files: &BTreeMap<&str, &[u8]>) -> Result<Native> {
     let bytes = files
         .get("native-spool.toml")

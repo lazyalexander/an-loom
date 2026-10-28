@@ -51,3 +51,23 @@ in that guide is deterministic test input, not a model integration.
 `export-native-spool` copies the selected silk and kit bytes plus
 `native-spool.json`. The host JSON keeps `schema`, `name`, `version`, `entry`,
 `files` and `outputs`. Authoring fields stay in the source package.
+
+## Bounded kit task
+
+`task` writes an assignment in a new directory outside the project. The
+workspace contains editable kit copies and a brief. Silk, `loom.toml` and
+`native-spool.toml` stay protected. The brief grants nothing and includes no
+host CLI.
+
+```sh
+an-loom task ./my-spool ./task
+# A coding tool may edit only kit/transform.sh in ./task/workspace.
+an-loom receive-task ./task kit/transform.sh ./replacement.sh
+an-loom revoke-task ./task
+```
+
+`receive-task` copies the candidate under `task/candidate/` and leaves the
+project and any release unchanged. It rejects a silk path, a stale project
+baseline, a rewritten task contract, and any candidate that arrives after
+`revoke-task`. These commands do not invoke a model. A passing test of this
+gate is not a completed coding-tool adapter.
