@@ -158,3 +158,61 @@ fn revoked_task_drops_a_late_candidate() -> Result {
     assert!(!assignment.join("candidate").exists());
     Ok(())
 }
+
+#[test]
+fn unverified_operator_success_cannot_authorize_packaging() -> Result {
+    let tmp = tempfile::tempdir()?;
+    let base = tmp.path().canonicalize()?;
+    let root = project(&base)?;
+    let assignment = task(&base, &root)?;
+    let candidate = base.join("candidate.sh");
+    fs::write(&candidate, b"printf 'edited:'\n")?;
+    an_loom::task::receive(&assignment, "kit/transform.sh", &candidate)?;
+    let plan = an_loom::task::check(&assignment)?;
+    assert_eq!(plan["automatic_retries"], 0);
+    assert_eq!(plan["host_invoked_by_loom"], false);
+    assert_eq!(plan["diff"]["changed"], true);
+    let fake = base.join("operator-evidence");
+    fs::create_dir(&fake)?;
+    fs::write(
+        fake.join("receipt.json"),
+        serde_json::to_vec(&serde_json::json!({
+            "schema":"an-loom-check-evidence-v1","attempt":plan["attempt"],"status":"succeeded",
+            "candidate_sha256":plan["candidate"]["sha256"]
+        }))?,
+    )?;
+    assert!(an_loom::task::receive_check(&assignment, &fake).is_err());
+    assert!(an_loom::task::pack_candidate(&assignment, &base.join("pack")).is_err());
+    assert!(!base.join("pack").exists());
+    Ok(())
+}
+
+#[test]
+fn project_acceptance_commands_enter_the_plan_without_a_loom_change() -> Result {
+    let tmp = tempfile::tempdir()?;
+    let base = tmp.path().canonicalize()?;
+    let root = project(&base)?;
+    let contract = root.join("native-spool.toml");
+    let text =
+        fs::read_to_string(&contract)?.replace("bash -n silk/main.sh", "project-domain-check");
+    fs::write(&contract, text)?;
+    let assignment = task(&base, &root)?;
+    fs::write(base.join("replacement.sh"), b"printf 'edited:'\n")?;
+    an_loom::run([
+        "receive-task".to_owned(),
+        assignment.to_str().ok_or("non-UTF8 path")?.to_owned(),
+        "kit/transform.sh".to_owned(),
+        base.join("replacement.sh")
+            .to_str()
+            .ok_or("non-UTF8 path")?
+            .to_owned(),
+    ])?;
+    an_loom::run([
+        "check-task".to_owned(),
+        assignment.to_str().ok_or("non-UTF8 path")?.to_owned(),
+    ])?;
+    let plan = fs::read_to_string(assignment.join("authority/check-plan.json"))?;
+    assert!(plan.contains("project-domain-check"), "{plan}");
+    assert!(!plan.contains("bash -n silk/main.sh"));
+    Ok(())
+}

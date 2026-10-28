@@ -71,3 +71,19 @@ project and any release unchanged. It rejects a silk path, a stale project
 baseline, a rewritten task contract, and any candidate that arrives after
 `revoke-task`. These commands do not invoke a model. A passing test of this
 gate is not a completed coding-tool adapter.
+
+## Check evidence before packaging
+
+See [candidate check custody](../../docs/candidate-checks.md) for the complete
+operator sequence and its qualified scope. `check-task` freezes the complete
+candidate project and prepares a nonexecuting host profile. Acceptance commands
+run against its read-only input snapshot, with writable results in
+`$AN_LOOM_WORK`. `receive-check TASK HOST_JOB` validates the actual retained host
+attempt and formally accepted check output. Handwritten success JSON cannot
+satisfy this contract. `pack-task` copies the already checked archive, rather than
+selecting bytes again from the source project.
+
+Legacy native v1 release contracts without authoring metadata remain readable,
+packable and exportable. They cannot create coding tasks until the author adds
+explicit editing and acceptance metadata. Old v1 candidate-check evidence must
+be regenerated; it never established this stronger execution binding.

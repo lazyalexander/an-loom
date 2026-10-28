@@ -1,4 +1,9 @@
 //! Bounded kit-edit assignment. No model call and no host CLI.
+mod evidence;
+use crate::adapters::host::candidate_check as host_check;
+mod snapshot;
+pub use evidence::{check, pack_candidate, receive_check};
+
 use crate::{
     Result, fail,
     manifest::{sha256_hex, validate_payload_path},
@@ -7,7 +12,7 @@ use crate::{
 use serde_json::{Value, json};
 use std::{collections::BTreeMap, fs, io::Read, path::Path};
 
-const CANDIDATE_LIMIT: usize = 64 * 1024;
+pub(super) const CANDIDATE_LIMIT: usize = 64 * 1024;
 
 pub fn prepare(project: &Path, destination: &Path) -> Result<Value> {
     let project = fs::canonicalize(project)?;
@@ -103,7 +108,7 @@ pub fn revoke(task: &Path) -> Result<()> {
     )
 }
 
-fn document(project: &Path) -> Result<Value> {
+pub(super) fn document(project: &Path) -> Result<Value> {
     let inspected = crate::package::inspect_project(project)?;
     let files: BTreeMap<&str, &[u8]> = inspected
         .files
@@ -115,8 +120,10 @@ fn document(project: &Path) -> Result<Value> {
         return Err(fail("task has no editable kit path"));
     }
     let mut baseline = BTreeMap::new();
+    let mut baseline_modes = BTreeMap::new();
     for file in &inspected.files {
         baseline.insert(file.inventory.path.clone(), file.inventory.sha256.clone());
+        baseline_modes.insert(file.inventory.path.clone(), file.inventory.mode);
     }
     let mut protected = authoring.silk;
     for path in ["loom.toml", "native-spool.toml", "README.md"] {
@@ -146,6 +153,7 @@ fn document(project: &Path) -> Result<Value> {
         "dependencies": authoring.dependencies,
         "acceptance": authoring.acceptance,
         "baseline": baseline,
+        "baseline_modes": baseline_modes,
         "limits": {"candidate_bytes": CANDIDATE_LIMIT, "files": 1},
         "escalation": "Stop and ask the operator. Do not invoke an-agent-host.",
     }))
@@ -164,7 +172,7 @@ fn brief(document: &Value) -> String {
     )
 }
 
-fn fresh_directory(destination: &Path, project: &Path) -> Result<std::path::PathBuf> {
+pub(super) fn fresh_directory(destination: &Path, project: &Path) -> Result<std::path::PathBuf> {
     let destination = if destination.is_absolute() {
         destination.to_path_buf()
     } else {
@@ -184,19 +192,19 @@ fn fresh_directory(destination: &Path, project: &Path) -> Result<std::path::Path
     Ok(destination)
 }
 
-fn read_document(task: &Path) -> Result<Value> {
+pub(super) fn read_document(task: &Path) -> Result<Value> {
     let bytes = crate::files::read(&task.join("authority/task.json"), 1024 * 1024)?;
     Ok(serde_json::from_slice(&bytes)?)
 }
 
-fn project_path(document: &Value) -> Result<std::path::PathBuf> {
+pub(super) fn project_path(document: &Value) -> Result<std::path::PathBuf> {
     let path = document["project"]["path"]
         .as_str()
         .ok_or_else(|| fail("task is missing its project"))?;
     fs::canonicalize(path).map_err(|_| fail("task project is unavailable"))
 }
 
-fn paths(document: &Value, key: &str) -> Result<Vec<String>> {
+pub(super) fn paths(document: &Value, key: &str) -> Result<Vec<String>> {
     document[key]
         .as_array()
         .ok_or_else(|| fail("task contract is incomplete"))?
@@ -210,7 +218,7 @@ fn paths(document: &Value, key: &str) -> Result<Vec<String>> {
         .collect()
 }
 
-fn read_candidate(path: &Path) -> Result<Vec<u8>> {
+pub(super) fn read_candidate(path: &Path) -> Result<Vec<u8>> {
     let metadata =
         fs::symlink_metadata(path).map_err(|_| fail("candidate must be a regular file"))?;
     if !metadata.is_file() || metadata.file_type().is_symlink() {
@@ -233,7 +241,7 @@ fn read_candidate(path: &Path) -> Result<Vec<u8>> {
     Ok(bytes)
 }
 
-fn revoked(task: &Path) -> Result<bool> {
+pub(super) fn revoked(task: &Path) -> Result<bool> {
     match fs::symlink_metadata(task.join("authority/revoked.json")) {
         Ok(metadata) if metadata.is_file() && !metadata.file_type().is_symlink() => Ok(true),
         Ok(_) => Err(fail("task revocation is not a regular file")),

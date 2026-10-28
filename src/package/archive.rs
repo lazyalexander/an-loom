@@ -109,7 +109,15 @@ pub struct VerifiedArchive {
 
 pub fn read_archive(archive_path: &Path) -> Result<VerifiedArchive> {
     let file = File::open(archive_path)?;
-    let decoder = flate2::read::MultiGzDecoder::new(file);
+    read_archive_from(file)
+}
+
+pub(crate) fn read_archive_bytes(bytes: &[u8]) -> Result<VerifiedArchive> {
+    read_archive_from(Cursor::new(bytes))
+}
+
+fn read_archive_from(reader: impl Read) -> Result<VerifiedArchive> {
+    let decoder = flate2::read::MultiGzDecoder::new(reader);
     let mut archive = Archive::new(decoder);
     let mut contents = BTreeMap::<String, Vec<u8>>::new();
     let mut expanded_bytes = 0usize;

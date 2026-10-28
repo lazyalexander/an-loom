@@ -43,6 +43,16 @@ The export result records the source bundle digest. It grants no runtime rights,
 proves no publisher identity and does not resolve version ranges. This is an
 explicit new profile, not a reinterpretation of the legacy `[kit]`/`[silk]` adapter.
 
+## Legacy compatibility
+
+Historical native v1 files with only `schema`, `entry`, `silk`, `kit` and
+`outputs` remain valid for packaging, verification and export. No authoring
+metadata is fabricated and existing release identities are preserved. Coding
+tasks require explicit complete authoring metadata. Partial additions are
+rejected rather than silently treated as a legacy contract. Candidate check
+plans and evidence have a separate versioned contract described in
+[candidate check custody](candidate-checks.md).
+
 ## Host usage
 
 Use an an-agent host with the `an-native-spool-v1` contract:

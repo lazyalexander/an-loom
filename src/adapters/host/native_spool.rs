@@ -20,15 +20,23 @@ const RUNTIME: &str = "macos-native-process-v1";
 #[serde(deny_unknown_fields)]
 struct Native {
     schema: String,
+    #[serde(skip)]
+    legacy: bool,
+    #[serde(default)]
     runtime: String,
     entry: String,
     silk: Vec<String>,
     kit: Vec<String>,
+    #[serde(default)]
     editable: Vec<String>,
+    #[serde(default)]
     inputs: Vec<String>,
     outputs: Vec<String>,
+    #[serde(default)]
     capabilities: Vec<String>,
+    #[serde(default)]
     dependencies: Vec<String>,
+    #[serde(default)]
     acceptance: Vec<String>,
 }
 
@@ -53,6 +61,11 @@ pub(crate) struct Authoring {
 
 pub(crate) fn authoring(files: &BTreeMap<&str, &[u8]>) -> Result<Authoring> {
     let native = load(files)?;
+    if native.legacy {
+        return Err(fail(
+            "legacy native release has no authoring contract; add explicit metadata before creating a task",
+        ));
+    }
     Ok(Authoring {
         entry: native.entry,
         runtime: native.runtime,
@@ -72,9 +85,27 @@ fn load(files: &BTreeMap<&str, &[u8]>) -> Result<Native> {
         .get("native-spool.toml")
         .copied()
         .ok_or_else(|| fail("missing native-spool.toml"))?;
-    let config: Native = toml::from_str(
+    let raw: toml::Value = toml::from_str(
         std::str::from_utf8(bytes).map_err(|_| fail("native contract must be UTF-8"))?,
     )?;
+    let fields = [
+        "runtime",
+        "editable",
+        "inputs",
+        "capabilities",
+        "dependencies",
+        "acceptance",
+    ];
+    let count = fields.iter().filter(|key| raw.get(**key).is_some()).count();
+    if count != 0 && count != fields.len() {
+        return Err(fail(
+            "partial native authoring metadata; provide all authoring fields",
+        ));
+    }
+    let mut config: Native = toml::from_str(
+        std::str::from_utf8(bytes).map_err(|_| fail("native contract must be UTF-8"))?,
+    )?;
+    config.legacy = count == 0;
     interpret(&config, files)?;
     Ok(config)
 }
@@ -82,6 +113,10 @@ fn load(files: &BTreeMap<&str, &[u8]>) -> Result<Native> {
 fn interpret(config: &Native, files: &BTreeMap<&str, &[u8]>) -> Result<()> {
     if config.schema != SCHEMA {
         return Err(fail("unsupported native spool contract"));
+    }
+    if config.legacy {
+        roles(config, files)?;
+        return slots(&config.outputs, "invalid output slot");
     }
     if config.runtime != RUNTIME {
         return Err(fail("native runtime is not qualified for this adapter"));
@@ -151,7 +186,8 @@ fn roles(config: &Native, files: &BTreeMap<&str, &[u8]>) -> Result<()> {
         }
     }
     for path in files.keys() {
-        if (path.starts_with("silk/") || path.starts_with("kit/"))
+        if !config.legacy
+            && (path.starts_with("silk/") || path.starts_with("kit/"))
             && !silk.contains(path)
             && !kit.contains(path)
         {

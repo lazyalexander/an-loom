@@ -303,3 +303,13 @@ The [native package adapter](native-spool.md) exports a bounded shell-code relea
 for an-agent's reviewed native profile. Host instances own mutable kit copies,
 fixed-code attempts and custody. Loom does not manage running instances. This
 adds no general workflow engine, dependency resolver or agent runtime.
+
+## Candidate-to-release custody
+
+Loom freezes selected candidate bytes and their full release manifest before
+execution. The host receives an explicitly reviewed profile, maps those inputs
+into a read-only snapshot, supervises the process and accepts declared output.
+Loom reconciles that retained ledger and publishes the same frozen archive.
+Content identity, check request identity and host execution attempt are distinct.
+Neither a model assertion nor a standalone operator success record substitutes
+for the qualified execution evidence. See [the contract](candidate-checks.md).

@@ -367,3 +367,14 @@ fn native_host_consumes_export_edits_kit_and_reloads_baseline() -> Result {
     }
     Ok(())
 }
+
+#[cfg(target_os = "macos")]
+#[test]
+#[ignore = "requires the qualified an-agent host binary and real macOS execution"]
+fn candidate_check_uses_real_host_execution_before_packaging() -> Result {
+    candidate_host::run()
+}
+
+#[cfg(target_os = "macos")]
+#[path = "support/candidate_host.rs"]
+mod candidate_host;
