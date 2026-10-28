@@ -138,6 +138,14 @@ new release. A runtime kit repair cannot carry a silk edit. Rewriting
 `authority/task.json` or the workspace brief does not widen the editable set:
 receipt compares the stored contract with the project.
 
+`check-task` records the diff, the project's own acceptance commands and one
+attempt identity. `receive-check` admits operator evidence for that attempt.
+Failed, cancelled and unknown results are not recorded and are not retried.
+`pack-task` packages a new tree only after succeeded evidence still matches the
+candidate and its artifact bytes. Loom does not run the commands or the host.
+The ignored native host test is the real execution of this path. A fixture
+receipt in the always-on tests is a fault-window check, not a host claim.
+
 Grok Build 1.0.70 can run a headless turn. Its documented child-network
 restriction remains a no-op on macOS, and in-process model access sits outside
 that control. This task gate does not qualify that CLI. A deterministic fixture

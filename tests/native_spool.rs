@@ -367,3 +367,122 @@ fn native_host_consumes_export_edits_kit_and_reloads_baseline() -> Result {
     }
     Ok(())
 }
+
+#[cfg(target_os = "macos")]
+#[test]
+#[ignore = "requires the qualified an-agent host binary and real macOS execution"]
+fn candidate_check_uses_real_host_execution_before_packaging() -> Result {
+    use std::process::Command;
+    let host = std::env::var_os("AN_AGENT_HOST_BIN").ok_or("AN_AGENT_HOST_BIN is required")?;
+    let call = |args: &[&str]| -> Result<Value> {
+        let output = Command::new(&host).args(args).output()?;
+        if !output.status.success() {
+            return Err(format!(
+                "host failed for {args:?}: {} {}",
+                String::from_utf8_lossy(&output.stdout),
+                String::from_utf8_lossy(&output.stderr)
+            )
+            .into());
+        }
+        Ok(serde_json::from_slice(&output.stdout)?)
+    };
+    let approve = |args: &[&str]| -> Result<Value> {
+        let preview = call(args)?;
+        let hash = preview["approval_sha256"]
+            .as_str()
+            .ok_or("missing approval")?;
+        let mut execute = args.to_vec();
+        execute.extend(["--approve", hash]);
+        call(&execute)
+    };
+    let tmp = tempfile::tempdir()?;
+    let base = tmp.path().canonicalize()?;
+    let root = native_root(&base)?;
+    let assignment = base.join("task");
+    let candidate = base.join("candidate.sh");
+    let candidate_bytes = b"printf 'edited:'; cat \"$1\"\n";
+    fs::write(&candidate, candidate_bytes)?;
+    let text =
+        |path: &Path| -> Result<String> { Ok(path.to_str().ok_or("non-UTF8 fixture")?.into()) };
+    an_loom::run(["task".into(), text(&root)?, text(&assignment)?])?;
+    an_loom::run([
+        "receive-task".into(),
+        text(&assignment)?,
+        "kit/transform.sh".into(),
+        text(&candidate)?,
+    ])?;
+    an_loom::run(["check-task".into(), text(&assignment)?])?;
+    let plan: Value =
+        serde_json::from_slice(&fs::read(assignment.join("authority/check-plan.json"))?)?;
+    let mut checks = Vec::new();
+    for command in plan["acceptance"].as_array().ok_or("acceptance")? {
+        let command = command.as_str().ok_or("command")?;
+        let output = Command::new("/bin/sh")
+            .arg("-c")
+            .arg(command)
+            .current_dir(&root)
+            .output()?;
+        if !output.status.success() {
+            return Err(format!("project check failed: {command}").into());
+        }
+        checks.push(serde_json::json!({
+            "command": command,
+            "status": "succeeded",
+            "output": String::from_utf8_lossy(&output.stderr).trim().to_owned(),
+        }));
+    }
+    let delivery = base.join("delivery");
+    export(&root, &delivery)?;
+    let instance = base.join("instance");
+    let input = base.join("input.txt");
+    fs::write(&input, b"hello\n")?;
+    let delivery = text(&delivery)?;
+    let instance_path = text(&instance)?;
+    let input = text(&input)?;
+    let candidate_path = text(&candidate)?;
+    call(&["spool-load", &delivery, &instance_path])?;
+    approve(&[
+        "spool-kit-update",
+        &instance_path,
+        "transform.sh",
+        &candidate_path,
+    ])?;
+    let run = approve(&["spool-start", &instance_path, "checked", &input, "15"])?;
+    assert_eq!(run["status"], "succeeded");
+    let report = fs::read(instance.join("runs/checked/job/work/report.txt"))?;
+    assert_eq!(report, b"Report\nedited:hello\n");
+    let evidence = base.join("evidence");
+    fs::create_dir(&evidence)?;
+    fs::write(evidence.join("report.txt"), &report)?;
+    use sha2::{Digest, Sha256};
+    let receipt = serde_json::json!({
+        "schema": "an-loom-check-evidence-v1",
+        "attempt": plan["attempt"],
+        "candidate_sha256": plan["candidate"]["sha256"],
+        "status": "succeeded",
+        "checks": checks,
+        "artifacts": [{
+            "path": "report.txt",
+            "sha256": format!("{:x}", Sha256::digest(&report)),
+        }],
+    });
+    fs::write(
+        evidence.join("receipt.json"),
+        serde_json::to_vec_pretty(&receipt)?,
+    )?;
+    an_loom::run(["receive-check".into(), text(&assignment)?, text(&evidence)?])?;
+    let packed = base.join("packed");
+    an_loom::run(["pack-task".into(), text(&assignment)?, text(&packed)?])?;
+    let archive = an_loom::package::pack_project(&packed)?;
+    let verified = an_loom::read_archive(&archive)?;
+    assert_eq!(
+        verified
+            .files
+            .get("kit/transform.sh")
+            .ok_or("candidate")?
+            .as_slice(),
+        candidate_bytes
+    );
+    assert_ne!(fs::read(root.join("kit/transform.sh"))?, candidate_bytes);
+    Ok(())
+}

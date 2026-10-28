@@ -71,3 +71,21 @@ project and any release unchanged. It rejects a silk path, a stale project
 baseline, a rewritten task contract, and any candidate that arrives after
 `revoke-task`. These commands do not invoke a model. A passing test of this
 gate is not a completed coding-tool adapter.
+
+## Check evidence before packaging
+
+```sh
+an-loom check-task ./task
+# an-agent runs the controlled execution. Loom does not.
+an-loom receive-check ./task ./evidence
+an-loom pack-task ./task ./candidate-project
+```
+
+`check-task` records the candidate diff, the project's acceptance commands and
+an attempt identity. It does not run the commands. `receive-check` admits a
+directory containing `receipt.json` and the declared output files. A failed,
+cancelled or unknown result is not recorded and is not retried. A receipt for
+an older attempt, or one whose artifact bytes do not match, is refused.
+`pack-task` writes a new project tree containing the candidate and packs that
+tree. The source project stays unchanged. The receipt is operator evidence, not
+a compiler attestation. The real host run is the ignored native test.

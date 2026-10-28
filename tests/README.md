@@ -15,7 +15,7 @@ operator observations into Loom's generic implementation to share test code.
 | `tests/project_release/support.rs` | Synthetic fixtures shared only within that integration suite; never executable acceptance evidence |
 | `tests/build_reception.rs` | Host build-result reception and fail-closed source/evidence checks |
 | `tests/native_spool.rs` | Portable native export checks and opt-in real spool lifecycle CLI acceptance |
-| `tests/task_handoff.rs` | Native kit task preparation, candidate isolation and revocation |
+| `tests/task_handoff.rs` | Native kit task preparation, candidate isolation, check evidence and revocation |
 | `tests/host_handoff.rs` | Opt-in real macOS host acceptance; explicitly enabled in CI |
 | `examples/log-report/tests/` | Domain document checks owned by the example |
 | `examples/log-report/desktop/tests/` | Observation qualification checks; not real GUI acceptance |
