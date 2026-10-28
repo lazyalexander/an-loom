@@ -3,6 +3,8 @@ dist/
 /.local/
 /.host-runtime/
 *.tar.gz
+# Public historical compatibility fixture, never generated host evidence.
+!/tests/fixtures/native-spool-85c832a.tar.gz
 *.local.json
 .env
 .env.*
