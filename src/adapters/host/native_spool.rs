@@ -286,6 +286,15 @@ fn command_record(value: &str) -> bool {
 }
 
 pub fn export(archive: &Path, destination: &Path) -> Result<Value> {
+    export_version(archive, destination, false)
+}
+
+/// Explicit v2 delivery; legacy export remains byte-compatible.
+pub fn export_v2(archive: &Path, destination: &Path) -> Result<Value> {
+    export_version(archive, destination, true)
+}
+
+fn export_version(archive: &Path, destination: &Path, v2: bool) -> Result<Value> {
     let verified = crate::read_archive(archive)?;
     let selected = verified
         .files
@@ -305,8 +314,18 @@ pub fn export(archive: &Path, destination: &Path) -> Result<Value> {
             payload.insert(path.clone(), bytes);
         }
     }
-    let manifest = json!({"schema":config.schema,"name":verified.manifest.package.name,
+    let mut manifest = json!({"schema":config.schema,"name":verified.manifest.package.name,
         "version":verified.manifest.package.version,"entry":config.entry,"files":hashes,"outputs":config.outputs});
+    if v2 {
+        if config.legacy {
+            return Err(fail("v2 export requires explicit authoring requirements"));
+        }
+        manifest["schema"] = json!("an-native-spool-v2");
+        manifest["requirements"] = json!({"runtime":config.runtime,"os":"macos",
+            "arch":"portable-source","interaction":"headless","gpu":"none",
+            "inputs":config.inputs,"editable":config.editable,
+            "capabilities":config.capabilities,"dependencies":config.dependencies});
+    }
     let bytes = serde_json::to_vec_pretty(&manifest)?;
     package::new_directory(destination)?;
     for role in ["silk", "kit"] {
