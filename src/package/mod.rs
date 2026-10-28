@@ -39,6 +39,7 @@ mod storage;
 #[cfg(test)]
 mod tests;
 
+pub(crate) use archive::read_archive_bytes;
 pub use archive::{VerifiedArchive, pack_project, read_archive, verify_archive};
 pub(crate) use scan::inspect_project;
 pub(crate) use storage::write_new;

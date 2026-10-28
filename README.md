@@ -55,6 +55,12 @@ an-loom verify ARCHIVE
 See [examples/native-spool/README.md](examples/native-spool/README.md). Packing
 this profile does not grant host execution.
 
+The [candidate check route](docs/candidate-checks.md) freezes all selected project
+bytes, checks them through an explicitly authorized host profile, and publishes
+the same archive only after reconciling settled execution and accepted output.
+Legacy native release formats remain supported; check evidence is versioned
+separately.
+
 For the controlled development-to-release route:
 
 ```sh

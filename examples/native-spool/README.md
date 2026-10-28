@@ -74,18 +74,16 @@ gate is not a completed coding-tool adapter.
 
 ## Check evidence before packaging
 
-```sh
-an-loom check-task ./task
-# an-agent runs the controlled execution. Loom does not.
-an-loom receive-check ./task ./evidence
-an-loom pack-task ./task ./candidate-project
-```
+See [candidate check custody](../../docs/candidate-checks.md) for the complete
+operator sequence and its qualified scope. `check-task` freezes the complete
+candidate project and prepares a nonexecuting host profile. Acceptance commands
+run against its read-only input snapshot, with writable results in
+`$AN_LOOM_WORK`. `receive-check TASK HOST_JOB` validates the actual retained host
+attempt and formally accepted check output. Handwritten success JSON cannot
+satisfy this contract. `pack-task` copies the already checked archive, rather than
+selecting bytes again from the source project.
 
-`check-task` records the candidate diff, the project's acceptance commands and
-an attempt identity. It does not run the commands. `receive-check` admits a
-directory containing `receipt.json` and the declared output files. A failed,
-cancelled or unknown result is not recorded and is not retried. A receipt for
-an older attempt, or one whose artifact bytes do not match, is refused.
-`pack-task` writes a new project tree containing the candidate and packs that
-tree. The source project stays unchanged. The receipt is operator evidence, not
-a compiler attestation. The real host run is the ignored native test.
+Legacy native v1 release contracts without authoring metadata remain readable,
+packable and exportable. They cannot create coding tasks until the author adds
+explicit editing and acceptance metadata. Old v1 candidate-check evidence must
+be regenerated; it never established this stronger execution binding.

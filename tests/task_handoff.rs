@@ -159,165 +159,31 @@ fn revoked_task_drops_a_late_candidate() -> Result {
     Ok(())
 }
 
-fn admit(
-    base: &std::path::Path,
-    assignment: &std::path::Path,
-    status: &str,
-    output: &str,
-) -> Result<String> {
-    let plan: serde_json::Value =
-        serde_json::from_slice(&fs::read(assignment.join("authority/check-plan.json"))?)?;
-    let mut receipt = evidence_for(&plan, b"Report\nedited\n", status)?;
-    if status == "failed" {
-        receipt["checks"][0]["status"] = serde_json::json!("failed");
-        receipt["checks"][0]["output"] = serde_json::json!(output);
-    }
-    if status == "old" {
-        receipt["status"] = serde_json::json!("succeeded");
-        receipt["attempt"] = serde_json::json!("0".repeat(64));
-    }
-    let dir = base.join(format!("evidence-{status}"));
-    fs::create_dir(&dir)?;
-    fs::write(
-        dir.join("receipt.json"),
-        serde_json::to_vec_pretty(&receipt)?,
-    )?;
-    fs::write(dir.join("report.txt"), b"Report\nedited\n")?;
-    failed(vec![
-        "receive-check".to_owned(),
-        assignment.to_str().ok_or("non-UTF8 path")?.to_owned(),
-        dir.to_str().ok_or("non-UTF8 path")?.to_owned(),
-    ])
-}
-
-fn evidence_for(
-    plan: &serde_json::Value,
-    report: &[u8],
-    status: &str,
-) -> Result<serde_json::Value> {
-    let checks = plan["acceptance"]
-        .as_array()
-        .ok_or("acceptance")?
-        .iter()
-        .map(|command| {
-            serde_json::json!({
-                "command": command,
-                "status": "succeeded",
-                "output": "",
-            })
-        })
-        .collect::<Vec<_>>();
-    Ok(serde_json::json!({
-        "schema": "an-loom-check-evidence-v1",
-        "attempt": plan["attempt"],
-        "candidate_sha256": plan["candidate"]["sha256"],
-        "status": status,
-        "checks": checks,
-        "artifacts": [{
-            "path": "report.txt",
-            "sha256": sha256(report),
-        }],
-    }))
-}
-
-fn sha256(bytes: &[u8]) -> String {
-    use sha2::{Digest, Sha256};
-    format!("{:x}", Sha256::digest(bytes))
-}
-
 #[test]
-fn check_evidence_gates_packaging_without_running_commands_or_the_host() -> Result {
+fn unverified_operator_success_cannot_authorize_packaging() -> Result {
     let tmp = tempfile::tempdir()?;
     let base = tmp.path().canonicalize()?;
     let root = project(&base)?;
     let assignment = task(&base, &root)?;
-    let replacement = base.join("replacement.sh");
-    fs::write(&replacement, b"printf 'edited:'\n")?;
-    an_loom::run([
-        "receive-task".to_owned(),
-        assignment.to_str().ok_or("non-UTF8 path")?.to_owned(),
-        "kit/transform.sh".to_owned(),
-        replacement.to_str().ok_or("non-UTF8 path")?.to_owned(),
-    ])?;
-    an_loom::run([
-        "check-task".to_owned(),
-        assignment.to_str().ok_or("non-UTF8 path")?.to_owned(),
-    ])?;
-    let plan: serde_json::Value =
-        serde_json::from_slice(&fs::read(assignment.join("authority/check-plan.json"))?)?;
+    let candidate = base.join("candidate.sh");
+    fs::write(&candidate, b"printf 'edited:'\n")?;
+    an_loom::task::receive(&assignment, "kit/transform.sh", &candidate)?;
+    let plan = an_loom::task::check(&assignment)?;
     assert_eq!(plan["automatic_retries"], 0);
     assert_eq!(plan["host_invoked_by_loom"], false);
-    assert_eq!(plan["acceptance"].as_array().ok_or("acceptance")?.len(), 3);
     assert_eq!(plan["diff"]["changed"], true);
-    let failed_check = admit(&base, &assignment, "failed", "domain mismatch")?;
-    assert!(
-        failed_check.contains("command bash -n silk/main.sh")
-            && failed_check.contains("domain mismatch"),
-        "{failed_check}"
-    );
-    assert!(!assignment.join("authority/evidence.json").exists());
-    let cancelled = admit(&base, &assignment, "cancelled", "")?;
-    assert!(cancelled.contains("check cancelled"), "{cancelled}");
-    let unknown = admit(&base, &assignment, "unknown", "")?;
-    assert!(unknown.contains("no automatic retry"), "{unknown}");
-    let stale_attempt = admit(&base, &assignment, "old", "")?;
-    assert!(
-        stale_attempt.contains("does not match the current check plan"),
-        "{stale_attempt}"
-    );
-    assert!(
-        an_loom::run([
-            "pack-task".to_owned(),
-            assignment.to_str().ok_or("non-UTF8 path")?.to_owned(),
-            base.join("unpublished")
-                .to_str()
-                .ok_or("non-UTF8 path")?
-                .to_owned(),
-        ])
-        .is_err()
-    );
-    assert!(!base.join("unpublished").exists());
-    let receipt = evidence_for(&plan, b"Report\nedited\n", "succeeded")?;
-    let dir = base.join("evidence-ok");
-    fs::create_dir(&dir)?;
+    let fake = base.join("operator-evidence");
+    fs::create_dir(&fake)?;
     fs::write(
-        dir.join("receipt.json"),
-        serde_json::to_vec_pretty(&receipt)?,
+        fake.join("receipt.json"),
+        serde_json::to_vec(&serde_json::json!({
+            "schema":"an-loom-check-evidence-v1","attempt":plan["attempt"],"status":"succeeded",
+            "candidate_sha256":plan["candidate"]["sha256"]
+        }))?,
     )?;
-    fs::write(dir.join("report.txt"), b"Report\nedited\n")?;
-    an_loom::run([
-        "receive-check".to_owned(),
-        assignment.to_str().ok_or("non-UTF8 path")?.to_owned(),
-        dir.to_str().ok_or("non-UTF8 path")?.to_owned(),
-    ])?;
-    let packed = base.join("packed");
-    an_loom::run([
-        "pack-task".to_owned(),
-        assignment.to_str().ok_or("non-UTF8 path")?.to_owned(),
-        packed.to_str().ok_or("non-UTF8 path")?.to_owned(),
-    ])?;
-    let archive = an_loom::package::pack_project(&packed)?;
-    let verified = an_loom::read_archive(&archive)?;
-    assert_eq!(
-        verified
-            .files
-            .get("kit/transform.sh")
-            .ok_or("kit")?
-            .as_slice(),
-        b"printf 'edited:'\n"
-    );
-    assert_eq!(
-        fs::read(root.join("kit/transform.sh"))?,
-        fs::read(assignment.join("workspace/kit/transform.sh"))?
-    );
-    assert!(
-        an_loom::run([
-            "receive-check".to_owned(),
-            assignment.to_str().ok_or("non-UTF8 path")?.to_owned(),
-            dir.to_str().ok_or("non-UTF8 path")?.to_owned(),
-        ])
-        .is_err()
-    );
+    assert!(an_loom::task::receive_check(&assignment, &fake).is_err());
+    assert!(an_loom::task::pack_candidate(&assignment, &base.join("pack")).is_err());
+    assert!(!base.join("pack").exists());
     Ok(())
 }
 

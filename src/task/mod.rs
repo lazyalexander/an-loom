@@ -1,5 +1,7 @@
 //! Bounded kit-edit assignment. No model call and no host CLI.
 mod evidence;
+use crate::adapters::host::candidate_check as host_check;
+mod snapshot;
 pub use evidence::{check, pack_candidate, receive_check};
 
 use crate::{
@@ -118,8 +120,10 @@ pub(super) fn document(project: &Path) -> Result<Value> {
         return Err(fail("task has no editable kit path"));
     }
     let mut baseline = BTreeMap::new();
+    let mut baseline_modes = BTreeMap::new();
     for file in &inspected.files {
         baseline.insert(file.inventory.path.clone(), file.inventory.sha256.clone());
+        baseline_modes.insert(file.inventory.path.clone(), file.inventory.mode);
     }
     let mut protected = authoring.silk;
     for path in ["loom.toml", "native-spool.toml", "README.md"] {
@@ -149,6 +153,7 @@ pub(super) fn document(project: &Path) -> Result<Value> {
         "dependencies": authoring.dependencies,
         "acceptance": authoring.acceptance,
         "baseline": baseline,
+        "baseline_modes": baseline_modes,
         "limits": {"candidate_bytes": CANDIDATE_LIMIT, "files": 1},
         "escalation": "Stop and ask the operator. Do not invoke an-agent-host.",
     }))

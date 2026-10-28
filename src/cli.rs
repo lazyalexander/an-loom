@@ -22,7 +22,7 @@ const HELP: &str = "an-loom - inspectable spool development and delivery
   an-loom task PROJECT NEW_DIRECTORY
   an-loom receive-task TASK EDITABLE_PATH CANDIDATE
   an-loom check-task TASK
-  an-loom receive-check TASK EVIDENCE_DIRECTORY
+  an-loom receive-check TASK HOST_JOB
   an-loom pack-task TASK NEW_DIRECTORY
   an-loom revoke-task TASK
 
@@ -33,10 +33,10 @@ build snapshots package bytes. release creates a local delivery, not a remote
 publication or runtime grant. The host owns registration and controlled execution.
 task writes a kit assignment outside the project. receive-task copies one
 candidate into that assignment and does not change the project or any release.
-revoke-task rejects a later candidate. check-task records the candidate diff and the
-project's acceptance commands. receive-check admits operator evidence and does not
-run those commands or a host CLI. pack-task packages only a candidate with matching
-succeeded evidence. None of these commands invokes a model or retries an unknown result.
+revoke-task rejects a later candidate. check-task freezes the whole candidate and
+prepares a nonexecuting host profile. receive-check validates a retained host job
+with confirmed termination and formal output acceptance. pack-task publishes the
+same frozen archive after revalidation. None of these commands invokes a model or retries an unknown result.
 ";
 
 pub(crate) fn run(args: Vec<String>) -> Result<()> {
