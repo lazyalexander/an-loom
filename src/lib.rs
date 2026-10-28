@@ -9,6 +9,7 @@ pub mod plan;
 pub mod project;
 pub mod release;
 pub mod spool;
+pub mod task;
 
 pub use manifest::{BundleManifest, Manifest, PackageIdentity, PayloadFile};
 pub use package::{VerifiedArchive, read_archive};
