@@ -16,6 +16,7 @@ fn project(base: &Path) -> Result<PathBuf> {
         "loom.toml",
         "native-spool.toml",
         "README.md",
+        "AGENTS.md",
         "silk/main.sh",
         "silk/report.sh",
         "kit/transform.sh",

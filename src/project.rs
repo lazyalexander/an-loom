@@ -204,6 +204,10 @@ pub fn scaffold_native(target: &Path) -> Result<()> {
     fs::create_dir(target.join("kit"))?;
     for (path, bytes) in [
         (
+            "AGENTS.md",
+            include_bytes!("../examples/native-spool/AGENTS.md").as_slice(),
+        ),
+        (
             "loom.toml",
             include_bytes!("../examples/native-spool/loom.toml").as_slice(),
         ),

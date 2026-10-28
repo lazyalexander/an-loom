@@ -125,14 +125,11 @@ pub(super) fn document(project: &Path) -> Result<Value> {
         baseline.insert(file.inventory.path.clone(), file.inventory.sha256.clone());
         baseline_modes.insert(file.inventory.path.clone(), file.inventory.mode);
     }
-    let mut protected = authoring.silk;
-    for path in ["loom.toml", "native-spool.toml", "README.md"] {
-        if baseline.contains_key(path) {
-            protected.push(path.to_owned());
-        }
-    }
-    protected.sort();
-    protected.dedup();
+    let protected: Vec<_> = baseline
+        .keys()
+        .filter(|path| !authoring.editable.contains(path))
+        .cloned()
+        .collect();
     Ok(json!({
         "schema": "an-loom-task-v1",
         "model_invoked": false,

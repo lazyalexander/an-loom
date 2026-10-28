@@ -87,3 +87,10 @@ only declared outputs, and reclaim unretained copies after confirmed settlement.
 It must also reject attempted silk/policy edits and preserve immutable release
 bytes. Reuse existing host and Loom contracts; do not introduce a generic pipeline
 engine, a new backend or blanket code-execution authority to make the example pass.
+
+## Coding-agent starter
+
+`init-native` copies the reference AGENTS.md into the selected project inventory.
+A kit-edit assignment protects every selected noneditable path, including these
+instructions. This is a development contract, not process containment. See
+[development round status](development-rounds.md) for evidence and remaining work.

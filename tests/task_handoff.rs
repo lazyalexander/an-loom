@@ -216,3 +216,30 @@ fn project_acceptance_commands_enter_the_plan_without_a_loom_change() -> Result 
     assert!(!plan.contains("bash -n silk/main.sh"));
     Ok(())
 }
+
+#[test]
+fn scaffold_instructions_are_packaged_protected_and_bound_to_the_task() -> Result {
+    let tmp = tempfile::tempdir()?;
+    let base = tmp.path().canonicalize()?;
+    let root = project(&base)?;
+    let assignment = task(&base, &root)?;
+    let contract: serde_json::Value =
+        serde_json::from_slice(&fs::read(assignment.join("authority/task.json"))?)?;
+    assert!(
+        contract["protected"]
+            .as_array()
+            .ok_or("protected")?
+            .contains(&serde_json::json!("AGENTS.md"))
+    );
+    let archive = an_loom::package::pack_project(&root)?;
+    assert_eq!(
+        an_loom::read_archive(&archive)?.files.get("AGENTS.md"),
+        Some(&fs::read(root.join("AGENTS.md"))?)
+    );
+    let candidate = base.join("candidate.sh");
+    fs::write(&candidate, b"printf changed\n")?;
+    assert!(an_loom::task::receive(&assignment, "AGENTS.md", &candidate).is_err());
+    fs::write(root.join("AGENTS.md"), b"changed instructions\n")?;
+    assert!(an_loom::task::receive(&assignment, "kit/transform.sh", &candidate).is_err());
+    Ok(())
+}
