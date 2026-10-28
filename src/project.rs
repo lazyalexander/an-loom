@@ -196,3 +196,39 @@ pub fn scaffold(target: &Path, file_kit: bool) -> Result<()> {
     }
     Ok(())
 }
+
+/// Copy the reviewed native text reference. This writes files and runs nothing.
+pub fn scaffold_native(target: &Path) -> Result<()> {
+    fs::create_dir(target)?;
+    fs::create_dir(target.join("silk"))?;
+    fs::create_dir(target.join("kit"))?;
+    for (path, bytes) in [
+        (
+            "loom.toml",
+            include_bytes!("../examples/native-spool/loom.toml").as_slice(),
+        ),
+        (
+            "native-spool.toml",
+            include_bytes!("../examples/native-spool/native-spool.toml").as_slice(),
+        ),
+        (
+            "README.md",
+            include_bytes!("../examples/native-spool/README.md").as_slice(),
+        ),
+        (
+            "silk/main.sh",
+            include_bytes!("../examples/native-spool/silk/main.sh").as_slice(),
+        ),
+        (
+            "silk/report.sh",
+            include_bytes!("../examples/native-spool/silk/report.sh").as_slice(),
+        ),
+        (
+            "kit/transform.sh",
+            include_bytes!("../examples/native-spool/kit/transform.sh").as_slice(),
+        ),
+    ] {
+        crate::package::write_new(&target.join(path), bytes)?;
+    }
+    Ok(())
+}

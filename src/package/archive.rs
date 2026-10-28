@@ -89,7 +89,16 @@ fn append_file<W: Write>(
 }
 
 pub fn verify_archive(archive_path: &Path) -> Result<BundleManifest> {
-    Ok(read_archive(archive_path)?.manifest)
+    let verified = read_archive(archive_path)?;
+    if verified.files.contains_key("native-spool.toml") {
+        let selected = verified
+            .files
+            .iter()
+            .map(|(path, bytes)| (path.as_str(), bytes.as_slice()))
+            .collect();
+        crate::adapters::host::native_spool::validate(&selected)?;
+    }
+    Ok(verified.manifest)
 }
 
 /// Verified payload bytes, never extracted using archive-provided paths.

@@ -42,6 +42,19 @@ model-generated program. Its pure transformation and domain tests live in the
 example, outside Loom's generic implementation. Give `generation.md` to an
 existing coding tool when adapting it to your own domain.
 
+The native text reference uses the same check and pack commands:
+
+```sh
+an-loom init-native ./my-spool
+an-loom check ./my-spool
+an-loom pack ./my-spool
+# verify the archive path printed by pack
+an-loom verify ARCHIVE
+```
+
+See [examples/native-spool/README.md](examples/native-spool/README.md). Packing
+this profile does not grant host execution.
+
 For the controlled development-to-release route:
 
 ```sh

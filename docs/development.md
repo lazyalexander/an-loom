@@ -53,6 +53,13 @@ replace package metadata. The runtime ABI remains fixed: read `input.txt`, write
 adapter. It can contain developer-owned non-Rust components. Package construction
 snapshots bytes and does not execute them.
 
+`an-loom init-native DIRECTORY` copies the reviewed native text reference.
+Its `native-spool.toml` states silk and kit files, input and output slots,
+capability requests, editable kit paths, dependency labels, the qualified
+runtime and acceptance command records. `check`, `pack` and `verify` read those
+records. They do not spawn the commands or download the labels. See
+[the native reference](../examples/native-spool/README.md).
+
 ## Select the trusted host and toolchain
 
 Keep operator configuration outside PROJECT. A local directory such as `.local/`
