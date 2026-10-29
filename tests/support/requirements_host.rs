@@ -75,10 +75,24 @@ pub(super) fn run() -> Result {
     assert_eq!(run["status"], "succeeded");
     let accepted = approve(&["spool-accept", path(&instance)?, "run"])?;
     assert_eq!(accepted["status"], "succeeded");
+    let old = call(&["spool-start", path(&instance)?, "next", path(&input)?, "15"])?;
+    let versions = call(&["spool-artifacts", path(&instance)?, "run"])?;
+    approve(&["spool-reclaim", path(&instance)?, "run"])?;
+    approve(&["spool-unload", path(&instance)?])?;
     assert_eq!(
-        fs::read(instance.join("runs/run/job/work/report.txt"))?,
-        b"Report\nHELLO\n"
+        call(&["spool-artifacts", path(&instance)?, "run"])?,
+        versions
     );
+    let checkout = base.join("fixed-output.txt");
+    call(&[
+        "artifact-checkout",
+        versions["catalog"].as_str().ok_or("catalog")?,
+        versions["outputs"][0]["binding"]["revision"]
+            .as_str()
+            .ok_or("revision")?,
+        path(&checkout)?,
+    ])?;
+    assert_eq!(fs::read(checkout)?, b"Report\nHELLO\n");
     // Requested edit scope is not inferred from the presence of a kit payload.
     let mut locked = m.clone();
     locked["requirements"]["editable"] = json!([]);
@@ -86,7 +100,6 @@ pub(super) fn run() -> Result {
     let second = base.join("locked");
     let other = call(&["spool-load", path(&delivery)?, path(&second)?])?;
     assert_ne!(other["release"], loaded["release"]);
-    let old = call(&["spool-start", path(&instance)?, "next", path(&input)?, "15"])?;
     assert!(
         call(&[
             "spool-start",
