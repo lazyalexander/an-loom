@@ -169,3 +169,12 @@ instances, bounded kit proposal application, fixed artifact checkout, cancellati
 with group settlement, refused collection while active, unload and fresh baseline
 reload. V2 does not inherit lifecycle correctness solely from its admission test.
 When LOOM_NATIVE_EVIDENCE is set, v2 records a separate `.v2.json` evidence file.
+
+## Runtime artifact discovery
+
+The host's `spool-artifacts INSTANCE RUN` returns verified fixed-version bindings
+for formally accepted outputs. Loom declares output slots; runtime discovery,
+retention and content/provenance verification remain host responsibilities. Query
+results remain available after scratch collection and unload; use the existing
+artifact-checkout command to create an explicit downstream input. Source working
+copies and scratch filenames are never substitute acceptance evidence.
