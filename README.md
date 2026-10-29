@@ -155,3 +155,7 @@ kit baselines for an-agent's bounded macOS instance lifecycle. The included
 hook. Packaging remains independent from host authorization and execution.
 
 The [native spool acceptance](docs/native-spool.md#optional-weaver-and-the-two-instance-acceptance-path) also covers an optional host-owned weaver proposal slot, two independent instances, fixed artifact handoff, cancellation and baseline restoration. Loom supplies packaging; it does not run the agent or own runtime permission.
+
+The native starter includes a selected `AGENTS.md` describing file roles and
+development boundaries. Follow [the six-round qualification status](docs/development-rounds.md)
+for implemented evidence and the next real coding-tool handoff.

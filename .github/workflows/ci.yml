@@ -138,5 +138,6 @@ jobs:
           name: native-spool-acceptance
           path: |
             .local/native-spool.json
+            .local/native-spool.v2.json
             .local/candidate-check.json
           if-no-files-found: warn

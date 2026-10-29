@@ -2,4 +2,4 @@ schema_version = 1
 name = "native-text-spool"
 version = "0.1.0"
 description = "Two stable silk steps with a resettable glue script"
-include = ["loom.toml", "native-spool.toml", "silk", "kit", "README.md"]
+include = ["loom.toml", "native-spool.toml", "silk", "kit", "README.md", "AGENTS.md"]

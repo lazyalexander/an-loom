@@ -16,6 +16,7 @@ fn project(base: &Path) -> Result<PathBuf> {
         "loom.toml",
         "native-spool.toml",
         "README.md",
+        "AGENTS.md",
         "silk/main.sh",
         "silk/report.sh",
         "kit/transform.sh",
@@ -205,6 +206,18 @@ fn native_check_refuses_bad_structure_and_does_not_execute_records() -> Result {
 #[test]
 #[ignore = "requires the qualified an-agent host binary and real macOS execution"]
 fn native_host_consumes_export_edits_kit_and_reloads_baseline() -> Result {
+    native_host_lifecycle(false)
+}
+
+#[cfg(target_os = "macos")]
+#[test]
+#[ignore = "requires the coordinated v2 host and real macOS execution"]
+fn native_v2_instances_cancel_handoff_and_reload_independently() -> Result {
+    native_host_lifecycle(true)
+}
+
+#[cfg(target_os = "macos")]
+fn native_host_lifecycle(v2: bool) -> Result {
     use std::process::Command;
     let host = std::env::var_os("AN_AGENT_HOST_BIN").ok_or("AN_AGENT_HOST_BIN is required")?;
     let call = |args: &[&str]| -> Result<Value> {
@@ -232,7 +245,16 @@ fn native_host_consumes_export_edits_kit_and_reloads_baseline() -> Result {
     let base = tmp.path().canonicalize()?;
     let root = project(&base)?;
     let delivery = base.join("delivery");
-    export(&root, &delivery)?;
+    if v2 {
+        let archive = an_loom::package::pack_project(&root)?;
+        an_loom::run([
+            "export-native-spool-v2".into(),
+            archive.to_string_lossy().into_owned(),
+            delivery.to_string_lossy().into_owned(),
+        ])?;
+    } else {
+        export(&root, &delivery)?;
+    }
     let a = base.join("a");
     let b = base.join("b");
     let input = base.join("input.txt");
@@ -363,6 +385,11 @@ fn native_host_consumes_export_edits_kit_and_reloads_baseline() -> Result {
         "fixed_handoff":{"revision":revision,"checkout":checkout},"reload":fresh,
         "independent_run":independent,"downstream":downstream,"cancelled":cancelled});
     if let Some(path) = std::env::var_os("LOOM_NATIVE_EVIDENCE") {
+        let path = if v2 {
+            PathBuf::from(path).with_extension("v2.json")
+        } else {
+            PathBuf::from(path)
+        };
         fs::write(path, serde_json::to_vec_pretty(&evidence)?)?;
     }
     Ok(())
