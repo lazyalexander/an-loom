@@ -1,7 +1,8 @@
 # Spool release-to-host handoff: first implementation slice
 
-Status: proposed wire contract. No new runtime guarantee is implemented by this
-specification. The current native v1 reader/exporter remains unchanged.
+Status: initial native v2 implementation plus wider target contract. Native v1
+remains unchanged. See native-spool.md for the exact qualified encoding. GPU and
+external-application support remain future capabilities.
 
 ## Problem observed in the current implementation
 
@@ -33,8 +34,9 @@ Retain the v1 fields and add one required `requirements` object for v2:
 | capabilities | Requested effects | Only the effects actually supplied by the fixed profile |
 | dependencies | External runtime dependencies to resolve before execution | No unresolved additional dependencies |
 
-A concrete encoding and vocabulary must be frozen with producer/consumer tests
-before implementation. Do not infer OS/architecture/GPU capabilities from package
+The first encoding uses strings for runtime/os/arch/interaction/gpu and arrays
+for inputs/editable/capabilities/dependencies; GPU is currently only `none`.
+Future GPU provider constraints require a separately versioned contract. Do not infer OS/architecture/GPU capabilities from package
 names. Do not add an independent YAML authority file: any human-readable YAML
 must derive from, or be explicitly bound into, this one content-identified
 contract. Labels alone do not establish compatibility or dependency availability.
