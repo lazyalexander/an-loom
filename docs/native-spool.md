@@ -163,3 +163,9 @@ release identity. Empty editable scope makes packaged kits noneditable.
 This is executable runtime admission metadata, separate from source-package
 instructions and acceptance commands. It is not a scanner certificate or grant.
 See `spool-runtime-handoff.md` for the planned wider contract and future adapters.
+
+The same real host lifecycle acceptance runs against v1 and v2: two independent
+instances, bounded kit proposal application, fixed artifact checkout, cancellation
+with group settlement, refused collection while active, unload and fresh baseline
+reload. V2 does not inherit lifecycle correctness solely from its admission test.
+When LOOM_NATIVE_EVIDENCE is set, v2 records a separate `.v2.json` evidence file.
