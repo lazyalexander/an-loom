@@ -178,3 +178,11 @@ retention and content/provenance verification remain host responsibilities. Quer
 results remain available after scratch collection and unload; use the existing
 artifact-checkout command to create an explicit downstream input. Source working
 copies and scratch filenames are never substitute acceptance evidence.
+
+The host's `spool-status INSTANCE RUN` exposes evidence-derived run phases and
+separate execution/termination/artifact observations. Loom's real v1/v2 CLI
+acceptance observes running uncertainty, confirmed cancellation, accepted outputs
+and reclaimed scratch, including after unload. No PID guess, lock presence or
+status response grants permission to execute or reclaim. Runtime monitoring stays
+in the host; a common observation vocabulary does not imply identical backend
+support for GPU, GUI, pause or suspend. Headless remains the first qualified mode.

@@ -353,6 +353,9 @@ fn native_host_lifecycle(v2: bool) -> Result {
         call(&["spool-reclaim", &b, "cancelled"]).is_err(),
         call(&["spool-weaver-request", &b, "transform.sh"]).is_err(),
     ];
+    let observed = call(&["spool-status", &b, "cancelled"])?;
+    assert_eq!(observed["phase"], "running-or-unconfirmed");
+    assert_eq!(observed["termination_confirmed"], false);
     let independent = approve(&["spool-start", &reloaded, "independent", &input, "15"]);
     if child.try_wait()?.is_none() {
         let sent = Command::new("/bin/kill")
@@ -373,7 +376,15 @@ fn native_host_lifecycle(v2: bool) -> Result {
     let cancelled: Value = serde_json::from_slice(&stopped.stdout)?;
     assert_eq!(cancelled["status"], "cancelled");
     assert_eq!(cancelled["workspace"]["termination_confirmed"], true);
+    let observed = call(&["spool-status", &b, "cancelled"])?;
+    assert_eq!(observed["phase"], "settled");
+    assert_eq!(observed["execution_status"], "cancelled");
+    assert_eq!(observed["termination_confirmed"], true);
     approve(&["spool-reclaim", &b, "cancelled"])?;
+    assert_eq!(
+        call(&["spool-status", &b, "cancelled"])?["phase"],
+        "reclaimed"
+    );
     assert!(call(&["spool-accept", &b, "cancelled"]).is_err());
     assert!(call(&["spool-reclaim", &b, "consume"]).is_err());
     let downstream = approve(&["spool-accept", &b, "consume"])?;
