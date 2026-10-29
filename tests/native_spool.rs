@@ -379,3 +379,40 @@ fn candidate_check_uses_real_host_execution_before_packaging() -> Result {
 #[cfg(target_os = "macos")]
 #[path = "support/candidate_host.rs"]
 mod candidate_host;
+
+#[test]
+fn explicit_v2_export_preserves_authoring_requirements() -> Result {
+    let temp = tempfile::tempdir()?;
+    let base = temp.path().canonicalize()?;
+    let root = project(&base)?;
+    let archive = an_loom::package::pack_project(&root)?;
+    let out = base.join("v2");
+    an_loom::run([
+        "export-native-spool-v2".into(),
+        archive.to_string_lossy().into_owned(),
+        out.to_string_lossy().into_owned(),
+    ])?;
+    let m: Value = serde_json::from_slice(&fs::read(out.join("native-spool.json"))?)?;
+    assert_eq!(m["schema"], "an-native-spool-v2");
+    assert_eq!(
+        m["requirements"]["editable"],
+        serde_json::json!(["kit/transform.sh"])
+    );
+    assert_eq!(m["requirements"]["gpu"], "none");
+    assert_eq!(
+        m["requirements"]["inputs"],
+        serde_json::json!(["input.txt"])
+    );
+    Ok(())
+}
+
+#[cfg(target_os = "macos")]
+#[path = "support/requirements_host.rs"]
+mod requirements_host;
+
+#[cfg(target_os = "macos")]
+#[test]
+#[ignore = "requires coordinated v2 host and real macOS execution"]
+fn runtime_requirements_reach_host_and_refuse_unsupported_execution() -> Result {
+    requirements_host::run()
+}

@@ -140,3 +140,26 @@ fixed handoff revision, cancellation and independent execution evidence. This is
 an operator validation route: run the ignored integration test with a qualified
 `AN_AGENT_HOST_BIN`. Domain code is still packaged independently, and no runtime
 Rust dependency connects Loom to an-agent.
+
+## Explicit v2 host delivery
+
+Use `an-loom export-native-spool-v2 ARCHIVE NEW_DIRECTORY` to preserve authoring
+requirements in the host release. Ordinary export remains v1 and byte-compatible.
+V2 requires explicit authoring metadata; it does not fabricate declarations for
+legacy six-field contracts. The emitted native manifest has schema
+`an-native-spool-v2` and a required `requirements` object containing runtime,
+inputs, editable paths, capabilities and dependencies from authoring.
+
+This qualified exporter maps its existing macOS shell runtime to OS `macos`,
+architecture `portable-source`, interaction `headless` and GPU `none`. These are
+fixed profile facts, not detected device capabilities or new generic authoring
+fields. No arbitrary executable, GUI or GPU profile is claimed. Declaration
+labels are requests; the host checks its supported set before admission.
+Additional dependency labels are preserved so the host can reject unresolved
+requirements rather than silently dropping them. The host independently verifies
+v2, rejects unsupported requirements, and binds accepted requirements into the
+release identity. Empty editable scope makes packaged kits noneditable.
+
+This is executable runtime admission metadata, separate from source-package
+instructions and acceptance commands. It is not a scanner certificate or grant.
+See `spool-runtime-handoff.md` for the planned wider contract and future adapters.
