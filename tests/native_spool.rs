@@ -312,6 +312,24 @@ fn native_host_lifecycle(v2: bool) -> Result {
     );
     approve(&["spool-reclaim", &a, "new"])?;
     approve(&["spool-reclaim", &a, "first"])?;
+    let identity = call(&["spool-show", &a])?["instance"].clone();
+    let prior = fs::read(Path::new(&a).join("kit/transform.sh"))?;
+    call(&["spool-kit-reset", &a, "transform.sh"])?;
+    assert_eq!(fs::read(Path::new(&a).join("kit/transform.sh"))?, prior);
+    approve(&["spool-kit-reset", &a, "transform.sh"])?;
+    assert_eq!(call(&["spool-show", &a])?["instance"], identity);
+    assert_eq!(
+        fs::read(Path::new(&a).join("kit/transform.sh"))?,
+        fs::read(Path::new(&delivery).join("kit/transform.sh"))?
+    );
+    approve(&["spool-start", &a, "restored", &input, "15"])?;
+    assert_eq!(
+        fs::read_to_string(Path::new(&a).join("runs/restored/job/work/report.txt"))?,
+        "Report\nNEW MATERIAL\n"
+    );
+    approve(&["spool-accept", &a, "restored"])?;
+    approve(&["spool-reclaim", &a, "restored"])?;
+    assert_eq!(fs::read_to_string(&pinned)?, "Report\nedited:hello\n");
     approve(&["spool-unload", &a])?;
     let reloaded = text(&base.join("reloaded"))?;
     let fresh = call(&["spool-load", &delivery, &reloaded])?;

@@ -195,3 +195,10 @@ count and workspace acceptance bytes before normal downstream checkout. This is
 not a process retry, a second publication or a power-loss durability claim.
 Incomplete workspace acceptance and uncertain execution remain unsupported for
 recovery. The host owns reconciliation; Loom owns no runtime repair state machine.
+
+
+The native qualification also exercises spool-kit-reset against its explicitly
+pinned host revision: preview is inert, restoring the kit preserves instance
+identity, a new run uses release-baseline code, and earlier pinned products remain
+readable. This is a host lifecycle capability, not a Loom implementation of kit
+mutation or an additional grant. Other historical host jobs retain their own pins.
