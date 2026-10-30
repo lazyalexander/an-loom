@@ -179,3 +179,13 @@ outside that child control. This is not a claim that Grok cannot be integrated;
 it needs a separately qualified finite-tool profile or stronger outer isolation.
 See [Grok sandbox semantics](https://docs.x.ai/build/features/sandbox). Neither
 provider's prompt or permission label substitutes for host-enforced kit limits.
+
+## Tool-free native proposal route
+
+The [Kimi native operator adapter](../examples/kimi-native/README.md) obtains one
+actual K3 code proposal, receives a reviewed digest through the existing native
+task gate and uses develop-native for checking/delivery/admission. The model gets
+no host CLI or native tools. Official-client trust, unknown-outcome fencing and
+remote cancellation limits are explicit. Its portable summary is separate from
+private stdout/stderr and native tape. This does not expand Loom into an agent
+loop or qualify arbitrary tool-enabled client execution.
