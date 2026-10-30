@@ -57,6 +57,10 @@ OpenShell belongs behind the host backend adapter, not in Loom or semantic logic
 - Open main promotion as a separate PR for the maintainer; never merge it
   automatically. Verify remote dev ancestry after a merge before using it as
   another task's base.
+- Clean local branches only when older than seven days, merged into development
+  and not checked out in any worktree. Preserve main/dev-advance and unmerged
+  work, verify ancestry and use safe deletion. Do not detach worktrees to make
+  their branches eligible.
 - Distinguish implemented guarantees, tool claims and proposed capabilities.
   Preserve existing behavior unless the task explicitly changes it.
 - Generic packaging is broader than controlled execution support. The packaged

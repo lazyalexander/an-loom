@@ -16,7 +16,10 @@ loads each format, explicitly seeds state, consumes a fixed revision twice throu
 fresh workspaces, accepts outputs, reclaims scratch before state commit and reads
 state after unload. It also pauses admission after the first round, explicitly
 resumes before the second, and suspends at a fixed checkpoint after scratch
-collection. Resume never launches the next round. The reference text transformation is a protocol fixture;
+collection. Resume never launches the next round.
+Private input snapshots are explicitly collected before state commit; formal
+products and checkpoint continuation remain available. Host tests own the large
+input and failure matrix. The reference text transformation is a protocol fixture;
 domain state schemas/validation belong to real spool authors.
 
 The host owns conflict, cancellation, interruption and retention enforcement; its

@@ -70,6 +70,11 @@ def main():
             approved("spool-accept", instance, run)
             approved("spool-reclaim", instance, run)
             assert not (instance / "runs" / run / "job/work").exists()
+            approved("spool-reclaim-snapshots", instance, run)
+            storage = call(host, "spool-storage", instance)
+            observed = next(value for value in storage["runs"] if value["run"] == run)
+            assert observed["snapshot_logical_bytes"] == 0
+            assert observed["artifact_logical_bytes"] > 0
             revision = approved("spool-state-commit", instance, revision, run)["revision"]
             history.append(revision)
             checkpoint = call(host, "spool-state-show", instance, revision)["selected"]

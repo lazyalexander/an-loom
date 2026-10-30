@@ -186,7 +186,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: lazyalexander/an-agent
-          ref: 26d8c4f1477df4230690b1824351a9873e45263e
+          ref: 6a1c0b6feafbba05f08035ec649a35086269d1a9
           path: .native-host
       - name: Install repository-pinned toolchain
         run: |
@@ -223,7 +223,7 @@ jobs:
           python3 -B -m unittest discover -s examples/log-summary/tests -v
           python3 -B examples/log-summary/qualify.py --loom target/debug/an-loom --host .native-host/target/debug/an-agent-host --output .local/log-summary --execute
       - name: Qualify state and round-control handoff for native v1 and v2 exports
-        run: python3 -B tests/cli/native_state.py --loom target/debug/an-loom --host .native-host/target/debug/an-agent-host --host-revision 26d8c4f1477df4230690b1824351a9873e45263e --output .local/native-state
+        run: python3 -B tests/cli/native_state.py --loom target/debug/an-loom --host .native-host/target/debug/an-agent-host --host-revision 6a1c0b6feafbba05f08035ec649a35086269d1a9 --output .local/native-state
       - uses: actions/upload-artifact@v4
         if: always()
         with:
