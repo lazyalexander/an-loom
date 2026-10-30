@@ -214,11 +214,16 @@ jobs:
           LOOM_NATIVE_EVIDENCE: ${{ github.workspace }}/.local/native-spool.json
           LOOM_DEVELOP_NATIVE_EVIDENCE: ${{ github.workspace }}/.local/develop-native.json
           LOOM_CANDIDATE_EVIDENCE: ${{ github.workspace }}/.local/candidate-check.json
+      - name: Qualify a second-domain log summary spool
+        run: |
+          python3 -B -m unittest discover -s examples/log-summary/tests -v
+          python3 -B examples/log-summary/qualify.py --loom target/debug/an-loom --host .native-host/target/debug/an-agent-host --output .local/log-summary --execute
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: native-spool-acceptance
           path: |
+            .local/log-summary/acceptance.json
             .local/native-spool.json
             .local/native-spool.v2.json
             .local/candidate-check.json

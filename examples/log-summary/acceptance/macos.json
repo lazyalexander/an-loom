@@ -1,0 +1,8 @@
+{
+  "schema": "log-summary-qualification-v1",
+  "passed": true,
+  "model_invoked": false,
+  "runs": 2,
+  "fixed_versions_survive_input_edit_reclaim_unload": true,
+  "candidate_sha256": "1827ac11e1d0c5aa95ac4b79ff854c86259756c2d9186a212d243a6d28415373"
+}

@@ -10,7 +10,7 @@ new runtime mechanisms. Domain correctness remains with project authors.
 | 2: coding-tool handoff | actual tool-free Kimi K3 proposal through native checking, delivery, admission and runtime; isolated kit reception and stale/revoked result rejection | General tool-enabled harness containment/cancellation remains separate qualification |
 | 3: candidate verification | full frozen archive, unique check request, real host execution and formal acceptance; develop-native composes checks through v2 delivery and local load | Limited code inspection may later report findings/unknowns; no generic safety certification |
 | 4: updates | exact release content identities | Review lineage, compatibility and permission deltas before adding update mechanics |
-| 5: second domain | local workflow prototypes can follow their entry AGENTS.md | Qualify a bounded different-domain workflow without domain branches in Loom |
+| 5: second domain | local workflow prototypes can follow their entry AGENTS.md | Log-summary CLI qualification exercises existing delivery/custody contracts; wider domains remain unqualified |
 
 ## Round 1 contract
 
@@ -31,9 +31,8 @@ silk nor kit is a catch-all classification for every selected file.
 
 The [Kimi native adapter](../examples/kimi-native/README.md) now qualifies an actual
 model proposal through the native route. It exposes no model tools; trusted client
-configuration and remote cancellation limits are explicit. Next qualify a bounded
-second-domain workflow using existing contracts, without adding business branches
-to Loom. Wider Weaver integration and update lineage remain separate milestones.
+configuration and remote cancellation limits are explicit. The bounded second-domain log-summary qualification now uses the existing
+contracts without business branches in Loom. Wider Weaver integration and update lineage remain separate milestones.
 
 Code scanning belongs to round 3 and must not delay that handoff. Inspection
 records should identify exact content, tool/rule versions, findings and unknowns.
@@ -48,3 +47,9 @@ Next qualify an actual coding-tool handoff, then a bounded second-domain project
 Weaver integration remains later than the spool-first product work. Update-lineage
 and broader execution profiles are separate milestones, not prerequisites for
 using the qualified local shell route.
+
+
+The [log summary spool](../examples/log-summary/README.md) is the second-domain
+operator example: deterministic candidate, domain acceptance, v2 delivery and two
+real host runs with retained fixed versions after input edits, reclaim and unload.
+It does not claim a second live coding-agent integration.
