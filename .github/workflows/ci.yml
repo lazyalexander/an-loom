@@ -186,7 +186,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: lazyalexander/an-agent
-          ref: e3481546e72372c6da6d0f28a187a0504d3a2dc3
+          ref: 3c4a888c44fbf8610b8dfee9906f786ba9626f30
           path: .native-host
       - name: Install repository-pinned toolchain
         run: |
