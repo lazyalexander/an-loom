@@ -121,7 +121,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: lazyalexander/an-agent
-          ref: e7088f3cd2ee653e6748e76557f59672888b36d3
+          ref: b6f73766e0d4425266f3ec5d2c1a2fd368d52c41
           path: .native-host
       - uses: dtolnay/rust-toolchain@1.98.0
       - run: cargo build --manifest-path .native-host/Cargo.toml -p an-agent-host --bin an-agent-host --locked

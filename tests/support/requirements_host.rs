@@ -73,9 +73,17 @@ pub(super) fn run() -> Result {
     assert_eq!(loaded["requested_requirements"], m["requirements"]);
     let run = approve(&["spool-start", path(&instance)?, "run", path(&input)?, "15"])?;
     assert_eq!(run["status"], "succeeded");
+    assert_eq!(
+        call(&["spool-status", path(&instance)?, "run"])?["phase"],
+        "settled"
+    );
     let accepted = approve(&["spool-accept", path(&instance)?, "run"])?;
     assert_eq!(accepted["status"], "succeeded");
     let old = call(&["spool-start", path(&instance)?, "next", path(&input)?, "15"])?;
+    assert_eq!(
+        call(&["spool-status", path(&instance)?, "run"])?["phase"],
+        "accepted"
+    );
     let versions = call(&["spool-artifacts", path(&instance)?, "run"])?;
     approve(&["spool-reclaim", path(&instance)?, "run"])?;
     approve(&["spool-unload", path(&instance)?])?;
@@ -83,6 +91,10 @@ pub(super) fn run() -> Result {
         call(&["spool-artifacts", path(&instance)?, "run"])?,
         versions
     );
+    let status = call(&["spool-status", path(&instance)?, "run"])?;
+    assert_eq!(status["phase"], "reclaimed");
+    assert_eq!(status["artifact_status"], "accepted");
+    assert_eq!(status["outputs"], versions["outputs"]);
     let checkout = base.join("fixed-output.txt");
     call(&[
         "artifact-checkout",
