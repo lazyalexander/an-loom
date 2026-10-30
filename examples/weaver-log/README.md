@@ -85,3 +85,8 @@ execution or completed development task was resubmitted.
 The standalone fixture runs on both CI operating systems using bash/awk. Its
 success on Linux does not qualify an-agent's managed Linux runtime: the exported
 native manifest still requests the existing macOS profile.
+
+The reviewed example includes the selected Kimi-produced kit and the portable
+review-plan.json (digests only). Recompute the latter's SHA-256 to check the
+confirmed review identity. CI reuses those recorded code bytes with a synthetic
+review/generator; it never claims the test itself contacted a provider.

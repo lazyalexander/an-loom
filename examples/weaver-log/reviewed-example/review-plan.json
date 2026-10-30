@@ -1,0 +1,18 @@
+{
+  "schema": "weaver-log-review-v1",
+  "inputs": {
+    "materials.md": "7ee20b42eeede0f71ac8679a3d79eadc814d8629c6b676d1c0c685297d07e490",
+    "DOMAIN.md": "82501396b53a6d3924da14ae82b3999d54c2339f18524fe831b3608577ae5c70",
+    "acceptance.sh": "d676fcf832df704f31db5d0549586f84c0a230ce5832b814b6cae04225f003f3"
+  },
+  "tools": {
+    "kimi": "f06ba6a3bb7ed2fc1f82590f7c22570736d9ee7344059fa92404ca75dc2d5b45",
+    "loom": "d59f0e37e1e3f94998611ab6dad3356c943016513277efab6d852039cd52c10a",
+    "profile": "1e5abbc2e47dca50965a5987d2c4bb7a0ac4bfa2027c3edea5303396b2f11ee4"
+  },
+  "model": "kimi-code/k3",
+  "editable": [
+    "kit/transform.sh"
+  ],
+  "automatic_retries": 0
+}

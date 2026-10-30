@@ -27,7 +27,7 @@ def main():
     w.write(root/'settings.local.json', settings)
     w.review(SimpleNamespace(output=root))
     w.approve(SimpleNamespace(output=root, approve=w.digest(root/'review-plan.json')))
-    code = (w.HERE.parent/'log-summary/transform.sh').read_text()
+    code = (w.HERE/'reviewed-example/kit/transform.sh').read_text()
     w.write(root/'response.txt', dict(schema='an-loom-kit-candidate-v1', path='kit/transform.sh', content=code))
     (root/'candidate.sh').write_text(code)
     w.write(root/'generation-result.json', dict(status='completed', model_invoked=False))
