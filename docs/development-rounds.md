@@ -65,6 +65,13 @@ Weaver into a mandatory Loom or runtime dependency.
 
 ## Local spool delivery milestones
 
+The immediate sequence is event-first: a minimal reliable workspace event handoff,
+then real headless input/runtime/binary-output support, followed by subscription,
+lifecycle and retention usability. High-frequency channels wait for a measured
+consumer. Native v3 now qualifies explicit accepted-artifact delivery and causal
+result confirmation with the host; it adds no business graph engine. See
+[event handoff](native-spool.md#explicit-v3-event-interfaces).
+
 The current reviewed macOS shell route is usable, but is not the full local spool
 host. The authoritative runtime completion scope is the host's
 [implementation status](https://github.com/lazyalexander/an-agent/blob/dev-advance/doc/status.md).

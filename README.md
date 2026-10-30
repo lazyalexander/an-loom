@@ -55,6 +55,11 @@ an-loom verify ARCHIVE
 See [examples/native-spool/README.md](examples/native-spool/README.md). Packing
 this profile does not grant host execution.
 
+The [explicit v3 event interface](docs/native-spool.md#explicit-v3-event-interfaces)
+packages workspace-event inputs/outputs for a qualified host. Subscriptions,
+delivery authorization and consumption evidence stay in an-agent; Loom adds no
+business graph engine or event service.
+
 The [candidate check route](docs/candidate-checks.md) freezes all selected project
 bytes, checks them through an explicitly authorized host profile, and publishes
 the same archive only after reconciling settled execution and accepted output.

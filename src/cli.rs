@@ -19,6 +19,7 @@ const HELP: &str = "an-loom - inspectable spool development and delivery
   an-loom export-spool ARCHIVE NEW_DIRECTORY
   an-loom export-native-spool ARCHIVE NEW_DIRECTORY
   an-loom export-native-spool-v2 ARCHIVE NEW_DIRECTORY
+  an-loom export-native-spool-v3 ARCHIVE NEW_DIRECTORY
   an-loom release PROJECT NEW_DIRECTORY
   an-loom verify-release DIRECTORY
   an-loom task PROJECT NEW_DIRECTORY
@@ -82,6 +83,12 @@ pub(crate) fn run(args: Vec<String>) -> Result<()> {
         }
         ("export-native-spool-v2", [archive, destination]) => {
             crate::adapters::host::native_spool::export_v2(
+                Path::new(archive),
+                Path::new(destination),
+            )?
+        }
+        ("export-native-spool-v3", [archive, destination]) => {
+            crate::adapters::host::native_spool::export_v3(
                 Path::new(archive),
                 Path::new(destination),
             )?

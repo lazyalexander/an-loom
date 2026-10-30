@@ -5,7 +5,7 @@ use crate::{
     package,
     project::Project,
 };
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
 use std::{
     collections::{BTreeMap, BTreeSet},
@@ -38,6 +38,15 @@ struct Native {
     dependencies: Vec<String>,
     #[serde(default)]
     acceptance: Vec<String>,
+    #[serde(default)]
+    events: Option<Events>,
+}
+
+#[derive(Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
+struct Events {
+    consumes: Vec<String>,
+    produces: Vec<String>,
 }
 
 /// Read the authoring contract. Callers must not spawn `acceptance` or fetch `dependencies`.
@@ -115,6 +124,9 @@ fn interpret(config: &Native, files: &BTreeMap<&str, &[u8]>) -> Result<()> {
         return Err(fail("unsupported native spool contract"));
     }
     if config.legacy {
+        if config.events.is_some() {
+            return Err(fail("events require explicit authoring requirements"));
+        }
         roles(config, files)?;
         return slots(&config.outputs, "invalid output slot");
     }
@@ -122,6 +134,13 @@ fn interpret(config: &Native, files: &BTreeMap<&str, &[u8]>) -> Result<()> {
         return Err(fail("native runtime is not qualified for this adapter"));
     }
     roles(config, files)?;
+    if let Some(events) = &config.events {
+        for names in [&events.consumes, &events.produces] {
+            if names.len() > 1 || names.iter().any(|name| name != "artifact.accepted") {
+                return Err(fail("unsupported or duplicate native event interface"));
+            }
+        }
+    }
     if config.inputs.is_empty() {
         return Err(fail("missing native input"));
     }
@@ -286,15 +305,20 @@ fn command_record(value: &str) -> bool {
 }
 
 pub fn export(archive: &Path, destination: &Path) -> Result<Value> {
-    export_version(archive, destination, false)
+    export_version(archive, destination, 1)
 }
 
 /// Explicit v2 delivery; legacy export remains byte-compatible.
 pub fn export_v2(archive: &Path, destination: &Path) -> Result<Value> {
-    export_version(archive, destination, true)
+    export_version(archive, destination, 2)
 }
 
-fn export_version(archive: &Path, destination: &Path, v2: bool) -> Result<Value> {
+/// Event declarations require explicit v3 selection; no route or grant is emitted.
+pub fn export_v3(archive: &Path, destination: &Path) -> Result<Value> {
+    export_version(archive, destination, 3)
+}
+
+fn export_version(archive: &Path, destination: &Path, version: u8) -> Result<Value> {
     let verified = crate::read_archive(archive)?;
     let selected = verified
         .files
@@ -302,6 +326,9 @@ fn export_version(archive: &Path, destination: &Path, v2: bool) -> Result<Value>
         .map(|(path, bytes)| (path.as_str(), bytes.as_slice()))
         .collect();
     let config = load(&selected)?;
+    if (version == 3) != config.events.is_some() {
+        return Err(fail("native event declarations require explicit v3 export"));
+    }
     let mut payload = BTreeMap::new();
     let mut hashes = BTreeMap::new();
     for paths in [&config.silk, &config.kit] {
@@ -316,15 +343,21 @@ fn export_version(archive: &Path, destination: &Path, v2: bool) -> Result<Value>
     }
     let mut manifest = json!({"schema":config.schema,"name":verified.manifest.package.name,
         "version":verified.manifest.package.version,"entry":config.entry,"files":hashes,"outputs":config.outputs});
-    if v2 {
+    if version >= 2 {
         if config.legacy {
-            return Err(fail("v2 export requires explicit authoring requirements"));
+            return Err(fail(
+                "v2/v3 export requires explicit authoring requirements",
+            ));
         }
         manifest["schema"] = json!("an-native-spool-v2");
         manifest["requirements"] = json!({"runtime":config.runtime,"os":"macos",
             "arch":"portable-source","interaction":"headless","gpu":"none",
             "inputs":config.inputs,"editable":config.editable,
             "capabilities":config.capabilities,"dependencies":config.dependencies});
+    }
+    if version == 3 {
+        manifest["schema"] = json!("an-native-spool-v3");
+        manifest["events"] = serde_json::to_value(&config.events)?;
     }
     let bytes = serde_json::to_vec_pretty(&manifest)?;
     package::new_directory(destination)?;

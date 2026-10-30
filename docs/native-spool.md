@@ -255,6 +255,39 @@ with group settlement, refused collection while active, unload and fresh baselin
 reload. V2 does not inherit lifecycle correctness solely from its admission test.
 When LOOM_NATIVE_EVIDENCE is set, v2 records a separate `.v2.json` evidence file.
 
+## Explicit v3 event interfaces
+
+Add the following table to the complete native authoring file and use
+`export-native-spool-v3 ARCHIVE NEW_DIRECTORY`:
+
+```toml
+[events]
+consumes = ["artifact.accepted"]
+produces = ["artifact.accepted"]
+```
+
+Each array may be empty or contain that one supported name. Unknown names,
+duplicates and unknown fields refuse. V3 retains v2 requirements and binds the
+interface into the release digest. V1/v2 without event authoring remain unchanged;
+exporting an event-aware project as v1/v2 refuses rather than dropping its contract.
+Older hosts reject v3. The existing `develop-native` convenience route still
+exports v2 and does not qualify event-aware projects; use explicit packaging and
+v3 export. This does not widen that route's build authority or dependency support.
+
+These declarations are interfaces, not subscriptions or execution grants. The
+host independently authorizes static workspace routes, verifies accepted artifact
+facts and admits delivery against exact versions. Receipt and output confirmation
+remain host-owned. No routing service, runtime dependency, business predicate,
+loop or global state is added to Loom. Domain workflows stay in silk/kit.
+
+The paired `tests/cli/native_events.py` packages the existing two-silk reference,
+loads two actual v3 instances, publishes one accepted artifact event, approves one
+delivery, accepts and confirms its result, and verifies fixed products plus
+duplicate confirmation after scratch/snapshot collection. This is explicit
+foreground dispatch, not a background event bus or model integration. Host tests
+own cancellation, revocation and missing-evidence cases. See
+[the host event contract](https://github.com/lazyalexander/an-agent/blob/dev-advance/crates/an-agent-host/NATIVE-EVENTS.md).
+
 ## Runtime artifact discovery
 
 The host's `spool-artifacts INSTANCE RUN` returns verified fixed-version bindings
