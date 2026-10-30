@@ -52,3 +52,22 @@ permission service. The host kit-proposal slot is not Weaver.
 The first implementation is an example adapter with file contracts, not a general
 Weaver runtime or multi-file coding-agent sandbox. A different harness can replace
 the adapter while preserving reviewed inputs and candidate outputs.
+
+## Loom layers and optional strategies
+
+Loom's responsibility is contract, verification and delivery: bind development
+inputs and candidates, collect static findings plus project-owned acceptance or
+stress evidence, and package exact selected bytes. Domain cases are supplied by
+the project; generic pressure tests cannot establish domain correctness.
+
+Weaver belongs as an optional Loom-facing module with replaceable harness
+adapters, not a separate required service or repository. Humans and other tools
+may use Loom directly. A Weaver implementation may produce ordinary software or
+follow other guidelines outside Loom. To claim compliance with a selected Loom
+contract it must satisfy that contract; it cannot silently drop failed checks or
+select weaker rules after implementation. A rule change needs a new reviewed
+baseline. This is the target policy, not a new selectable-profile CLI.
+
+Prioritize the usable spool lifecycle and custody contract. Further autonomous
+Weaver orchestration waits for actual development needs; no new model loop or
+prompt-interception service is required for the next spool slice.
