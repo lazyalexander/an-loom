@@ -453,3 +453,14 @@ mod requirements_host;
 fn runtime_requirements_reach_host_and_refuse_unsupported_execution() -> Result {
     requirements_host::run()
 }
+
+#[cfg(target_os = "macos")]
+#[path = "support/native_development.rs"]
+mod native_development;
+
+#[cfg(target_os = "macos")]
+#[test]
+#[ignore = "requires the qualified host and real macOS execution"]
+fn native_development_delivers_and_admits_checked_spool_once() -> Result {
+    native_development::run()
+}

@@ -14,6 +14,7 @@ operator observations into Loom's generic implementation to share test code.
 | `tests/project_release/release.rs` | Release/archive identity, tampering, portability and legacy bytes |
 | `tests/project_release/support.rs` | Synthetic fixtures shared only within that integration suite; never executable acceptance evidence |
 | `tests/build_reception.rs` | Host build-result reception and fail-closed source/evidence checks |
+| `tests/support/native_development.rs` | Opt-in real single-submission check, delivery, load and independent execution; no model invocation |
 | `tests/native_spool.rs` | Portable native export checks and opt-in real spool lifecycle CLI acceptance |
 | `tests/candidate_snapshot.rs` | Full snapshot identity, mutation rejection and legacy native compatibility |
 | `tests/support/candidate_host.rs` | Real candidate checks, readonly enforcement, cancellation and formal custody; called by native_spool |
