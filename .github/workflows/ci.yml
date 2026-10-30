@@ -131,6 +131,7 @@ jobs:
         env:
           AN_AGENT_HOST_BIN: ${{ github.workspace }}/.native-host/target/debug/an-agent-host
           LOOM_NATIVE_EVIDENCE: ${{ github.workspace }}/.local/native-spool.json
+          LOOM_DEVELOP_NATIVE_EVIDENCE: ${{ github.workspace }}/.local/develop-native.json
           LOOM_CANDIDATE_EVIDENCE: ${{ github.workspace }}/.local/candidate-check.json
       - uses: actions/upload-artifact@v4
         if: always()
@@ -140,4 +141,5 @@ jobs:
             .local/native-spool.json
             .local/native-spool.v2.json
             .local/candidate-check.json
+            .local/develop-native.json
           if-no-files-found: warn

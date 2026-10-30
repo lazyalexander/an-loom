@@ -9,6 +9,7 @@ const HELP: &str = "an-loom - inspectable spool development and delivery
   an-loom init-native DIRECTORY
   an-loom init-package DIRECTORY
   an-loom check PROJECT
+  an-loom develop-native TASK HOST_CLI NEW_JOB NEW_DELIVERY [--approve SHA256]
   an-loom develop PROJECT HOST_CLI TOOLCHAIN_JSON NEW_JOB [--approve SHA256]
   an-loom receive-build PROJECT HOST_JOB
   an-loom declare PROJECT
@@ -114,6 +115,22 @@ pub(crate) fn run(args: Vec<String>) -> Result<()> {
         ("revoke-task", [task]) => {
             crate::task::revoke(Path::new(task))?;
             json!({"revoked":true,"model_invoked":false})
+        }
+        ("develop-native", [task, host, job, delivery]) => crate::adapters::develop_native(
+            Path::new(task),
+            Path::new(host),
+            Path::new(job),
+            Path::new(delivery),
+            None,
+        )?,
+        ("develop-native", [task, host, job, delivery, flag, hash]) if flag == "--approve" => {
+            crate::adapters::develop_native(
+                Path::new(task),
+                Path::new(host),
+                Path::new(job),
+                Path::new(delivery),
+                Some(hash),
+            )?
         }
         ("develop", [root, host, tools, job]) => crate::adapters::develop(
             Path::new(root),

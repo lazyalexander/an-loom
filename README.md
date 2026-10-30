@@ -159,3 +159,7 @@ The [native spool acceptance](docs/native-spool.md#optional-weaver-and-the-two-i
 The native starter includes a selected `AGENTS.md` describing file roles and
 development boundaries. Follow [the six-round qualification status](docs/development-rounds.md)
 for implemented evidence and the next real coding-tool handoff.
+
+For a prepared native candidate, [develop-native](docs/develop-native.md) runs
+the approved check-to-delivery path and loads the resulting spool through the
+selected host. It reuses existing contracts and refuses automatic resubmission.

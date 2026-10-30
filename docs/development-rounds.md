@@ -8,7 +8,7 @@ new runtime mechanisms. Domain correctness remains with project authors.
 | 0: inventory | native-spool and candidate-check contracts trace source through host custody | Update this table when a capability is actually qualified |
 | 1: authoring | init-native copies explicit roles, interfaces, effects, acceptance records and AGENTS.md; task protects every selected noneditable file | Generic packaging supports more payloads than qualified execution |
 | 2: coding-tool handoff | isolated kit reception, stale/revoked result rejection | Complete one actual coding-tool turn through this native candidate route; deterministic proposals are not model integration |
-| 3: candidate verification | full frozen archive, unique check request, real host execution and formal acceptance | Limited code inspection may later report findings/unknowns; no generic safety certification |
+| 3: candidate verification | full frozen archive, unique check request, real host execution and formal acceptance; develop-native composes checks through v2 delivery and local load | Limited code inspection may later report findings/unknowns; no generic safety certification |
 | 4: updates | exact release content identities | Review lineage, compatibility and permission deltas before adding update mechanics |
 | 5: second domain | local workflow prototypes can follow their entry AGENTS.md | Qualify a bounded different-domain workflow without domain branches in Loom |
 
@@ -40,3 +40,11 @@ records should identify exact content, tool/rule versions, findings and unknowns
 A capability declaration is a request; the host independently authorizes it.
 Use existing declaration formats rather than adding a competing YAML schema in
 round 1. Packaging, execution permission and safety evidence are distinct claims.
+
+## Functional delivery entry
+
+[develop-native](develop-native.md) now composes the existing native contracts.
+Next qualify an actual coding-tool handoff, then a bounded second-domain project.
+Weaver integration remains later than the spool-first product work. Update-lineage
+and broader execution profiles are separate milestones, not prerequisites for
+using the qualified local shell route.
