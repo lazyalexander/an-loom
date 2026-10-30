@@ -49,6 +49,10 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Validate Weaver review and dispatch preconditions
+        run: python -B -m unittest discover -s examples/weaver-log/tests -v
+      - name: Qualify zero-mount Weaver fixture (no model or host)
+        run: python -B examples/weaver-log/qualify_fixture.py --loom target/debug/an-loom --output .local/weaver-fixture
       - name: Validate Kimi native proposal parsing and no-retry admission
         run: python -B -m unittest discover -s examples/kimi-native/tests -v
       - run: python -m pip install -r examples/log-report/requirements.txt
