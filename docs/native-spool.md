@@ -186,3 +186,12 @@ and reclaimed scratch, including after unload. No PID guess, lock presence or
 status response grants permission to execute or reclaim. Runtime monitoring stays
 in the host; a common observation vocabulary does not imply identical backend
 support for GPU, GUI, pause or suspend. Headless remains the first qualified mode.
+
+For an interrupted instance acceptance handoff, use the host's explicit
+`spool-reconcile-accept INSTANCE RUN` preview/approval route. Loom's real CLI test
+creates an actual facade-write failure after workspace output publication, checks
+unconfirmed custody, reconciles it, and verifies unchanged attempt count, revision
+count and workspace acceptance bytes before normal downstream checkout. This is
+not a process retry, a second publication or a power-loss durability claim.
+Incomplete workspace acceptance and uncertain execution remain unsupported for
+recovery. The host owns reconciliation; Loom owns no runtime repair state machine.

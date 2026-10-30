@@ -77,8 +77,30 @@ pub(super) fn run() -> Result {
         call(&["spool-status", path(&instance)?, "run"])?["phase"],
         "settled"
     );
-    let accepted = approve(&["spool-accept", path(&instance)?, "run"])?;
+    let outer = instance.join("runs/run/accepted.json");
+    fs::create_dir(&outer)?;
+    assert!(approve(&["spool-accept", path(&instance)?, "run"]).is_err());
+    fs::remove_dir(&outer)?;
+    assert_eq!(
+        call(&["spool-status", path(&instance)?, "run"])?["artifact_status"],
+        "unconfirmed"
+    );
+    let attempts = instance.join("runs/run/job/attempts");
+    let attempt = attempts.join(run["workspace"]["attempt"].as_str().ok_or("attempt")?);
+    let workspace_record = fs::read(attempt.join("accepted.json"))?;
+    let revisions = instance.join("runs/run/job/artifacts/revisions");
+    let versions_before = fs::read_dir(&revisions)?.count();
+    let accepted = approve(&["spool-reconcile-accept", path(&instance)?, "run"])?;
     assert_eq!(accepted["status"], "succeeded");
+    assert_eq!(accepted["execution_retried"], false);
+    assert_eq!(accepted["artifacts_republished"], false);
+    assert_eq!(
+        approve(&["spool-reconcile-accept", path(&instance)?, "run"])?["already_recorded"],
+        true
+    );
+    assert_eq!(fs::read_dir(&attempts)?.count(), 1);
+    assert_eq!(fs::read_dir(&revisions)?.count(), versions_before);
+    assert_eq!(fs::read(attempt.join("accepted.json"))?, workspace_record);
     let old = call(&["spool-start", path(&instance)?, "next", path(&input)?, "15"])?;
     assert_eq!(
         call(&["spool-status", path(&instance)?, "run"])?["phase"],
