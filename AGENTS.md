@@ -107,3 +107,20 @@ Follow [the test map](tests/README.md). Private unit tests live in adjacent
 ignored real-host coverage when moving files. Domain tests stay with examples;
 quality-tool tests stay in their independent workspace. Generated output and
 private acceptance data never become source fixtures.
+
+## Test language and host coordination
+
+Follow [the test map and execution rules](tests/README.md). Retain Rust for
+internal invariants and private fault seams; prefer Python for new black-box CLI
+acceptance, and TS when browser integration needs it. Do not rewrite mature
+suites solely to unify languages or add production debug APIs for external tests.
+
+Loom owns development/package/evidence contracts; an-agent owns execution,
+termination and custody enforcement. Keep paired acceptance narrow and record
+both revisions and binary identities. Build once per selected revision and
+target/configuration, then pass explicit binary paths to external runners.
+
+The checks above remain required. Run affected Python/TS and real-host suites
+separately: Cargo success alone does not mean full acceptance. Preserve coverage,
+fault cases and gates during migration, measure build versus execution, and
+never retry unknown execution outcomes automatically.
