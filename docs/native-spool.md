@@ -85,6 +85,33 @@ directory is writable scratch. This is not live agent self-modification or stron
 containment for malicious native code. Pause, suspend, weaver execution, dependency
 resolution and automatic retention are not implemented by this adapter.
 
+## Explicit state handoff
+
+The host's optional [native state contract](https://github.com/lazyalexander/an-agent/blob/dev-advance/crates/an-agent-host/NATIVE-STATE.md)
+works with existing v1/v2 exports. An author defines the opaque state format and
+its validation in spool code, selects an existing text output as next state, and
+uses the one declared input for the selected state document. No extra Loom state
+schema, state interpreter or execution supervisor is introduced.
+
+Operators initialize state through `spool-state-init INSTANCE OUTPUT FILE`, select
+an exact committed revision through `spool-start-state INSTANCE RUN REVISION SECONDS`,
+formally accept that run, then explicitly `spool-state-commit INSTANCE EXPECTED RUN`.
+Each mutation needs its own host preview/approval. Ordinary `spool-start` remains
+unchanged and cannot promote its output through the state-commit route merely
+because its input bytes happen to match a checkpoint.
+
+The host refuses stale, unsuccessful, cancelled or unaccepted state candidates.
+Scratch collection preserves committed state and accepted artifacts. New runs do
+not inherit scratch; a fresh load may be explicitly seeded from a checked-out
+fixed state, creating a new history without implied migration or lineage. State
+meaning, business acceptance and cross-release compatibility remain author-owned.
+
+The [narrow CLI qualification](../tests/cli/README.md) packages the existing text
+reference and verifies both export formats through two state-bound host runs,
+reclaim-before-commit and post-unload inspection. Host tests own the full failure
+matrix. This is protocol evidence, not a new domain workflow or generic Loom
+state-management capability.
+
 ## Acceptance and next ownership
 
 `cargo test --test native_spool --locked` checks deterministic exclusive export and

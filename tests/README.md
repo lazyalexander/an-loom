@@ -5,6 +5,7 @@ operator observations into Loom's generic implementation to share test code.
 
 | Location | Responsibility |
 | --- | --- |
+| `tests/cli/native_state.py` | Real macOS host state handoff for unchanged v1/v2 exports; explicit built binaries, no host failure-matrix duplication |
 | `src/manifest/tests.rs` | Private manifest/path/secret/digest unit checks; imported only with `cfg(test)` |
 | `src/package/tests.rs` | Private package inventory and archive unit checks |
 | `tests/project_release.rs` | Stable Cargo integration-test entrypoint |

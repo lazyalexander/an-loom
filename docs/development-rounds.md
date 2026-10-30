@@ -83,3 +83,10 @@ termination evidence. Missing/unknown execution remains fenced. More examples,
 GPU/GUI, arbitrary hostile harnesses, public registries and additional backends
 are not prerequisites for this local headless closure. Main promotion remains
 maintainer-triggered; dev changes follow the gated merge/notification policy.
+
+Native state continuation uses existing v1/v2 exports: the host explicitly seeds
+and selects a state revision, accepts a successful output and commits against an
+expected version. Loom's narrow paired CLI qualification checks that handoff;
+host acceptance owns stale/cancelled/interrupted commit cases and fresh-environment
+continuation. No new packaging schema or automatic cross-release migration is
+implied. See [state handoff](native-spool.md#explicit-state-handoff).
