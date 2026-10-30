@@ -1,6 +1,6 @@
 # Repository quality gates
 
-`cargo quality --base origin/main` runs the pinned SPACE architecture checker
+`cargo quality --base origin/dev-advance` runs the pinned SPACE architecture checker
 through a small Rust operator adapter. The checker is a development dependency
 in its own workspace; it is not linked into Loom or a deployed spool. Upstream
 source and license remain at
@@ -33,3 +33,13 @@ Do not split a coherent file mechanically or add a baseline waiver to make a
 feature pass. Review the responsibility boundary and move effects to explicit
 adapters. Arbitrary domain payloads do not become Loom implementation merely
 because they are packaged by Loom.
+
+
+Use the actual PR target as the explicit comparison base: origin/dev-advance for
+development and origin/main for a stable promotion. The parameterless checker
+retains its legacy origin/main default; contributors must select the intended
+base explicitly. No policy fields or baselines change with this branch workflow.
+
+Both development and stable PRs run the complete existing CI matrix. Dev requires
+all five current status contexts, up-to-date branches, PRs, resolved conversations
+and no force-push/deletion. Main protection remains independent and unchanged.
