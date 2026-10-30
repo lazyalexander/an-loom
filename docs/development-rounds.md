@@ -43,8 +43,9 @@ round 1. Packaging, execution permission and safety evidence are distinct claims
 ## Functional delivery entry
 
 [develop-native](develop-native.md) now composes the existing native contracts.
-Next qualify an actual coding-tool handoff, then a bounded second-domain project.
-Weaver integration remains later than the spool-first product work. Update-lineage
+Actual tool-free Kimi handoff, the log-summary domain and optional reviewed
+Weaver preparation now have bounded qualification. Further Weaver orchestration
+remains later than the spool-first product work. Update-lineage
 and broader execution profiles are separate milestones, not prerequisites for
 using the qualified local shell route.
 
@@ -60,3 +61,25 @@ selected public materials, an actual harness draft, explicit developer review,
 a real code proposal and independent CLI execution before separately authorized
 host activation. It reuses existing task/candidate contracts and does not turn
 Weaver into a mandatory Loom or runtime dependency.
+
+
+## Local spool delivery milestones
+
+The current reviewed macOS shell route is usable, but is not the full local spool
+host. The authoritative runtime completion scope is the host's
+[implementation status](https://github.com/lazyalexander/an-agent/blob/dev-advance/doc/status.md).
+Track five bounded areas: interrupted completion, explicit state continuation,
+cooperative pause/suspension, retention/capacity, and release compatibility with
+final end-to-end qualification. These are milestones, not a promise of five PRs.
+
+Loom supplies selected contracts, project checks, immutable releases and qualified
+host clients. The host supplies execution/state/custody mechanisms. Do not grow a
+second supervisor, state interpreter or VM manager in Loom to satisfy these tasks.
+A new host contract lands and passes acceptance on host dev before Loom advances
+its relevant pin; unrelated historical qualification pins remain separate.
+
+Explicit repair of completed ledgers does not restart a task or manufacture
+termination evidence. Missing/unknown execution remains fenced. More examples,
+GPU/GUI, arbitrary hostile harnesses, public registries and additional backends
+are not prerequisites for this local headless closure. Main promotion remains
+maintainer-triggered; dev changes follow the gated merge/notification policy.
