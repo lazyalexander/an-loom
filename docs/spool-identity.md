@@ -4,6 +4,12 @@ Status: research and proposed direction, 2026-10-24. No new manifest fields,
 publisher verification, upgrade operation or signature support are implemented
 by this document.
 
+The host now provides a bounded read-only `spool-release-diff` and real independent
+fresh-instance continuation. Loom's paired v1/v2 CLI qualification packages two
+actual revisions and checks this handoff. This is byte/request review, not the
+authorized lineage or in-place migration proposed below. Existing formats stay
+unchanged; see [native handoff](native-spool.md#release-review-and-independent-continuation).
+
 ## What the current implementation establishes
 
 `src/manifest.rs` binds package name, version, description and a sorted file

@@ -150,6 +150,28 @@ See [the host storage contract](https://github.com/lazyalexander/an-agent/blob/d
 
 ## Acceptance and next ownership
 
+### Release review and independent continuation
+
+Export old and candidate archives separately, then use the host's read-only
+`spool-release-diff OLD_DELIVERY CANDIDATE_DELIVERY`. It independently verifies
+both payloads and shows exact code/contract/request differences, including
+unsupported requests. Same names or version labels establish no update authority.
+Neither export nor comparison grants execution or authenticates a successor.
+
+For the qualified path, load the candidate into a fresh instance. If the domain
+contract permits it, explicitly checkout a fixed old checkpoint and initialize
+the new history from that file, then separately approve its execution. Old state
+and products remain in the original instance. This is independent continuation,
+not in-place upgrade, automatic migration or state-schema compatibility proof.
+Edited working kits need separate review; comparison uses release baselines.
+
+The real `tests/cli/native_release.py` packages two revisions through ordinary
+check/pack/verify and both v1/v2 exporters, compares them and executes independent
+state histories while retaining the old pins. Host tests own unsupported-request,
+stale-approval and failed-candidate refusal. No new Loom release format, updater,
+dependency resolver or runtime authority is introduced. See
+[the host release contract](https://github.com/lazyalexander/an-agent/blob/dev-advance/crates/an-agent-host/NATIVE-RELEASES.md).
+
 `cargo test --test native_spool --locked` checks deterministic exclusive export and
 invalid role/output bindings. The ignored real host test requires a qualified
 `AN_AGENT_HOST_BIN`; it exercises actual CLI load, kit edit, native execution,

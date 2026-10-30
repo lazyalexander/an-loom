@@ -27,3 +27,10 @@ state suite covers that matrix. This narrow Loom suite verifies packaging and
 handoff only. All receipts and local observations remain for diagnosis. Unknown
 termination fails without retry or recursive cleanup. `commands.local.json`
 contains local paths; publish only a reviewed portable summary if needed.
+
+`native_release.py` uses the same prerequisites and arguments, with a fresh output
+directory. It checks/archives two actual source revisions, exports both native
+formats, asks the host to compare their verified bytes, and explicitly seeds a
+fresh independent instance from a fixed checkpoint. The old release/checkpoint
+remain unchanged. It neither authorizes a successor nor tests generic migration.
+Host tests own refusal/failure cases. CI pins the host implementing this command.
