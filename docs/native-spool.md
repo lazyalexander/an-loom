@@ -133,6 +133,21 @@ change. The safe point is a completed round; in-flight signaling, process/VM
 images and automatic restart remain unsupported. See the host's
 [native control contract](https://github.com/lazyalexander/an-agent/blob/dev-advance/crates/an-agent-host/NATIVE-CONTROL.md).
 
+### Private snapshot retention
+
+The host's `spool-storage INSTANCE` observes logical bytes and available headroom.
+After explicit work collection, `spool-reclaim-snapshots INSTANCE RUN` can preview
+and collect private input bodies under the existing evidence/approval boundary.
+Formal artifacts, checkpoint objects and execution/control records stay retained.
+The paired v1/v2 qualification collects input snapshots before state commit and
+then continues from the independent checkpoint. No Loom retention engine is added.
+
+Consumers use fixed artifact checkout or explicit state selection, rather than
+private snapshot paths. This does not enable general artifact GC or implicit
+discovery of references inside opaque business state. Native preparation adds
+filesystem headroom checks; these are admission pressure, not runtime quotas.
+See [the host storage contract](https://github.com/lazyalexander/an-agent/blob/dev-advance/crates/an-agent-host/NATIVE-STORAGE.md).
+
 ## Acceptance and next ownership
 
 `cargo test --test native_spool --locked` checks deterministic exclusive export and
