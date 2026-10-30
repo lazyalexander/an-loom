@@ -186,7 +186,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: lazyalexander/an-agent
-          ref: ee1639df705c6901561d622e43f874dcd7965b25
+          ref: 9e37d5dd412d377b562896ec9dbc0ee17d4bc08f
           path: .native-host
       - name: Install repository-pinned toolchain
         run: |
@@ -223,9 +223,11 @@ jobs:
           python3 -B -m unittest discover -s examples/log-summary/tests -v
           python3 -B examples/log-summary/qualify.py --loom target/debug/an-loom --host .native-host/target/debug/an-agent-host --output .local/log-summary --execute
       - name: Qualify state and round-control handoff for native v1 and v2 exports
-        run: python3 -B tests/cli/native_state.py --loom target/debug/an-loom --host .native-host/target/debug/an-agent-host --host-revision ee1639df705c6901561d622e43f874dcd7965b25 --output .local/native-state
+        run: python3 -B tests/cli/native_state.py --loom target/debug/an-loom --host .native-host/target/debug/an-agent-host --host-revision 9e37d5dd412d377b562896ec9dbc0ee17d4bc08f --output .local/native-state
       - name: Qualify two actual releases and independent state continuation
-        run: python3 -B tests/cli/native_release.py --loom target/debug/an-loom --host .native-host/target/debug/an-agent-host --host-revision ee1639df705c6901561d622e43f874dcd7965b25 --output .local/native-release
+        run: python3 -B tests/cli/native_release.py --loom target/debug/an-loom --host .native-host/target/debug/an-agent-host --host-revision 9e37d5dd412d377b562896ec9dbc0ee17d4bc08f --output .local/native-release
+      - name: Qualify native v3 workspace artifact event delivery
+        run: python3 -B tests/cli/native_events.py --loom target/debug/an-loom --host .native-host/target/debug/an-agent-host --host-revision 9e37d5dd412d377b562896ec9dbc0ee17d4bc08f --output .local/native-events
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -233,6 +235,7 @@ jobs:
           path: |
             .local/native-state/acceptance.json
             .local/native-release/acceptance.json
+            .local/native-events/acceptance.json
             .local/log-summary/acceptance.json
             .local/native-spool.json
             .local/native-spool.v2.json

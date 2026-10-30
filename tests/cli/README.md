@@ -34,3 +34,10 @@ formats, asks the host to compare their verified bytes, and explicitly seeds a
 fresh independent instance from a fixed checkpoint. The old release/checkpoint
 remain unchanged. It neither authorizes a successor nor tests generic migration.
 Host tests own refusal/failure cases. CI pins the host implementing this command.
+
+`native_events.py` uses the same prerequisites and arguments. It packages the
+existing native reference with explicit v3 event interfaces, loads two instances,
+and exercises host-owned publication, static subscription, approved delivery,
+formal acceptance and causal consumption confirmation. Fixed products and
+duplicate confirmation remain valid after work/private-input collection. This is
+an explicit foreground handoff; the host owns revocation/cancellation/fault cases.

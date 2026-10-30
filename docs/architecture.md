@@ -299,6 +299,13 @@ rewrite its historical evidence or silently turn its pin into a moving branch.
 
 ## First release-bound native spool slice
 
+Spool interaction uses workspace events and, when separately qualified, channels.
+Business branches, loops, subtask delegation and result interpretation belong to
+silk/kit. The host routes and authorizes event-driven attempts; Loom validates
+interfaces and packages code without defining a global executable business graph.
+The native v3 artifact-event adapter is a bounded foreground handoff, with no
+background listener, GUI action or low-latency data plane. See native-spool.md.
+
 The [native package adapter](native-spool.md) exports a bounded shell-code release
 for an-agent's reviewed native profile. Host instances own mutable kit copies,
 fixed-code attempts and custody. Loom does not manage running instances. This
