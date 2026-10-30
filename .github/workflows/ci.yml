@@ -21,9 +21,28 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: dtolnay/rust-toolchain@1.98.0
+      - name: Install repository-pinned toolchain
+        run: |
+          active="$(rustup show active-toolchain | awk '{print $1}')"
+          rustup default "$active"
+          while read -r toolchain _; do
+            if [ "$toolchain" != "$active" ]; then
+              rustup toolchain uninstall "$toolchain"
+            fi
+          done < <(rustup toolchain list --quiet)
+          rustc --version --verbose
+      - name: Restore Rust dependency caches
+        id: rust-cache
+        uses: Swatinem/rust-cache@e9d7b9f1e587218970671bac74e5511ed9506e6a # v2
         with:
-          components: rustfmt, clippy
+          prefix-key: loom-deps-v1
+          key: ${{ runner.os }}-${{ runner.arch }}
+          cache-bin: false
+          workspaces: |
+            . -> target
+            tools/quality -> target
+      - name: Record cache identity
+        run: echo "cache-hit=${{ steps.rust-cache.outputs.cache-hit }}"
       - run: cargo fmt --all -- --check
       - run: cargo test --locked
       - run: cargo clippy --all-targets --locked -- -D warnings
@@ -55,7 +74,27 @@ jobs:
           repository: lazyalexander/an-agent
           ref: 1fafa4cb53930aec777094223d94f253918db4e5
           path: .host-runtime
-      - uses: dtolnay/rust-toolchain@1.98.0
+      - name: Install repository-pinned toolchain
+        run: |
+          active="$(rustup show active-toolchain | awk '{print $1}')"
+          rustup default "$active"
+          while read -r toolchain _; do
+            if [ "$toolchain" != "$active" ]; then
+              rustup toolchain uninstall "$toolchain"
+            fi
+          done < <(rustup toolchain list --quiet)
+          rustc --version --verbose
+      - name: Restore Rust dependency caches
+        id: rust-cache
+        uses: Swatinem/rust-cache@e9d7b9f1e587218970671bac74e5511ed9506e6a # v2
+        with:
+          prefix-key: loom-deps-v1
+          key: ${{ runner.os }}-${{ runner.arch }}
+          cache-bin: false
+          workspaces: |
+            . -> target
+            tools/quality -> target
+            .host-runtime -> target
       - run: cargo build --manifest-path .host-runtime/Cargo.toml -p an-agent-host --bin an-agent-host --locked
       - run: mkdir .local
       - run: cargo test --test host_handoff --locked -- --ignored --nocapture
@@ -91,7 +130,27 @@ jobs:
           repository: lazyalexander/an-agent
           ref: fa8cc05e981e743bcc3cfc94fd04efd732827a6b
           path: .host-workspace-runtime
-      - uses: dtolnay/rust-toolchain@1.98.0
+      - name: Install repository-pinned toolchain
+        run: |
+          active="$(rustup show active-toolchain | awk '{print $1}')"
+          rustup default "$active"
+          while read -r toolchain _; do
+            if [ "$toolchain" != "$active" ]; then
+              rustup toolchain uninstall "$toolchain"
+            fi
+          done < <(rustup toolchain list --quiet)
+          rustc --version --verbose
+      - name: Restore Rust dependency caches
+        id: rust-cache
+        uses: Swatinem/rust-cache@e9d7b9f1e587218970671bac74e5511ed9506e6a # v2
+        with:
+          prefix-key: loom-deps-v1
+          key: ${{ runner.os }}-${{ runner.arch }}
+          cache-bin: false
+          workspaces: |
+            . -> target
+            tools/quality -> target
+            .host-workspace-runtime -> target
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -125,7 +184,27 @@ jobs:
           repository: lazyalexander/an-agent
           ref: e3481546e72372c6da6d0f28a187a0504d3a2dc3
           path: .native-host
-      - uses: dtolnay/rust-toolchain@1.98.0
+      - name: Install repository-pinned toolchain
+        run: |
+          active="$(rustup show active-toolchain | awk '{print $1}')"
+          rustup default "$active"
+          while read -r toolchain _; do
+            if [ "$toolchain" != "$active" ]; then
+              rustup toolchain uninstall "$toolchain"
+            fi
+          done < <(rustup toolchain list --quiet)
+          rustc --version --verbose
+      - name: Restore Rust dependency caches
+        id: rust-cache
+        uses: Swatinem/rust-cache@e9d7b9f1e587218970671bac74e5511ed9506e6a # v2
+        with:
+          prefix-key: loom-deps-v1
+          key: ${{ runner.os }}-${{ runner.arch }}
+          cache-bin: false
+          workspaces: |
+            . -> target
+            tools/quality -> target
+            .native-host -> target
       - run: cargo build --manifest-path .native-host/Cargo.toml -p an-agent-host --bin an-agent-host --locked
       - run: mkdir -p .local
       - name: Export, load, edit, execute, cancel, accept and reload a native spool

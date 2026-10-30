@@ -96,3 +96,19 @@ warm cache runs. Record platform, toolchain, revisions and repeated observations
 Changing test language does not remove compilation of the product or its
 dependencies. Optimize measured bottlenecks; do not infer savings from a single
 combined CI duration. Current workflows remain unchanged by this document.
+
+
+## CI cache discipline
+
+Use the repository toolchain as the single version source and default compiler,
+including commands outside the checkout. On ephemeral hosted runners only, remove
+unused preinstalled toolchains: rust-cache fingerprints every installed compiler,
+so unrelated stable releases can otherwise invalidate identical-source caches.
+Never perform this cleanup on developer machines.
+
+Dependency-only Rust caches cover Loom, the independent quality workspace and each
+qualification job's explicitly pinned host checkout. Job identity keeps different
+host revisions separate. Keep all checks and artifact validation active on hits.
+Do not cache acceptance records, working documents or credentials. Compare a miss
+and exact hit on the same commit, including restore/save time, and record runner
+image differences. A single pair is observational, not a performance guarantee.
