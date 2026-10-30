@@ -82,7 +82,7 @@ implicitly deleted. Outputs remain in the per-run host artifact catalog.
 Kit edits are allowed between runs. Runtime code snapshots are read-only. Domain
 scripts use `AN_SPOOL_SILK_DIR`, `AN_SPOOL_KIT_DIR` and `AN_SPOOL_INPUT`; their current
 directory is writable scratch. This is not live agent self-modification or strong
-containment for malicious native code. Pause, suspend, weaver execution, dependency
+containment for malicious native code. Live process pause/suspension, weaver execution, dependency
 resolution and automatic retention are not implemented by this adapter.
 
 ## Explicit state handoff
@@ -111,6 +111,27 @@ reference and verifies both export formats through two state-bound host runs,
 reclaim-before-commit and post-unload inspection. Host tests own the full failure
 matrix. This is protocol evidence, not a new domain workflow or generic Loom
 state-management capability.
+
+### Round-boundary host control
+
+The qualified host also exposes `spool-pause`, `spool-suspend INSTANCE REVISION`
+and `spool-resume`, with separate preview/approval for every transition. Pause
+fences new starts, state mutations and kit edits only after all started attempts
+have confirmed settlement and successful outputs have formal acceptance. Suspend
+additionally pins the current committed checkpoint and working-code identity.
+Inspection and existing guarded artifact reclamation remain available.
+
+Resume verifies retained bindings and reopens admission without executing or
+injecting state. The next round explicitly selects its state input and obtains
+a new approval. The host's control generation rejects pre-pause execution and
+edit proposals. The paired v1/v2 CLI qualification exercises this path through
+the existing source package; Loom adds no model loop or lifecycle supervisor.
+
+Activation upgrades the host's private instance record so older hosts refuse it
+instead of ignoring control. Package identity and v1/v2 export formats do not
+change. The safe point is a completed round; in-flight signaling, process/VM
+images and automatic restart remain unsupported. See the host's
+[native control contract](https://github.com/lazyalexander/an-agent/blob/dev-advance/crates/an-agent-host/NATIVE-CONTROL.md).
 
 ## Acceptance and next ownership
 
