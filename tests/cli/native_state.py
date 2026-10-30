@@ -62,6 +62,7 @@ def main():
         seed.write_text("hello\n")
         revision = approved("spool-state-init", instance, "report.txt", seed)["state"]["revision"]
         history = [revision]
+        controls = []
         for run, expected in [("first", "Report\nHELLO\n"), ("second", "Report\nREPORT\nHELLO\n")]:
             result = approved("spool-start-state", instance, run, revision, "15")
             assert result["status"] == "succeeded"
@@ -75,9 +76,25 @@ def main():
             saved = root / f"{schema}-{run}.txt"
             call(host, "artifact-checkout", checkpoint["catalog"], revision, saved)
             assert saved.read_text() == expected
+            if run == "first":
+                paused = approved("spool-pause", instance)["round_control"]
+                assert paused["mode"] == "paused"
+                resumed = approved("spool-resume", instance)["round_control"]
+                assert resumed["mode"] == "active"
+                assert not (instance / "runs/second/job").exists()
+                controls.extend([paused, resumed])
+        suspended = approved("spool-suspend", instance, revision)["round_control"]
+        assert suspended["mode"] == "suspended"
+        assert suspended["checkpoint"]["binding"]["revision"] == revision
+        assert call(host, "spool-state-show", instance)["head"] == revision
+        resumed = approved("spool-resume", instance)["round_control"]
+        assert resumed["mode"] == "active"
+        controls.extend([suspended, resumed])
         approved("spool-unload", instance)
         assert call(host, "spool-state-show", instance)["head"] == revision
-        qualified.append({"format": schema, "release": result["release"], "revisions": history})
+        qualified.append({"format": schema, "release": result["release"], "revisions": history,
+                          "control_modes": [value["mode"] for value in controls],
+                          "control_generations": [value["generation"] for value in controls]})
     summary = {"schema": "loom-native-state-qualification-v1", "passed": True,
                "host_revision": options.host_revision,
                "host_sha256": hashlib.sha256(host.read_bytes()).hexdigest(),

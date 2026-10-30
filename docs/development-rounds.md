@@ -90,3 +90,10 @@ expected version. Loom's narrow paired CLI qualification checks that handoff;
 host acceptance owns stale/cancelled/interrupted commit cases and fresh-environment
 continuation. No new packaging schema or automatic cross-release migration is
 implied. See [state handoff](native-spool.md#explicit-state-handoff).
+
+The first native control slice pauses admission between confirmed rounds, pins a
+checkpoint for suspension and explicitly resumes without executing work. The
+paired v1/v2 qualification covers those commands and unchanged exports. The host
+owns generation fences, settlement and control evidence; Loom owns no control
+state machine. In-flight cooperative safe points and process restoration remain
+outside this qualification.
