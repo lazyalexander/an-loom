@@ -19,15 +19,15 @@ def main():
     loom, host = args.loom.resolve(strict=True), args.host.resolve(strict=True)
     events = []
 
-    def call(binary, *argv):
+    def call(binary, *argv, expected=0):
         result = subprocess.run([str(binary), *map(str, argv)], capture_output=True,
                                 text=True, timeout=90)
         events.append(dict(command=str(argv[0]), code=result.returncode,
                            stdout=result.stdout, stderr=result.stderr))
         (root/'commands.local.json').write_text(json.dumps(events, indent=2))
-        if result.returncode:
+        if result.returncode != expected:
             raise RuntimeError(result.stderr + result.stdout)
-        return json.loads(result.stdout)
+        return json.loads(result.stdout) if result.stdout.strip() else None
 
     def approved(binary, *argv):
         preview = call(binary, *argv)
@@ -68,6 +68,18 @@ def main():
         approved(host, 'spool-reclaim', instance, name)
         assert not (instance/'runs'/name/'job/work').exists()
     assert reports[0][1]['outputs'] != reports[1][1]['outputs']
+    source.write_text('UNKNOWN rejected\n')
+    preview = call(host, 'spool-start', instance, 'invalid', source, '15')
+    failed = call(host, 'spool-start', instance, 'invalid', source, '15',
+                  '--approve', preview['approval_sha256'], expected=1)
+    assert failed['status'] == 'failed'
+    assert failed['workspace']['termination_confirmed'] is True
+    call(host, 'spool-accept', instance, 'invalid', expected=1)
+    call(host, 'spool-artifacts', instance, 'invalid', expected=1)
+    assert not (instance/'runs/invalid/accepted.json').exists()
+    assert not (instance/'runs/invalid/job/artifacts').exists()
+    approved(host, 'spool-reclaim', instance, 'invalid')
+    assert not (instance/'runs/invalid/job/work').exists()
     approved(host, 'spool-unload', instance)
     for name, binding, expected in reports:
         target = root/(name+'-retained.txt')
@@ -75,7 +87,7 @@ def main():
              binding['outputs'][0]['binding']['revision'], target)
         assert target.read_text() == expected
     summary = dict(schema='log-summary-qualification-v1', passed=True, model_invoked=False,
-                   runs=2, fixed_versions_survive_input_edit_reclaim_unload=True,
+                   runs=3, accepted_runs=2, failed_run_rejected=True, fixed_versions_survive_input_edit_reclaim_unload=True,
                    candidate_sha256=hashlib.sha256(candidate.read_bytes()).hexdigest())
     (root/'acceptance.json').write_text(json.dumps(summary, indent=2)+'\n')
     print(json.dumps(summary))
