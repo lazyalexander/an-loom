@@ -1,0 +1,33 @@
+{
+  "schema": "weaver-log-qualification-v1",
+  "harness": "Kimi Code 2.3.1",
+  "model": "kimi-code/k3",
+  "real_draft_call_completed": true,
+  "real_implementation_call_completed": true,
+  "review": "explicit developer confirmation of selected digest; local record, no authentication claim",
+  "sources": "public example materials and explicitly confirmed decisions",
+  "standalone": {
+    "passed": true,
+    "host_invoked": false,
+    "host_acceptance": false,
+    "archive_sha256": "f2369cfc639e03464a492c853734795cf176534819abc4d9791a4761cc2109c2",
+    "candidate_sha256": "1da374290f69e67810cf1ba0c90eef13e90c888a4cd4252bbd998fc6d002d8eb",
+    "review_sha256": "2ea5ba8665a05e5df07f2024c35d4a20c768cdf98b472b9b05c6430a0d0d8333"
+  },
+  "managed": {
+    "passed": true,
+    "same_checked_archive": true,
+    "independent_output_matches_managed": true,
+    "execution_approved_separately": true,
+    "formal_artifact_accepted": true,
+    "model_invoked_by_host": false,
+    "host_sha256": "741722ee606374f3b2943b01f495fa7f4ec9b1b930648109fcb00089efa5f6dc"
+  },
+  "provider_usage": null,
+  "automatic_retries": 0,
+  "limitations": [
+    "Trusted installed harness, not hostile-client isolation",
+    "CI uses a synthetic review/generator fixture, not paid model calls",
+    "No general Weaver runtime, private knowledge-base authorization or multi-file agent sandbox"
+  ]
+}

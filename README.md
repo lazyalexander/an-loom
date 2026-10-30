@@ -167,3 +167,6 @@ selected host. It reuses existing contracts and refuses automatic resubmission.
 A [real Kimi native handoff](examples/kimi-native/README.md) demonstrates a
 reviewed model proposal becoming a checked, loaded and independently executed
 spool. Model calls are opt-in operator acceptance, outside Loom's runtime.
+
+Weaver task preparation and independent versus managed spool operation are
+described in [the Weaver contract](docs/weaver.md).

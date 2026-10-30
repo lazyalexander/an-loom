@@ -53,3 +53,10 @@ The [log summary spool](../examples/log-summary/README.md) is the second-domain
 operator example: deterministic candidate, domain acceptance, v2 delivery and two
 real host runs with retained fixed versions after input edits, reclaim and unload.
 It does not claim a second live coding-agent integration.
+
+
+The optional [Weaver log adapter](../examples/weaver-log/README.md) qualifies
+selected public materials, an actual harness draft, explicit developer review,
+a real code proposal and independent CLI execution before separately authorized
+host activation. It reuses existing task/candidate contracts and does not turn
+Weaver into a mandatory Loom or runtime dependency.
