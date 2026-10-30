@@ -101,7 +101,8 @@ Before committing:
 - `cargo fmt --all -- --check`
 - `cargo test --locked`
 - `cargo clippy --all-targets --locked -- -D warnings`
-- `cargo quality --base origin/dev-advance`
+- `cargo quality --base TARGET` — use `origin/dev-advance` for development PRs
+  and `origin/main` for stable promotions, matching the actual PR target.
 - `cargo test --manifest-path tools/quality/Cargo.toml --locked`
 
 The TOML quality policy and empty baseline are merge gates, not sandbox grants.
