@@ -22,6 +22,7 @@ operator observations into Loom's generic implementation to share test code.
 | `tests/host_handoff.rs` | Opt-in real macOS host acceptance; explicitly enabled in CI |
 | `examples/log-report/tests/` | Domain document checks owned by the example |
 | `examples/log-report/desktop/tests/` | Observation qualification checks; not real GUI acceptance |
+| `examples/kimi-native/tests/` | Credential-free proposal envelope and generation no-retry tests; paid acceptance is separate |
 | `tools/quality/tests/` and its test modules | Independently locked quality-tool checks |
 
 `cargo test --locked` runs always-on Rust checks. It lists but does not execute

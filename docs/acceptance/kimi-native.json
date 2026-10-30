@@ -1,0 +1,32 @@
+{
+  "schema": "an-loom-kimi-native-acceptance-v1",
+  "client": "Kimi Code",
+  "client_version": "2.3.1",
+  "model": "kimi-code/k3",
+  "model_invoked": true,
+  "fixture": "lowercase-sort-unique-prefix native kit",
+  "native_tape": "harness-owned; not ingested",
+  "model_tools": [],
+  "hostile_client_containment_qualified": false,
+  "automatic_retries": 0,
+  "response_normalization": "one bullet and one complete JSON code fence; no second model call for parsing",
+  "candidate_sha256": "18bd9ab97ea38c934601f5e625688206f32f96dddabec094d4f3d04ce44eda7e",
+  "source_unchanged": true,
+  "checked_release": "dc896567befc76cd0a6cbf40eada34d717575ec4f73102985f7e8b685e88a06a",
+  "native_release": "fc23fe2f24683406115cb2eff8ff0fe956cac1c1f6aa5232cb11e6e4ceceb5b5",
+  "formal_output_sha256": "78352a538a32ac22dd319a4b9f5abf887d95bee6576524382ccde20cc5ccfa50",
+  "verified": [
+    "reviewed candidate received",
+    "candidate-specific host domain checks passed",
+    "frozen archive delivered",
+    "v2 host admission passed",
+    "separate runtime approval",
+    "formal output fixed-version checkout",
+    "retained output after reclaim/unload"
+  ],
+  "model_cancellation": "not exercised here; remote cancellation not claimed",
+  "token_usage": null,
+  "loom_source_revision": "b1726155f134ed68b685fc13a241fa24e40b97ae",
+  "host_binary_sha256": "b46bece318834f33d359dd28df9a0679a2ea24b36c96d9ad91177ed06addcb9c",
+  "client_binary_sha256": "f06ba6a3bb7ed2fc1f82590f7c22570736d9ee7344059fa92404ca75dc2d5b45"
+}
