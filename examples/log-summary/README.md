@@ -33,3 +33,8 @@ a new runtime, log streaming or a full production observability system.
 outputs and paths are local operational evidence. Do not publish those raw files.
 The development task uses the existing text scaffold and retains its package
 name; it is a distinct content-identified release, not a new runtime profile.
+
+The driver also submits an unknown log level as a third run. Its real execution
+must fail with confirmed termination; formal acceptance and artifact discovery
+must refuse. Scratch is reclaimed only afterward, and both earlier successful
+versions are checked again after unloading. A partial report is not a product.
