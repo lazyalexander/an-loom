@@ -75,3 +75,8 @@ new-event dispatch and independent old/new state. Runtime cutover remains host-o
 The data/state smoke uses finite host private-material maintenance for two runs,
 retaining state-commit, stale conflict and downstream-product assertions. Larger
 capacity/concurrency/collection-fault acceptance remains host-owned.
+
+The data/state smoke also closes one old accepted producer version through the
+host, refuses new revision checkout/input selection, and retains original
+accepted-output inventory, consumption confirmation, checkpoints and saved
+reports. Host suites own concurrent admission/cancellation and record-fault cases.

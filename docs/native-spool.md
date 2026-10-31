@@ -495,6 +495,32 @@ stay retained. Loom adds no runtime collector or retention authority.
 The packaged log-spool acceptance collects two accepted runs through each phase,
 then verifies explicit state commit, stale-state refusal and fixed downstream
 products as before. The host suite owns larger multi-round inputs, concurrent
-consumer progress, cancellation and lost collection receipt fences. General native
-formal-product retirement still requires a host-owned reference/lease contract;
-Loom declarations or absence of observed readers cannot authorize it.
+consumer progress, cancellation and lost collection receipt fences. Native formal
+payload deletion still requires a host-owned reference/release contract; Loom
+declarations or absence of observed readers cannot authorize it.
+
+## Host artifact input admission retirement
+
+`spool-artifact-retire INSTANCE RUN OUTPUT [--approve HASH]` closes one verified
+accepted native output to new revision-based inputs without deleting payloads or
+changing their identities. New checkout/edit-parent selection, native business
+input/event delivery and workspace artifact preparation honor the host fence.
+Old direct/event/batch previews cannot authorize a new acquisition after closure.
+Other outputs and new revisions are independent. Already-acquired inputs,
+output acceptance, state commit, causal confirmation and private collection can
+still verify retained evidence. A committed checkpoint is an independent version.
+
+Closure writes use the catalog's existing lock and exclusive creation. Immutable
+input reads check the monotonic fence before and after acquisition, preserving
+concurrent readers. Already-acquired bytes can finish; a concurrent closure may
+refuse preparation without authorizing a retry.
+A torn/invalid record fails closed and is not overwritten as a retry. It is not
+access revocation for raw files, independent copies or an older host executable;
+use the qualified host consistently. There is no reference census, lease release,
+automatic GC or deletion grant. Native release schemas and old package bytes do
+not change. See [the host storage contract](https://github.com/lazyalexander/an-agent/blob/dev-advance/crates/an-agent-host/NATIVE-STORAGE.md#retiring-new-artifact-input-admission).
+
+The packaged log-spool smoke closes one old producer output, refuses a new
+stateful input selection, and preserves existing consumption proof, independent
+state and saved reports. Host tests own concurrent retirement, cancellation,
+concurrent-reader behavior and marker faults. Loom adds no runtime retirement policy.
