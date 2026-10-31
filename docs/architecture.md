@@ -240,7 +240,8 @@ cancellation and acceptance behavior must come from the actual host contract.
 ## Platform policy
 
 See [platform boundaries](platforms.md). Host, shuttle and workload targets are
-independent. CPU Linux is the workflow deployment default; a per-target binary
+independent. Local reviewed headless execution is the current delivery target;
+future Linux profiles require independent qualification. A per-target binary
 does not imply portable sandbox or GUI semantics. GPU/platform variants must be
 explicit. Loom describes and validates requirements; the host grants execution
 and the backend enforces the selected boundary.

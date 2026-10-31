@@ -4,7 +4,7 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
-import platform
+from host_qualification import require_native_workspace
 import signal
 import subprocess
 
@@ -18,8 +18,7 @@ def main():
     parser.add_argument("--host-revision", required=True)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
-    if platform.system() != "Darwin":
-        raise SystemExit("Real macOS native enforcement required; no fallback")
+    require_native_workspace()
     root, loom, host = args.output.resolve(), args.loom.resolve(strict=True), args.host.resolve(strict=True)
     root.mkdir(mode=0o700)
     calls = []

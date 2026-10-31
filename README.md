@@ -19,8 +19,8 @@ compiles and tests the selected Rust source. Loom receives matching output, emit
 the fixed host declaration, and assembles a portable local release.
 
 The implemented deployment adapter is deliberately narrow: one dependency-free
-Rust source, one executable, `file-kit-v1`, and the host's existing macOS isolated
-build. General packages may contain other languages and files. A new build or
+Rust source, one executable, `file-kit-v1`, and the host's existing isolated
+build profile. See the [platform support and qualification matrix](docs/platforms.md). General packages may contain other languages and files. A new build or
 runtime profile requires a separately qualified adapter and host support.
 This is not yet a general multi-stage workflow executor or a code-generation agent.
 
@@ -160,7 +160,7 @@ The [implementation boundary audit](docs/architecture.md#implementation-boundary
 ## Reviewed native spool packages
 
 The [native spool adapter](docs/native-spool.md) exports read-only silk code and
-kit baselines for an-agent's bounded macOS instance lifecycle. The included
+kit baselines for an-agent's qualified headless instance lifecycle. The included
 [lightweight text spool](examples/native-spool/README.md) needs no model or install
 hook. Packaging remains independent from host authorization and execution.
 
