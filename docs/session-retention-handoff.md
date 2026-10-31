@@ -1,8 +1,9 @@
 # Session and retention development handoff
 
-Status: coordinated design only. No manifest, CLI, runtime grant or package format
-changes in this slice. GUI and TUI are deferred. Local headless execution remains
-the qualification target.
+Status: native input-reference handoff qualified; the remaining retention/session
+work is a coordinated plan. No manifest, runtime grant or package format changes
+are required for the initial handoff. GUI and TUI are deferred. Local headless
+execution remains the qualification target.
 
 The host's [session and retention plan](https://github.com/lazyalexander/an-agent/blob/dev-advance/doc/session-and-retention.md)
 is authoritative for the proposed runtime work. It separates formal artifact
@@ -33,9 +34,12 @@ Native harness IDs stay private and cannot grant access to a workspace.
 
 ## Phased compatibility work
 
-1. When the host has native reference acquisition/release, add a narrow packaged
-   producer/consumer case using exact artifact and state identities. Keep legacy
-   outputs retained by default. Host tests own interruption, races and corruption.
+1. The packaged log case now checks host-owned data/state claims against exact
+   revisions and the exported release, retaining them through collection and unload.
+   Only cancelled-owner release is currently qualified by the host. Successful
+   owners, opaque state dependencies and legacy/unmanaged readers remain retained.
+   Host tests own interruption, races and corruption; Loom does not infer deletion
+   authority from a reference observation.
 2. After the host qualifies formal collection, verify that a declared retained
    dependency blocks it and an explicitly released version becomes unavailable
    without changing unrelated products or package bytes. Missing content must

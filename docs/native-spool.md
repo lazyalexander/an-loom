@@ -516,7 +516,7 @@ concurrent readers. Already-acquired bytes can finish; a concurrent closure may
 refuse preparation without authorizing a retry.
 A torn/invalid record fails closed and is not overwritten as a retry. It is not
 access revocation for raw files, independent copies or an older host executable;
-use the qualified host consistently. There is no reference census, lease release,
+use the qualified host consistently. There is no complete reference census,
 automatic GC or deletion grant. Native release schemas and old package bytes do
 not change. See [the host storage contract](https://github.com/lazyalexander/an-agent/blob/dev-advance/crates/an-agent-host/NATIVE-STORAGE.md#retiring-new-artifact-input-admission).
 
@@ -525,9 +525,25 @@ stateful input selection, and preserves existing consumption proof, independent
 state and saved reports. Host tests own concurrent retirement, cancellation,
 concurrent-reader behavior and marker faults. Loom adds no runtime retirement policy.
 
-The next [retention/session handoff](session-retention-handoff.md) is a plan.
-The native reference ledger, formal payload collector and session coordinator
-are not yet supported by this adapter.
+### Native input reference handoff
+
+The host now registers exact managed artifact/checkpoint inputs when admitting a
+new native run. `spool-input-references INSTANCE RUN` reports the run-bound claims;
+preview and raw-file selection do not acquire them. The packaged log-spool smoke
+checks that its data/checkpoint revisions and release match the claims, which
+remain after private collection, state commit and unload. No release-format or
+manifest change is needed, and Loom owns no runtime reference store.
+
+The host's `spool-input-release INSTANCE RUN [--approve HASH]` initially supports
+only confirmed cancelled owners after work and snapshot collection. Successful
+owners and incomplete registrations stay retained. Host CI owns cancellation,
+partial registration and lost-confirmation qualification. Source claims are not a
+complete census of old/unmanaged readers or opaque checkpoint dependencies. The
+operation deletes no payload and cannot authorize collection by itself.
+
+The remaining [retention/session handoff](session-retention-handoff.md) is a plan.
+Successful-owner release, formal payload collection and the session coordinator
+are not yet supported by this adapter. Unknown outcomes are not retried.
 
 ### Observation and control concurrency
 

@@ -83,6 +83,11 @@ def main():
         started = approved("spool-start-data-state", b, name, request, 15)
         assert started["workspace"]["termination_confirmed"] is True
         approved("spool-accept", b, name)
+    references = call(host, "spool-input-references", b, "first")
+    assert references["collection_authorized"] is False
+    assert references["plan"]["owner"]["release"] == exported
+    assert [c["reference"]["binding"]["revision"] for c in references["claims"]] == [data, initial]
+    assert all(c["release"] is None for c in references["claims"])
     for material in ["work", "snapshots"]:
         selection = root / ("collect-" + material + ".local.json")
         selection.write_text(json.dumps({"schema": "an-native-private-collection-request-v1",
@@ -209,12 +214,16 @@ def main():
     approved("spool-unload", b)
     state = call(host, "spool-state-show", b)
     assert state["head"] == head
+    # Successful execution still needs historical input custody after collection,
+    # state commit and unload. Packaging cannot release runtime references.
+    assert call(host, "spool-input-references", b, "first") == references
     summary = {"schema": "loom-data-state-qualification-v1", "passed": True,
         "host_revision": args.host_revision, "host_sha256": hashlib.sha256(host.read_bytes()).hexdigest(),
         "loom_sha256": hashlib.sha256(loom.read_bytes()).hexdigest(), "release": exported,
         "data_revision": data, "initial_state": initial, "committed_state": head,
         "stale_commit_refused": True, "outputs_survive_collection": True, "finite_dispatch_qualified": True, "subscription_control_qualified": True, "receiver_cutover_qualified": True, "private_collection_qualified": True,
-        "artifact_retirement_qualified": True, "model_invoked": False, "automatic_retries": 0}
+        "artifact_retirement_qualified": True, "input_references_qualified": True,
+        "model_invoked": False, "automatic_retries": 0}
     (root / "acceptance.json").write_text(json.dumps(summary, indent=2))
     print(json.dumps(summary))
 
