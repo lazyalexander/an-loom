@@ -83,8 +83,15 @@ def main():
         started = approved("spool-start-data-state", b, name, request, 15)
         assert started["workspace"]["termination_confirmed"] is True
         approved("spool-accept", b, name)
-        approved("spool-reclaim", b, name)
-        approved("spool-reclaim-snapshots", b, name)
+    for material in ["work", "snapshots"]:
+        selection = root / ("collect-" + material + ".local.json")
+        selection.write_text(json.dumps({"schema": "an-native-private-collection-request-v1",
+            "material": material, "runs": ["first", "stale"]}))
+        preview = call(host, "spool-storage-collect", b, selection)
+        assert preview["executed"] is False and preview["plan"]["runs"] == ["first", "stale"]
+        collected = call(host, "spool-storage-collect", b, selection, "--approve", preview["approval_sha256"])
+        assert len(collected["completed"]) == 2 and collected["automatic_retries"] == 0
+        call(host, "spool-storage-collect", b, selection, success=False)
     current = approved("spool-state-commit", b, initial, "first")["revision"]
     conflict = call(host, "spool-state-commit", b, initial, "stale", success=False)
     assert conflict["status"] == "conflict" and conflict["automatic_retries"] == 0
@@ -192,7 +199,7 @@ def main():
         "host_revision": args.host_revision, "host_sha256": hashlib.sha256(host.read_bytes()).hexdigest(),
         "loom_sha256": hashlib.sha256(loom.read_bytes()).hexdigest(), "release": exported,
         "data_revision": data, "initial_state": initial, "committed_state": head,
-        "stale_commit_refused": True, "outputs_survive_collection": True, "finite_dispatch_qualified": True, "subscription_control_qualified": True, "receiver_cutover_qualified": True,
+        "stale_commit_refused": True, "outputs_survive_collection": True, "finite_dispatch_qualified": True, "subscription_control_qualified": True, "receiver_cutover_qualified": True, "private_collection_qualified": True,
         "model_invoked": False, "automatic_retries": 0}
     (root / "acceptance.json").write_text(json.dumps(summary, indent=2))
     print(json.dumps(summary))
