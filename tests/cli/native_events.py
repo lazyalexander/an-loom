@@ -78,10 +78,19 @@ def main():
     assert inventory["execution_granted"] is False
     assert inventory["deliveries"][0]["phase"] == "awaiting-authorization"
     assert list((b / "runs").iterdir()) == []
-    delivered = approved("spool-event-deliver", workspace, event["id"], "reports")
-    assert delivered["result"]["workspace"]["termination_confirmed"] is True
-    assert delivered["consumed"] is False
-    run = delivered["context"]["delivery"]
+    call(host, "session-create", workspace, "packaged-report")
+    request = root / "session-request.json"
+    request.write_text(json.dumps({"schema": "an-native-event-dispatch-request-v1", "name": "report",
+        "entries": [{"event": event["id"], "subscription": "reports"}]}))
+    owned = approved("session-run", workspace, "packaged-report", "report", request)
+    assert owned["status"] == "succeeded"
+    observed = call(host, "session-show", workspace, "packaged-report")
+    assert observed["threads"][0]["settled"] is True
+    attempt = observed["threads"][0]["attempts"][0]
+    approved("session-control", workspace, "packaged-report", "closed")
+    assert attempt["termination_confirmed"] is True
+    assert owned["result"]["consumed"] is False
+    run = attempt["run"]
     assert call(host, "spool-events-pending", workspace)["deliveries"][0]["phase"] == "awaiting-acceptance"
     approved("spool-accept", b, run)
     assert call(host, "spool-events-pending", workspace)["deliveries"][0]["phase"] == "awaiting-confirmation"
@@ -110,13 +119,50 @@ def main():
     duplicate = call(host, "spool-event-deliver", workspace, event["id"], "reports")
     assert duplicate["executed"] is False and duplicate["disposition"] == "already-consumed"
     assert len(list((b / "runs" / run / "job/attempts").iterdir())) == 1
+    # Peer calls use the same packaged entrypoints without a workspace mailbox.
+    facts_before = (workspace / "facts/log.jsonl").read_bytes()
+    peer = root / "peer-request.local.json"
+    peer.write_text(json.dumps({"schema": "an-native-peer-request-v1",
+        "source_run": "produce", "source_output": "report.txt", "target": str(b),
+        "reply_output": "report.txt", "wall_seconds": 15}))
+    approved("spool-peer", "request", a, "packaged", peer)
+    wait = call(host, "spool-peer", "show", a, "packaged")
+    assert wait["waiting_for_reply"] and not wait["waiting_process_created"]
+    peer_run = approved("spool-peer", "run", a, "packaged", "request")["run"]
+    approved("spool-accept", b, peer_run)
+    approved("spool-peer", "reply", a, "packaged")
+    continuation = approved("spool-peer", "run", a, "packaged", "response")["run"]
+    approved("spool-accept", a, continuation)
+    final = call(host, "spool-artifacts", a, continuation)
+    destination = root / "peer-report.txt"
+    call(host, "artifact-checkout", final["catalog"], final["outputs"][0]["binding"]["revision"], destination)
+    assert destination.read_text() == "Report\nREPORT\nREPORT\nHELLO\n"
+    assert (workspace / "facts/log.jsonl").read_bytes() == facts_before
+    assert call(host, "spool-input-references", a, continuation)["disposition"] == "registered"
+    # The same unmodified exported release can use the host's independent owner.
+    supervised_input = root / "supervised-input.txt"
+    supervised_input.write_text("supervised\n")
+    managed = approved("spool-supervisor", "start", a, "supervised", supervised_input, 15)
+    assert managed["status"] == "succeeded"
+    view = call(host, "spool-supervisor", "show", a, "supervised")
+    assert view["native"]["termination_confirmed"] is True
+    approved("spool-accept", a, "supervised")
+    managed_outputs = call(host, "spool-artifacts", a, "supervised")
+    managed_file = root / "supervised-report.txt"
+    call(host, "artifact-checkout", managed_outputs["catalog"],
+         managed_outputs["outputs"][0]["binding"]["revision"], managed_file)
+    assert managed_file.read_text() == "Report\nSUPERVISED\n"
+    approved("spool-reclaim", a, "supervised")
+    assert call(host, "spool-artifacts", a, "supervised") == managed_outputs
     summary = {"schema": "loom-native-event-qualification-v1", "passed": True,
+               "independent_supervisor_package": True, "peer_round_trip": True, "private_workspace_mailbox": False,
                "host_revision": options.host_revision, "host_sha256": hashlib.sha256(host.read_bytes()).hexdigest(),
                "loom_sha256": hashlib.sha256(loom.read_bytes()).hexdigest(), "platform": platform.platform(),
                "release": exported["release"], "event": event["id"], "result_revision": report,
                "model_invoked": False, "execution_retried": False, "background_dispatch": False,
                "host_delivery_inventory_qualified": True,
-               "successful_stateless_input_release_qualified": True}
+               "successful_stateless_input_release_qualified": True,
+               "host_session_owned_execution_qualified": True}
     (root / "acceptance.json").write_text(json.dumps(summary, indent=2))
     print(json.dumps(summary))
 

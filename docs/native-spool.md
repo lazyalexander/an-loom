@@ -548,8 +548,9 @@ complete census of old/unmanaged readers or opaque checkpoint dependencies. The
 operation deletes no payload and cannot authorize collection by itself.
 
 The remaining [retention/session handoff](session-retention-handoff.md) is a plan.
-Stateful-success release, formal payload collection and the session coordinator
-are not yet supported by this adapter. Unknown outcomes are not retried. Loom
+Stateful-success release and formal payload collection remain unsupported. The
+packaged event smoke now runs in an explicit host session/finite thread and closes
+the session before ordinary product acceptance; it introduces no release fields. Unknown outcomes are not retried. Loom
 adds no release policy, package fields or runtime store for this host capability.
 
 ### Observation and control concurrency
