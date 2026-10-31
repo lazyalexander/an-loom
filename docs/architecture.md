@@ -26,22 +26,22 @@ The product goal remains natural assistance inside existing applications.
 an-loom serves the developers who make that assistance possible. CLI support
 comes first; a graphical workflow editor is optional future presentation.
 
-## Observed starting point
+## Implemented starting point
 
-The inspected an-waver main checkout provides content-addressed file packaging,
-archive verification, explicit include lists, bounded source inspection, starter
-templates, build-result reception and command briefs for other coding tools.
+Loom provides allowlisted content-addressed packaging, archive verification,
+bounded source inspection, starter templates, candidate/check identity binding,
+build-result reception and bounded tasks for existing coding tools. The legacy
+deployment adapter remains a fixed Rust source and two predefined profiles.
+The separate [native spool adapter](native-spool.md) exports release-bound
+silk/kit roles, headless runtime requests, explicit state slots and v3 events.
+Generic packaging does not imply arbitrary controlled runtime support.
 
-Its spool adapter assumes a fixed Rust source path and executable and accepts
-two predefined stdio/file profiles. Declaration generation is tied to those
-profiles. Code-tool integration prepares instructions rather than managing a
-complete development session. These are useful foundations, but do not yet
-provide a project model for assembling existing multi-component domain workflows.
-
-The inspected an-agent host already has execution backend reconciliation,
-immutable artifact revisions, bounded instance commits and checkpoint delivery.
-Those implementations remain narrow acceptance profiles. A replacement developer
-tool must not advertise a general runtime that the host cannot admit or execute.
+Paired acceptance qualifies real native instances, kit edits/reset, cancellation,
+fixed artifacts/state, finite event operation and private-material collection.
+The host owns those guarantees. Loom does not replace a coding tool's session,
+the host's supervisor, or the domain project's own workflow/acceptance rules.
+Use [development rounds](development-rounds.md) for authoring/check status and
+[native spool](native-spool.md) for the qualified package/host handoff.
 
 ## Responsibilities
 

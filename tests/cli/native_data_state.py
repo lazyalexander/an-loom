@@ -191,6 +191,20 @@ def main():
     assert call(host, "spool-events-dispatch", ws, next_dispatch)["executed"] is False
     assert call(host, "spool-state-show", b)["head"] == head
     assert call(host, "spool-state-show", c)["head"] == successor_head
+    # Runtime retirement is a host decision; packaged bytes and existing custody stay fixed.
+    closed = approved("spool-artifact-retire", a, "first", "report.txt")
+    assert closed["payload_deleted"] is False
+    retired = call(host, "spool-artifacts", a, "first")
+    assert retired["admission"]["report.txt"]["mode"] == "retired"
+    assert retired["outputs"] == versions[0]["outputs"]
+    call(host, "artifact-checkout", versions[0]["catalog"], data, root / "retired-copy.txt", success=False)
+    retirement_selection = root / "retired-input.local.json"
+    retirement_selection.write_text(json.dumps({"schema": "an-native-data-state-v1",
+        "data": {"catalog": versions[0]["catalog"], "revision": data}, "state_revision": successor_head}))
+    call(host, "spool-start-data-state", c, "retired-input", retirement_selection, 15, success=False)
+    assert not (c / "runs/retired-input").exists()
+    assert call(host, *argv)["disposition"] == "already-consumed"
+    assert output.read_text() == "total=8\nINFO=5\nWARN=1\nERROR=2\n"
     approved("spool-unload", c)
     approved("spool-unload", b)
     state = call(host, "spool-state-show", b)
@@ -200,7 +214,7 @@ def main():
         "loom_sha256": hashlib.sha256(loom.read_bytes()).hexdigest(), "release": exported,
         "data_revision": data, "initial_state": initial, "committed_state": head,
         "stale_commit_refused": True, "outputs_survive_collection": True, "finite_dispatch_qualified": True, "subscription_control_qualified": True, "receiver_cutover_qualified": True, "private_collection_qualified": True,
-        "model_invoked": False, "automatic_retries": 0}
+        "artifact_retirement_qualified": True, "model_invoked": False, "automatic_retries": 0}
     (root / "acceptance.json").write_text(json.dumps(summary, indent=2))
     print(json.dumps(summary))
 

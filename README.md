@@ -172,7 +172,7 @@ The [log accumulator](examples/log-accumulator/README.md) combines a separately
 selected business artifact and committed checkpoint. Loom packages its roles;
 the host owns fixed versions, stale-state conflicts and cancellation retention.
 
-The [native spool acceptance](docs/native-spool.md#optional-weaver-and-the-two-instance-acceptance-path) also covers an optional host-owned weaver proposal slot, two independent instances, fixed artifact handoff, cancellation and baseline restoration. Loom supplies packaging; it does not run the agent or own runtime permission.
+The [native spool acceptance](docs/native-spool.md#optional-weaver-and-the-two-instance-acceptance-path) also covers the optional host kit proposal slot (with legacy Weaver tokens), two independent instances, fixed artifact handoff, cancellation and baseline restoration. Loom supplies packaging; it does not run the agent or own runtime permission.
 
 The native starter includes a selected `AGENTS.md` describing file roles and
 development boundaries. Follow [the six-round qualification status](docs/development-rounds.md)

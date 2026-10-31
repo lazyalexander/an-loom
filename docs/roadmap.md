@@ -1,8 +1,9 @@
 # Research and next acceptance slices
 
-Status: mixed implementation/research, 2026-10-24. The Nextflow observation below
-has real native acceptance; other planned slices are not implemented guarantees.
-Preserve the existing package and host checks.
+This page keeps the research questions and workflow observations. Use
+[development rounds](development-rounds.md) for completed authoring/check slices
+and [native spool](native-spool.md) for current paired host qualification. A
+research objective is not an execution guarantee. Preserve existing checks.
 
 ## Terminology
 
