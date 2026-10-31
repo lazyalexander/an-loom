@@ -46,10 +46,21 @@ hard isolation between its internal agents. The host's current native profile
 protects unselected contents but permits file metadata; it does not promise
 existence secrecy. Loom must not claim stronger isolation through a declaration.
 
-The host now qualifies inert private notes and cross-instance content denials
-with two real CLI spools. General peer request/reply, activation-bound endpoints,
-waiter scheduling and model-context delivery remain unqualified. Do not generate
-direct host CLI access or shared-directory polling to fill these runtime gaps.
+The host qualifies inert private notes, cross-instance content denials and a
+split-phase artifact request/reply using two real CLI spools. The paired packaged
+example submits an accepted output, runs the target, accepts its declared reply,
+then runs the requester against that pinned version. Waiting is a host record,
+not an occupied process. Replies bind both exact instance/release identities and
+their existing round-control generations. Pausing/resuming an instance fences the
+old endpoint. No package schema or new runtime authority is implied.
+
+Loom supplies entrypoints and declared outputs; the trusted host authorizes
+request, reply and execution separately. Do not generate direct host CLI access,
+shared-directory polling or a private workspace mailbox. Live IPC, global waiter
+scheduling, harness/model-context delivery, caller-independent supervision and
+successful peer input-pin release remain unqualified. The host owns the failure
+matrix; Loom checks one real exported release round trip and unchanged workspace
+facts. A peer result is formal only after the ordinary host acceptance step.
 
 ## Phased compatibility work
 
