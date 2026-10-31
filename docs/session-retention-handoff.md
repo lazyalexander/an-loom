@@ -27,12 +27,29 @@ than expecting the host to infer them from text. Do not add speculative manifest
 fields before the host contract exists. A human-edited product is a new revision;
 a summary is a derived context view, not authoritative business state.
 
-A host session groups a bounded engagement; a logical thread scopes context
-and cancellation. Neither replaces release/instance/attempt identity or runtime
-authorization. Existing coding agents retain their own sessions, compaction and
+A target runtime session represents one spool-instance activation generation and
+its resource ownership. OS threads are execution machinery, not model-context
+identities. The existing host `session-*` CLI instead groups finite dispatches;
+its legacy `THREAD` parameter must not be reinterpreted as an OS thread or a
+continuable conversation. No package schema changes follow from this terminology.
+Existing coding agents retain their own sessions, compaction and
 tape. Weaver/harness adapters exchange explicitly selected material and candidate
 changes; they must not scrape private histories or silently share conversations.
 Native harness IDs stay private and cannot grant access to a workspace.
+
+Workspace stores versioned materials and facts, not peer conversations. Projects
+must use explicit authorized protocol delivery, even when payloads travel as
+files. Private notes must not become implicit commands or system instructions.
+Context selection remains domain/harness behavior; the host authorizes access and
+model disclosure separately. Sharing one spool environment does not provide
+hard isolation between its internal agents. The host's current native profile
+protects unselected contents but permits file metadata; it does not promise
+existence secrecy. Loom must not claim stronger isolation through a declaration.
+
+The host now qualifies inert private notes and cross-instance content denials
+with two real CLI spools. General peer request/reply, activation-bound endpoints,
+waiter scheduling and model-context delivery remain unqualified. Do not generate
+direct host CLI access or shared-directory polling to fill these runtime gaps.
 
 ## Phased compatibility work
 
@@ -50,7 +67,7 @@ Native harness IDs stay private and cannot grant access to a workspace.
    not silently select another version or rerun a command.
 3. The packaged event case now uses `session-create`, digest-approved `session-run`,
    `session-show` and `session-control ... closed`, then accepts and hands off its
-   products normally. A logical thread binds one finite dispatch; fixed state
+   products normally. Its legacy thread record binds one finite dispatch; fixed state
    selections remain in the existing dispatch request. Host CI owns overlapping
    session cancellation, stale generations and missing evidence. Simultaneous
    same-workspace admission remains fail-fast; there is no automatic retry,
