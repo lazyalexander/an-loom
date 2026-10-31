@@ -480,3 +480,21 @@ the successor, then processes a new event through finite dispatch and verifies
 independent state/products. Loom declares/checks/packages the existing interface;
 cutover, authority, supervision and custody stay in an-agent. The host suite owns
 in-flight replacement, stale approval, uncertain-result and old-host refusal cases.
+
+## Finite private-material maintenance
+
+The host's `spool-storage-collect INSTANCE REQUEST_JSON [--approve HASH]` groups
+1..16 selected runs for either work or private-input-snapshot collection. Every
+existing per-run preview is validated before deletion and bound by the aggregate
+approval. Original operations retain their locks, exact inventories and durable
+one-shot deletion fences. Work and snapshots are separate explicitly approved
+phases. Cancel/unknown results stop further items; this is not an atomic batch,
+auto-resume or rollback service. Formal artifacts, state, release/kit and evidence
+stay retained. Loom adds no runtime collector or retention authority.
+
+The packaged log-spool acceptance collects two accepted runs through each phase,
+then verifies explicit state commit, stale-state refusal and fixed downstream
+products as before. The host suite owns larger multi-round inputs, concurrent
+consumer progress, cancellation and lost collection receipt fences. General native
+formal-product retirement still requires a host-owned reference/lease contract;
+Loom declarations or absence of observed readers cannot authorize it.
