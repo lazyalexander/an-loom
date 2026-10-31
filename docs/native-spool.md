@@ -1,6 +1,7 @@
 # Native spool packaging and host handoff
 
-This qualified adapter exports a reviewed macOS shell spool. It does not implement
+This qualified adapter exports reviewed macOS shell spools and explicit v3 Python
+requests with binary products. It does not implement
 runtime authorization, supervision, cleanup or a domain pipeline engine. The
 legacy file-kit deployment adapter and its wire names are unchanged.
 
@@ -22,7 +23,8 @@ processes. Dependency values are unresolved labels: no URL, path or version
 range is fetched. `check`, `pack` and `verify` refuse a missing entry, a path
 listed in both roles, an escaping path, and a `silk/` or `kit/` file that is
 not listed. They do not spawn acceptance commands or download dependencies.
-`runtime` must be `macos-native-process-v1`; other runtime labels are refused.
+`runtime` must be `macos-native-process-v1`, or `macos-native-python-v1` with the
+explicit v3 interface described below. Other runtime labels are refused.
 
 ```text
 an-loom pack PROJECT
@@ -287,6 +289,47 @@ duplicate confirmation after scratch/snapshot collection. This is explicit
 foreground dispatch, not a background event bus or model integration. Host tests
 own cancellation, revocation and missing-evidence cases. See
 [the host event contract](https://github.com/lazyalexander/an-agent/blob/dev-advance/crates/an-agent-host/NATIVE-EVENTS.md).
+
+## Native Python and byte products
+
+V3 authoring may declare `binary_outputs`, a unique subset of `outputs`.
+Omission preserves text behavior. V1/v2 exports reject these declarations instead
+of dropping them; existing source and export bytes remain unchanged. A binary
+file is an opaque product to the host, not a request to parse an Office document.
+The existing byte-artifact limits apply; the consumer owns format/domain checks.
+
+`runtime = "macos-native-python-v1"` requests the qualified CPU/headless native
+Python profile with a complete v3 event interface. Dependency labels remain
+portable data. Loom emits no local interpreter path, installs nothing and grants
+no runtime authority. A host operator separately selects an installed environment
+with matching labels, interpreter digest and complete site-package inventory:
+
+```text
+an-agent-host spool-load DELIVERY NEW_INSTANCE --runtime LOCAL_RUNTIME_JSON
+```
+
+The host verifies that binding before load/start and artifact acceptance. Python
+runs with site startup and bytecode writes disabled, selected read-only dependency
+roots and attempt-private code/data snapshots. The declared input slot supplies
+its snapshot filename; `source.xlsx` need not inherit the catalog's `content.bin`
+name. Input/code basename conflicts refuse. Runtime selection is not publisher
+authentication, permission to install packages or a hostile-harness sandbox.
+The system standard library remains an operator-owned dependency. See
+[the host contract](https://github.com/lazyalexander/an-agent/blob/dev-advance/crates/an-agent-host/NATIVE-PYTHON.md)
+for the strict JSON, inventory algorithm and limits.
+
+The [log-report example](../examples/log-report/README.md#native-spool-event-handoff)
+prepares two projects by copying its existing independent document adapters.
+Loom checks/archives/exports them without domain branches; the host executes each
+as a separate spool and delivers the exact accepted XLSX revision by event. The
+consumer creates a three-page PPTX with native editable text/table objects. The
+paired `tests/cli/native_documents.py` confirms old-version consumption after a
+newer upstream result and retained products after collection. It performs no GUI
+edit or model call. Host tests own cancellation/runtime-mutation refusal cases.
+
+Use explicit `check`, `pack`, `verify` and `export-native-spool-v3` for this path.
+The existing `develop-native` convenience route still targets v2 shell checking;
+it is not qualified to provision Python dependencies or deliver v3 projects.
 
 ## Runtime artifact discovery
 

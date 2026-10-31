@@ -130,7 +130,7 @@ pub(super) fn document(project: &Path) -> Result<Value> {
         .filter(|path| !authoring.editable.contains(path))
         .cloned()
         .collect();
-    Ok(json!({
+    let mut task = json!({
         "schema": "an-loom-task-v1",
         "model_invoked": false,
         "host_cli_included": false,
@@ -153,7 +153,11 @@ pub(super) fn document(project: &Path) -> Result<Value> {
         "baseline_modes": baseline_modes,
         "limits": {"candidate_bytes": CANDIDATE_LIMIT, "files": 1},
         "escalation": "Stop and ask the operator. Do not invoke an-agent-host.",
-    }))
+    });
+    if !authoring.binary_outputs.is_empty() {
+        task["binary_outputs"] = json!(authoring.binary_outputs);
+    }
+    Ok(task)
 }
 
 fn brief(document: &Value) -> String {

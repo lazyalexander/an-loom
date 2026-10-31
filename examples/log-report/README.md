@@ -29,6 +29,50 @@ Consumer-local checks bound ZIP expansion, refuse unsupported external/macro
 parts and formula-valued review cells. They are not a universal Office malware
 scanner. Native dependency security remains the operator's responsibility.
 
+## Native spool event handoff
+
+The original kit remains independently runnable. `native.py` prepares two ordinary
+Loom projects using these same adapters, with separate stable entries for workbook
+and presentation production. It copies into a new directory and never overwrites
+this example. Native v3 requests explicit binary products and a Python runtime;
+the operator selects the actual environment separately. No domain implementation
+is added to Loom or the host.
+
+```sh
+# Install the pinned dependencies explicitly using the standalone steps above.
+python3 native.py prepare /private/new-projects
+python3 native.py runtime --python /selected/venv/bin/python \
+  --output /private/new-runtime.local.json
+an-loom check /private/new-projects/workbook
+an-loom pack /private/new-projects/workbook
+# Verify the returned archive and explicitly export it with export-native-spool-v3.
+# Load each delivery through spool-load --runtime, review each start/delivery plan.
+```
+
+The runtime helper inspects the operator-selected interpreter and verifies the
+installed versions against requirements.txt before hashing all site-package
+files. Its local JSON contains machine paths and must not enter a public package.
+The host independently pins/rechecks those selected bytes; labels and hashes are
+not a supply-chain certificate. Use a dedicated, stable environment. Site startup
+hooks and .pth processing are disabled during managed execution; dependencies
+that require such hooks are outside this qualified profile.
+
+From the Loom repository root, the real paired acceptance is:
+
+```sh
+python3 -B tests/cli/native_documents.py --loom /selected/an-loom \
+  --host /selected/an-agent-host --host-revision FULL_HOST_COMMIT \
+  --python /selected/venv/bin/python --output /private/new-document-acceptance
+```
+
+It checks/packages/exports both spools, generates and accepts two workbook
+versions, delivers the first by its exact event binding, accepts/confirms a PPTX,
+then collects private work/snapshots and rereads the product. It validates native
+text/table objects rather than screenshots. This is headless foreground dispatch;
+it does not claim a background workflow service, actual GUI editing, multi-input
+state composition, a model invocation or a generic Python environment manager.
+Host acceptance owns interruption and runtime-change refusal coverage.
+
 ## Optional host custody acceptance
 
 The host is optional for generation. The fixed operator harness additionally

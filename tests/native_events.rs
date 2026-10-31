@@ -67,3 +67,44 @@ fn undeclared_unknown_and_duplicate_events_are_refused() -> Result {
     }
     Ok(())
 }
+
+#[test]
+fn binary_outputs_and_python_requests_are_explicit_and_version_bound() -> Result {
+    let temp = tempfile::tempdir()?;
+    let base = temp.path().canonicalize()?;
+    let root = project(
+        &base,
+        "binary_outputs=[\"report.txt\"]\n[events]\nconsumes=[]\nproduces=[\"artifact.accepted\"]\n",
+    )?;
+    let config = root.join("native-spool.toml");
+    let text =
+        fs::read_to_string(&config)?.replace("macos-native-process-v1", "macos-native-python-v1");
+    fs::write(&config, &text)?;
+    let archive = an_loom::package::pack_project(&root)?;
+    let target = base.join("python");
+    export(&archive, &target, "export-native-spool-v3")?;
+    let value: Value = serde_json::from_slice(&fs::read(target.join("native-spool.json"))?)?;
+    assert_eq!(value["binary_outputs"], serde_json::json!(["report.txt"]));
+    assert_eq!(value["requirements"]["runtime"], "macos-native-python-v1");
+    assert!(value.get("runtime_path").is_none());
+    let task = base.join("task");
+    an_loom::run([
+        "task".into(),
+        root.to_string_lossy().into_owned(),
+        task.to_string_lossy().into_owned(),
+    ])?;
+    let task: Value = serde_json::from_slice(&fs::read(task.join("authority/task.json"))?)?;
+    assert_eq!(task["binary_outputs"], serde_json::json!(["report.txt"]));
+    assert!(export(&archive, &base.join("downgrade"), "export-native-spool-v2").is_err());
+    for invalid in ["[\"unknown.bin\"]", "[\"report.txt\",\"report.txt\"]"] {
+        fs::write(
+            &config,
+            text.replace(
+                "binary_outputs=[\"report.txt\"]",
+                &format!("binary_outputs={invalid}"),
+            ),
+        )?;
+        assert!(an_loom::package::pack_project(&root).is_err());
+    }
+    Ok(())
+}

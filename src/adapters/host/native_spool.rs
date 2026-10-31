@@ -13,8 +13,9 @@ use std::{
 };
 
 const SCHEMA: &str = "an-native-spool-v1";
-/// The only runtime this adapter qualifies. Other labels are refused.
+/// Qualified shell profile; Python requires explicit v3 metadata and host selection.
 const RUNTIME: &str = "macos-native-process-v1";
+const PYTHON: &str = "macos-native-python-v1";
 
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -32,6 +33,8 @@ struct Native {
     #[serde(default)]
     inputs: Vec<String>,
     outputs: Vec<String>,
+    #[serde(default)]
+    binary_outputs: Vec<String>,
     #[serde(default)]
     capabilities: Vec<String>,
     #[serde(default)]
@@ -63,6 +66,7 @@ pub(crate) struct Authoring {
     pub editable: Vec<String>,
     pub inputs: Vec<String>,
     pub outputs: Vec<String>,
+    pub binary_outputs: Vec<String>,
     pub capabilities: Vec<String>,
     pub dependencies: Vec<String>,
     pub acceptance: Vec<String>,
@@ -83,6 +87,7 @@ pub(crate) fn authoring(files: &BTreeMap<&str, &[u8]>) -> Result<Authoring> {
         editable: native.editable,
         inputs: native.inputs,
         outputs: native.outputs,
+        binary_outputs: native.binary_outputs,
         capabilities: native.capabilities,
         dependencies: native.dependencies,
         acceptance: native.acceptance,
@@ -124,14 +129,17 @@ fn interpret(config: &Native, files: &BTreeMap<&str, &[u8]>) -> Result<()> {
         return Err(fail("unsupported native spool contract"));
     }
     if config.legacy {
-        if config.events.is_some() {
+        if config.events.is_some() || !config.binary_outputs.is_empty() {
             return Err(fail("events require explicit authoring requirements"));
         }
         roles(config, files)?;
         return slots(&config.outputs, "invalid output slot");
     }
-    if config.runtime != RUNTIME {
+    if config.runtime != RUNTIME && config.runtime != PYTHON {
         return Err(fail("native runtime is not qualified for this adapter"));
+    }
+    if config.runtime == PYTHON && config.events.is_none() {
+        return Err(fail("Python runtime selection requires the v3 interface"));
     }
     roles(config, files)?;
     if let Some(events) = &config.events {
@@ -146,6 +154,18 @@ fn interpret(config: &Native, files: &BTreeMap<&str, &[u8]>) -> Result<()> {
     }
     slots(&config.inputs, "invalid input slot")?;
     slots(&config.outputs, "invalid output slot")?;
+    let binary: BTreeSet<_> = config.binary_outputs.iter().collect();
+    if (!binary.is_empty() && config.events.is_none())
+        || binary.len() != config.binary_outputs.len()
+        || binary.iter().any(|name| !config.outputs.contains(name))
+    {
+        return Err(fail(
+            "binary outputs require unique declared v3 output slots",
+        ));
+    }
+    if config.runtime == PYTHON && config.dependencies.iter().any(|name| !identifier(name)) {
+        return Err(fail("Python dependency labels require bounded identifiers"));
+    }
     editable(config)?;
     records(
         &config.capabilities,
@@ -358,6 +378,9 @@ fn export_version(archive: &Path, destination: &Path, version: u8) -> Result<Val
     if version == 3 {
         manifest["schema"] = json!("an-native-spool-v3");
         manifest["events"] = serde_json::to_value(&config.events)?;
+        if !config.binary_outputs.is_empty() {
+            manifest["binary_outputs"] = json!(config.binary_outputs);
+        }
     }
     let bytes = serde_json::to_vec_pretty(&manifest)?;
     package::new_directory(destination)?;

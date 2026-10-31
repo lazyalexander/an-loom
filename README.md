@@ -164,6 +164,11 @@ kit baselines for an-agent's bounded macOS instance lifecycle. The included
 [lightweight text spool](examples/native-spool/README.md) needs no model or install
 hook. Packaging remains independent from host authorization and execution.
 
+The [log-report native handoff](examples/log-report/README.md#native-spool-event-handoff)
+uses the same packaging path for two CPU/headless Python spools. An independently
+selected host environment produces editable XLSX/PPTX and passes fixed binary
+versions through workspace events; business adapters remain in the example.
+
 The [native spool acceptance](docs/native-spool.md#optional-weaver-and-the-two-instance-acceptance-path) also covers an optional host-owned weaver proposal slot, two independent instances, fixed artifact handoff, cancellation and baseline restoration. Loom supplies packaging; it does not run the agent or own runtime permission.
 
 The native starter includes a selected `AGENTS.md` describing file roles and
