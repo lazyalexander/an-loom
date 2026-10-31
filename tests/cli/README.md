@@ -41,3 +41,12 @@ and exercises host-owned publication, static subscription, approved delivery,
 formal acceptance and causal consumption confirmation. Fixed products and
 duplicate confirmation remain valid after work/private-input collection. This is
 an explicit foreground handoff; the host owns revocation/cancellation/fault cases.
+
+`native_documents.py` additionally needs `--python /selected/venv/bin/python`,
+with examples/log-report/requirements.txt installed explicitly. It prepares two
+projects from the existing document kit, checks/packages/exports v3, selects a
+host runtime, generates accepted XLSX versions and delivers the older exact event
+to create a PPTX. Native editable objects and retained products are verified.
+No GUI, model, automatic dependency installation or unknown-result retry occurs.
+The native-spool CI job records its portable acceptance summary; local runtime
+profiles and command logs remain private.

@@ -72,6 +72,12 @@ consumer. Native v3 now qualifies explicit accepted-artifact delivery and causal
 result confirmation with the host; it adds no business graph engine. See
 [event handoff](native-spool.md#explicit-v3-event-interfaces).
 
+The next headless slice now qualifies actual XLSX/PPTX using the existing
+log-report adapters, explicit v3 byte outputs and a separately selected host
+Python environment. Multiple business inputs alongside selected state and daily
+subscription/retention usability remain separate work. The packaging path adds
+no dependency installer, document parser or global business graph to Loom.
+
 The current reviewed macOS shell route is usable, but is not the full local spool
 host. The authoritative runtime completion scope is the host's
 [implementation status](https://github.com/lazyalexander/an-agent/blob/dev-advance/doc/status.md).

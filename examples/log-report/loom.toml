@@ -2,4 +2,4 @@ schema_version = 1
 name = "log-report"
 version = "0.1.0"
 description = "Independent log-to-editable-workbook-to-presentation CLI workflow"
-include = ["loom.toml", "README.md", "LICENSE", "requirements.txt", "sample.jsonl", "kit/data.py", "kit/ooxml.py", "kit/main.py", "kit/workbook.py", "kit/slides.py", "tests/test_kit.py", "observe.py", "tools/host.py", "tools/cancel_probe.py", "desktop/README.md", "desktop/requirements.txt", "desktop/monitor.py", "desktop/session.py", "desktop/report.py", "desktop/tests/test_capture.py"]
+include = ["loom.toml", "README.md", "LICENSE", "requirements.txt", "sample.jsonl", "kit/data.py", "kit/ooxml.py", "kit/main.py", "kit/workbook.py", "kit/slides.py", "tests/test_kit.py", "observe.py", "native.py", "tools/host.py", "tools/cancel_probe.py", "desktop/README.md", "desktop/requirements.txt", "desktop/monitor.py", "desktop/session.py", "desktop/report.py", "desktop/tests/test_capture.py"]

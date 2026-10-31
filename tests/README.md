@@ -25,6 +25,7 @@ operator observations into Loom's generic implementation to share test code.
 | `tests/task_handoff.rs` | Native kit task preparation, candidate isolation, check evidence and revocation |
 | `tests/host_handoff.rs` | Opt-in real macOS host acceptance; explicitly enabled in CI |
 | `examples/log-report/tests/` | Domain document checks owned by the example |
+| `tests/cli/native_documents.py` | Real v3 packaging and host-bound Python/binary document handoff; domain adapters remain in the example |
 | `examples/log-report/desktop/tests/` | Observation qualification checks; not real GUI acceptance |
 | `examples/kimi-native/tests/` | Credential-free proposal envelope and generation no-retry tests; paid acceptance is separate |
 | `tools/quality/tests/` and its test modules | Independently locked quality-tool checks |
