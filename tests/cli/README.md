@@ -57,3 +57,6 @@ versions through direct/event execution, rejects a stale commit and verifies
 native products/provenance after collection and unload. No extra dependency,
 model or GUI is needed. The host's corresponding suite owns real cancellation
 and missing-evidence tests; this paired suite owns package/host compatibility.
+
+The native event CLI suite also checks host-owned delivery inventory for an
+actual packaged v3 release. It does not implement monitoring or dispatch in Loom.
