@@ -60,3 +60,7 @@ and missing-evidence tests; this paired suite owns package/host compatibility.
 
 The native event CLI suite also checks host-owned delivery inventory for an
 actual packaged v3 release. It does not implement monitoring or dispatch in Loom.
+
+The data/state CLI smoke also submits a finite explicitly state-bound host
+batch for the actual packaged log accumulator. Host suites own its multi-entry
+lifecycle, cancellation and ledger-fault guarantees.

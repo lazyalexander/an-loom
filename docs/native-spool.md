@@ -406,3 +406,22 @@ The paired native event acceptance observes pending, acceptance, confirmation
 and consumed phases for an actual Loom-built release. Host acceptance owns
 monitor signals, deadline and evidence-loss cases. This P1 slice does not add
 automatic dispatch, latest-state selection or broad batch authorization.
+
+## Finite host dispatch with fixed state
+
+The host's `spool-events-dispatch WORKSPACE REQUEST_JSON [--approve HASH]` accepts
+1..16 explicitly selected existing event/subscription pairs, each with an exact
+`state_revision` where required. Preview and hash approval bind every delivery's
+start plan; no latest state, wildcard or future-event authorization is inferred.
+SIGTERM drains the selected entry and stops further selection; SIGINT requests
+its supervised cancellation. A durable intent fences the entire batch against
+replay/resume, including after missing results or ledger failure. Observation is
+available through `spool-events-dispatch-show`; repeating a recorded request never
+runs the remainder. Products/state acceptance and completion remain explicit.
+
+Loom adds no runtime scheduler, signal handler or state policy. The existing
+log-accumulator paired acceptance packages the same v3 contract, submits a fixed
+stateful event through the host dispatcher, independently accepts/commits/completes
+it and checks pinned earlier products plus no repeated attempt after collection.
+Host acceptance owns multi-entry stop/cancel, real ledger faults and unknown-result
+fences. Existing standalone and direct-delivery paths remain supported.

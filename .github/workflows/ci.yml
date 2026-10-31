@@ -186,7 +186,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: lazyalexander/an-agent
-          ref: bd3920d32fb0d9385c836107e768017f5ab7c957
+          ref: 90ed4ffc265a8830e6100cce7bab1deb7d5d129e
           path: .native-host
       - name: Install repository-pinned toolchain
         run: |
@@ -228,22 +228,22 @@ jobs:
           python3 -B -m unittest discover -s examples/log-summary/tests -v
           python3 -B examples/log-summary/qualify.py --loom target/debug/an-loom --host .native-host/target/debug/an-agent-host --output .local/log-summary --execute
       - name: Qualify state and round-control handoff for native v1 and v2 exports
-        run: python3 -B tests/cli/native_state.py --loom target/debug/an-loom --host .native-host/target/debug/an-agent-host --host-revision bd3920d32fb0d9385c836107e768017f5ab7c957 --output .local/native-state
+        run: python3 -B tests/cli/native_state.py --loom target/debug/an-loom --host .native-host/target/debug/an-agent-host --host-revision 90ed4ffc265a8830e6100cce7bab1deb7d5d129e --output .local/native-state
       - name: Qualify two actual releases and independent state continuation
-        run: python3 -B tests/cli/native_release.py --loom target/debug/an-loom --host .native-host/target/debug/an-agent-host --host-revision bd3920d32fb0d9385c836107e768017f5ab7c957 --output .local/native-release
+        run: python3 -B tests/cli/native_release.py --loom target/debug/an-loom --host .native-host/target/debug/an-agent-host --host-revision 90ed4ffc265a8830e6100cce7bab1deb7d5d129e --output .local/native-release
       - name: Qualify native v3 workspace artifact event delivery
-        run: python3 -B tests/cli/native_events.py --loom target/debug/an-loom --host .native-host/target/debug/an-agent-host --host-revision bd3920d32fb0d9385c836107e768017f5ab7c957 --output .local/native-events
+        run: python3 -B tests/cli/native_events.py --loom target/debug/an-loom --host .native-host/target/debug/an-agent-host --host-revision 90ed4ffc265a8830e6100cce7bab1deb7d5d129e --output .local/native-events
       - name: Install the explicit document example environment
         run: |
           python3 -m venv .local/report-env
           .local/report-env/bin/python -m pip install --disable-pip-version-check -r examples/log-report/requirements.txt
           .local/report-env/bin/python -B -m unittest discover -s examples/log-report/tests -v
       - name: Qualify native Python and fixed binary document events
-        run: python3 -B tests/cli/native_documents.py --loom target/debug/an-loom --host .native-host/target/debug/an-agent-host --host-revision bd3920d32fb0d9385c836107e768017f5ab7c957 --python .local/report-env/bin/python --output .local/native-documents
+        run: python3 -B tests/cli/native_documents.py --loom target/debug/an-loom --host .native-host/target/debug/an-agent-host --host-revision 90ed4ffc265a8830e6100cce7bab1deb7d5d129e --python .local/report-env/bin/python --output .local/native-documents
       - name: Qualify independent business data and explicit checkpoint state
         run: |
           python3 -B -m unittest discover -s examples/log-accumulator/tests -v
-          python3 -B tests/cli/native_data_state.py --loom target/debug/an-loom --host .native-host/target/debug/an-agent-host --host-revision bd3920d32fb0d9385c836107e768017f5ab7c957 --output .local/native-data-state
+          python3 -B tests/cli/native_data_state.py --loom target/debug/an-loom --host .native-host/target/debug/an-agent-host --host-revision 90ed4ffc265a8830e6100cce7bab1deb7d5d129e --output .local/native-data-state
       - uses: actions/upload-artifact@v4
         if: always()
         with:
