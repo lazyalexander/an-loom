@@ -148,6 +148,43 @@ def main():
     restored = approved("spool-events-dispatch-reconcile", ws, "next-log")
     assert restored["executed"] is False and restored["summary_reconstructed"] is True
     assert len(list((b / "runs" / next_run / "job/attempts").iterdir())) == 1
+    # The host can cut over to another instance of the same Loom-built release.
+    c = root / "successor-instance"
+    assert call(host, "spool-load", release, c)["release"] == exported
+    committed = call(host, "spool-state-show", b, head)["selected"]
+    transferred = root / "checkpoint-for-successor.txt"
+    call(host, "artifact-checkout", committed["catalog"], head, transferred)
+    successor_state = approved("spool-state-init", c, "state.txt", transferred)["state"]["revision"]
+    route.write_text(json.dumps({"schema": "an-native-artifact-route-v1", "source": str(a),
+        "output": "report.txt", "target": str(c), "result": "report.txt", "wall_seconds": 15}))
+    replaced = approved("spool-event-replace", ws, "logs", "logs-next", route)
+    assert replaced["execution_granted"] is False and replaced["historical_events_replayed"] is False
+    call(host, "spool-event-deliver", ws, event["id"], "logs-next", "--state", successor_state, success=False)
+    assert list((c / "runs").iterdir()) == []
+    batch.write_text("WARN successor\n")
+    approved("spool-start", a, "third", batch, 15)
+    approved("spool-accept", a, "third")
+    third_event = approved("spool-event-publish", ws, a, "third", "report.txt")["event"]
+    next_dispatch = root / "successor-dispatch.local.json"
+    next_dispatch.write_text(json.dumps({"schema": "an-native-event-dispatch-request-v1", "name": "successor-log",
+        "entries": [{"event": third_event["id"], "subscription": "logs-next", "state_revision": successor_state}]}))
+    candidate = call(host, "spool-events-dispatch", ws, next_dispatch)
+    successor_run = candidate["plan"]["entries"][0]["plan"]["context"]["delivery"]
+    call(host, "spool-events-dispatch", ws, next_dispatch, "--approve", candidate["approval_sha256"])
+    approved("spool-accept", c, successor_run)
+    successor_head = approved("spool-state-commit", c, successor_state, successor_run)["revision"]
+    approved("spool-event-complete", ws, third_event["id"], "logs-next")
+    products = call(host, "spool-artifacts", c, successor_run)
+    product = next(p for p in products["outputs"] if p["path"] == "report.txt")
+    output = root / "successor-report.txt"
+    call(host, "artifact-checkout", products["catalog"], product["binding"]["revision"], output)
+    assert output.read_text() == "total=8\nINFO=5\nWARN=1\nERROR=2\n"
+    approved("spool-reclaim", c, successor_run)
+    approved("spool-reclaim-snapshots", c, successor_run)
+    assert call(host, "spool-events-dispatch", ws, next_dispatch)["executed"] is False
+    assert call(host, "spool-state-show", b)["head"] == head
+    assert call(host, "spool-state-show", c)["head"] == successor_head
+    approved("spool-unload", c)
     approved("spool-unload", b)
     state = call(host, "spool-state-show", b)
     assert state["head"] == head
@@ -155,7 +192,7 @@ def main():
         "host_revision": args.host_revision, "host_sha256": hashlib.sha256(host.read_bytes()).hexdigest(),
         "loom_sha256": hashlib.sha256(loom.read_bytes()).hexdigest(), "release": exported,
         "data_revision": data, "initial_state": initial, "committed_state": head,
-        "stale_commit_refused": True, "outputs_survive_collection": True, "finite_dispatch_qualified": True, "subscription_control_qualified": True,
+        "stale_commit_refused": True, "outputs_survive_collection": True, "finite_dispatch_qualified": True, "subscription_control_qualified": True, "receiver_cutover_qualified": True,
         "model_invoked": False, "automatic_retries": 0}
     (root / "acceptance.json").write_text(json.dumps(summary, indent=2))
     print(json.dumps(summary))

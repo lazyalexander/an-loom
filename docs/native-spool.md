@@ -453,3 +453,30 @@ Missing or contradictory evidence refuses. Loom's paired log-spool smoke loses
 only the known completed batch projection after custody/collection, reconstructs
 it and verifies that the attempt count remains one. This is not arbitrary crash
 recovery. Runtime reconciliation remains host-owned.
+
+## Host receiver succession
+
+`spool-event-replace WORKSPACE OLD NEW ROUTE_JSON [--approve HASH]` reuses the
+existing strict route request format and replaces future receiver admission only.
+The producer/event slot stays fixed, the successor uses a fresh name, and the
+old route and all admitted delivery identities remain retained. Replacement does
+not run a process, cancel old work or migrate state. An immutable catalog commit
+retires old admission and binds a fixed log-prefix cutover; earlier events cannot
+be replayed through the successor. New events still need explicit execution
+approval and a selected checkpoint. Old pending/batch approvals cannot retarget
+work to the new instance, and resuming old admission is refused.
+
+First use upgrades host workspace metadata to v3; old hosts refuse new opens.
+Prior v1/v2 workspaces remain supported and v3 preserves existing control history.
+Keep old instance directories for historical custody; do not mix already-running
+old/new hosts on an upgraded workspace. This is not automatic release upgrade,
+state migration, route-history GC or arbitrary topology editing. Existing bounds
+still count retired declarations. An unrelated separately approved route remains
+a distinct authority, not a promise of global exactly-once behavior.
+
+The packaged log-spool smoke loads a second instance of the same exact release,
+explicitly seeds it from a pinned checkpoint, refuses historical delivery through
+the successor, then processes a new event through finite dispatch and verifies
+independent state/products. Loom declares/checks/packages the existing interface;
+cutover, authority, supervision and custody stay in an-agent. The host suite owns
+in-flight replacement, stale approval, uncertain-result and old-host refusal cases.

@@ -67,3 +67,7 @@ lifecycle, cancellation and ledger-fault guarantees.
 
 The data/state smoke also checks host subscription pause/resume and stale batch
 approvals for the actual packaged log spool; Loom owns no runtime control ledger.
+
+The data/state smoke also cuts over to a second instance of the same packaged
+release. It checks explicit fixed-checkpoint seeding, historical-event refusal,
+new-event dispatch and independent old/new state. Runtime cutover remains host-owned.
