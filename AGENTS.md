@@ -40,13 +40,33 @@ OpenShell belongs behind the host backend adapter, not in Loom or semantic logic
 ## Changes and review
 
 - English only for repository documentation, comments and examples.
-- Main is stable. Work on feature branches and open PRs to main. The maintainer
-  reviews and merges. Never merge on their behalf, force push or weaken CI gates.
+- `main` is stable; its promotions remain maintainer-reviewed and merged.
+  `dev-advance` is the development authority. Branch ordinary work from it and
+  target feature PRs there. Agents may merge dev PRs after diff review, applicable
+  local/real acceptance and all required CI checks pass on the selected head.
+- Pause for user review if changes may expose private data, credentials,
+  transcripts or materials with unclear publication scope. Never force push,
+  bypass protection or weaken gates. Repository guidance cannot create runtime
+  authority or override a privacy restriction.
+- Notify the user after every dev merge with repository, PR, target branch,
+  resulting commit and a short description. Dev authorization excludes main.
+- Keep PR scope stable; only add fixes or review responses once handed off.
+  Independent follow-ups start from dev. Dependent work may continue on local
+  branches with its base PR/commit recorded, then use verified merged dev before
+  publication. Do not create long hidden integration chains.
+- Open main promotion as a separate PR for the maintainer; never merge it
+  automatically. Verify remote dev ancestry after a merge before using it as
+  another task's base.
+- Clean local branches only when older than seven days, merged into development
+  and not checked out in any worktree. Preserve main/dev-advance and unmerged
+  work, verify ancestry and use safe deletion. Do not detach worktrees to make
+  their branches eligible.
 - Distinguish implemented guarantees, tool claims and proposed capabilities.
   Preserve existing behavior unless the task explicitly changes it.
 - Generic packaging is broader than controlled execution support. The packaged
   legacy deployment adapter remains one dependency-free Rust source and `file-kit-v1`.
-  The separate native-spool adapter exports bounded shell releases only; its host
+  The separate native-spool adapter exports bounded shell releases and explicit
+  v3 Python/binary requests with operator-selected environments; its host
   contract and real acceptance are documented in `docs/native-spool.md`.
   An operator example using a host workspace profile does not add a spool ABI.
 - Preserve include allowlists, path containment, secret checks, deterministic
@@ -86,7 +106,8 @@ Before committing:
 - `cargo fmt --all -- --check`
 - `cargo test --locked`
 - `cargo clippy --all-targets --locked -- -D warnings`
-- `cargo quality --base origin/main`
+- `cargo quality --base TARGET` — use `origin/dev-advance` for development PRs
+  and `origin/main` for stable promotions, matching the actual PR target.
 - `cargo test --manifest-path tools/quality/Cargo.toml --locked`
 
 The TOML quality policy and empty baseline are merge gates, not sandbox grants.

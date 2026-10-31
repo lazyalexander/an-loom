@@ -1,0 +1,4 @@
+total=0
+INFO=0
+WARN=0
+ERROR=0

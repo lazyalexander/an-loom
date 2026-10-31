@@ -5,6 +5,10 @@ operator observations into Loom's generic implementation to share test code.
 
 | Location | Responsibility |
 | --- | --- |
+| `tests/cli/native_state.py` | Real macOS host state handoff for unchanged v1/v2 exports; explicit built binaries, no host failure-matrix duplication |
+| `tests/cli/native_release.py` | Two actual v1/v2 release exports, host difference review and independent state continuation; no lineage or migration claim |
+| `tests/cli/native_events.py` | Actual v3 interface packaging and host event delivery/consumption; no host failure-matrix duplication |
+| `tests/native_events.rs` | Explicit event export, downgrade refusal and unsupported interface metadata |
 | `src/manifest/tests.rs` | Private manifest/path/secret/digest unit checks; imported only with `cfg(test)` |
 | `src/package/tests.rs` | Private package inventory and archive unit checks |
 | `tests/project_release.rs` | Stable Cargo integration-test entrypoint |
@@ -21,6 +25,9 @@ operator observations into Loom's generic implementation to share test code.
 | `tests/task_handoff.rs` | Native kit task preparation, candidate isolation, check evidence and revocation |
 | `tests/host_handoff.rs` | Opt-in real macOS host acceptance; explicitly enabled in CI |
 | `examples/log-report/tests/` | Domain document checks owned by the example |
+| `tests/cli/native_documents.py` | Real v3 packaging and host-bound Python/binary document handoff; domain adapters remain in the example |
+| `tests/cli/native_data_state.py` | Actual fixed data/checkpoint packaging and host handoff; the host owns cancellation/fault coverage |
+| `examples/log-accumulator/tests/` | Standalone cumulative-log business validation, outside host and Loom implementations |
 | `examples/log-report/desktop/tests/` | Observation qualification checks; not real GUI acceptance |
 | `examples/kimi-native/tests/` | Credential-free proposal envelope and generation no-retry tests; paid acceptance is separate |
 | `tools/quality/tests/` and its test modules | Independently locked quality-tool checks |

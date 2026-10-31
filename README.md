@@ -55,6 +55,11 @@ an-loom verify ARCHIVE
 See [examples/native-spool/README.md](examples/native-spool/README.md). Packing
 this profile does not grant host execution.
 
+The [explicit v3 event interface](docs/native-spool.md#explicit-v3-event-interfaces)
+packages workspace-event inputs/outputs for a qualified host. Subscriptions,
+delivery authorization and consumption evidence stay in an-agent; Loom adds no
+business graph engine or event service.
+
 The [candidate check route](docs/candidate-checks.md) freezes all selected project
 bytes, checks them through an explicitly authorized host profile, and publishes
 the same archive only after reconciling settled execution and accepted output.
@@ -122,8 +127,11 @@ Loom does not link an-agent or import its implementation. CI pins the host sourc
 revision and exercises the real CLI. The runtime does not depend on Loom.
 
 See [the architecture](docs/architecture.md). This project is CLI-first and follows
-a functional core / imperative shell design. All repository prose is English;
-maintainers review and merge pull requests.
+a functional core / imperative shell design. All repository prose is English.
+Agents may merge development PRs into `dev-advance` after review, applicable
+acceptance and all CI gates pass, then notify the maintainer. Suspected privacy
+exposure requires user review before publication or merge. Promotions into `main`
+remain maintainer-reviewed and merged. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 For agent-assisted development, start with [AGENTS.md](AGENTS.md). The [research roadmap](docs/roadmap.md) covers spool
 update identity, an existing workflow's file lifecycle and mature coding-tool
@@ -137,7 +145,9 @@ A [qualified Kimi example](examples/kimi-kit/README.md) demonstrates finite host
 kit calls, source proposals, separate reviewed builds and cancellation without
 replacing the coding tool's native session. [Platform boundaries](docs/platforms.md)
 distinguish control-host distribution, application shuttles and CPU Linux workflows.
-`cargo quality --base origin/main` enforces the repository's [TOML quality policy](docs/quality.md).
+Use `cargo quality --base origin/dev-advance` for development PRs and
+`cargo quality --base origin/main` for stable promotions, matching the actual PR
+target. Both enforce the repository's [TOML quality policy](docs/quality.md).
 
 The [log report example](examples/log-report/README.md) exercises log → editable
 XLSX → editable PPTX with a separately saved workbook revision, pinned downstream
@@ -153,6 +163,14 @@ The [native spool adapter](docs/native-spool.md) exports read-only silk code and
 kit baselines for an-agent's bounded macOS instance lifecycle. The included
 [lightweight text spool](examples/native-spool/README.md) needs no model or install
 hook. Packaging remains independent from host authorization and execution.
+
+The [log-report native handoff](examples/log-report/README.md#native-spool-event-handoff)
+uses the same packaging path for two CPU/headless Python spools. An independently
+selected host environment produces editable XLSX/PPTX and passes fixed binary
+versions through workspace events; business adapters remain in the example.
+The [log accumulator](examples/log-accumulator/README.md) combines a separately
+selected business artifact and committed checkpoint. Loom packages its roles;
+the host owns fixed versions, stale-state conflicts and cancellation retention.
 
 The [native spool acceptance](docs/native-spool.md#optional-weaver-and-the-two-instance-acceptance-path) also covers an optional host-owned weaver proposal slot, two independent instances, fixed artifact handoff, cancellation and baseline restoration. Loom supplies packaging; it does not run the agent or own runtime permission.
 

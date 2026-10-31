@@ -5,7 +5,7 @@ use crate::{
     package,
     project::Project,
 };
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
 use std::{
     collections::{BTreeMap, BTreeSet},
@@ -13,8 +13,9 @@ use std::{
 };
 
 const SCHEMA: &str = "an-native-spool-v1";
-/// The only runtime this adapter qualifies. Other labels are refused.
+/// Qualified shell profile; Python requires explicit v3 metadata and host selection.
 const RUNTIME: &str = "macos-native-process-v1";
+const PYTHON: &str = "macos-native-python-v1";
 
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -31,13 +32,26 @@ struct Native {
     editable: Vec<String>,
     #[serde(default)]
     inputs: Vec<String>,
+    #[serde(default)]
+    state_input: Option<String>,
     outputs: Vec<String>,
+    #[serde(default)]
+    binary_outputs: Vec<String>,
     #[serde(default)]
     capabilities: Vec<String>,
     #[serde(default)]
     dependencies: Vec<String>,
     #[serde(default)]
     acceptance: Vec<String>,
+    #[serde(default)]
+    events: Option<Events>,
+}
+
+#[derive(Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
+struct Events {
+    consumes: Vec<String>,
+    produces: Vec<String>,
 }
 
 /// Read the authoring contract. Callers must not spawn `acceptance` or fetch `dependencies`.
@@ -53,7 +67,9 @@ pub(crate) struct Authoring {
     pub kit: Vec<String>,
     pub editable: Vec<String>,
     pub inputs: Vec<String>,
+    pub state_input: Option<String>,
     pub outputs: Vec<String>,
+    pub binary_outputs: Vec<String>,
     pub capabilities: Vec<String>,
     pub dependencies: Vec<String>,
     pub acceptance: Vec<String>,
@@ -73,7 +89,9 @@ pub(crate) fn authoring(files: &BTreeMap<&str, &[u8]>) -> Result<Authoring> {
         kit: native.kit,
         editable: native.editable,
         inputs: native.inputs,
+        state_input: native.state_input,
         outputs: native.outputs,
+        binary_outputs: native.binary_outputs,
         capabilities: native.capabilities,
         dependencies: native.dependencies,
         acceptance: native.acceptance,
@@ -115,18 +133,61 @@ fn interpret(config: &Native, files: &BTreeMap<&str, &[u8]>) -> Result<()> {
         return Err(fail("unsupported native spool contract"));
     }
     if config.legacy {
+        if config.events.is_some()
+            || !config.binary_outputs.is_empty()
+            || config.state_input.is_some()
+        {
+            return Err(fail("events require explicit authoring requirements"));
+        }
         roles(config, files)?;
         return slots(&config.outputs, "invalid output slot");
     }
-    if config.runtime != RUNTIME {
+    if config.runtime != RUNTIME && config.runtime != PYTHON {
         return Err(fail("native runtime is not qualified for this adapter"));
     }
+    if config.runtime == PYTHON && config.events.is_none() {
+        return Err(fail("Python runtime selection requires the v3 interface"));
+    }
     roles(config, files)?;
+    if let Some(events) = &config.events {
+        for names in [&events.consumes, &events.produces] {
+            if names.len() > 1 || names.iter().any(|name| name != "artifact.accepted") {
+                return Err(fail("unsupported or duplicate native event interface"));
+            }
+        }
+    }
     if config.inputs.is_empty() {
         return Err(fail("missing native input"));
     }
     slots(&config.inputs, "invalid input slot")?;
+    if let Some(slot) = &config.state_input
+        && (config.events.is_none()
+            || config.inputs.len() != 1
+            || !identifier(slot)
+            || matches!(slot.as_str(), "kit" | "tmp")
+            || config.inputs.contains(slot)
+            || config.silk.iter().chain(&config.kit).any(|p| {
+                p.rsplit('/').next() == Some(slot.as_str())
+                    || p.rsplit('/').next() == config.inputs.first().map(String::as_str)
+            }))
+    {
+        return Err(fail(
+            "state input requires distinct v3 data, state and code slots",
+        ));
+    }
     slots(&config.outputs, "invalid output slot")?;
+    let binary: BTreeSet<_> = config.binary_outputs.iter().collect();
+    if (!binary.is_empty() && config.events.is_none())
+        || binary.len() != config.binary_outputs.len()
+        || binary.iter().any(|name| !config.outputs.contains(name))
+    {
+        return Err(fail(
+            "binary outputs require unique declared v3 output slots",
+        ));
+    }
+    if config.runtime == PYTHON && config.dependencies.iter().any(|name| !identifier(name)) {
+        return Err(fail("Python dependency labels require bounded identifiers"));
+    }
     editable(config)?;
     records(
         &config.capabilities,
@@ -286,15 +347,20 @@ fn command_record(value: &str) -> bool {
 }
 
 pub fn export(archive: &Path, destination: &Path) -> Result<Value> {
-    export_version(archive, destination, false)
+    export_version(archive, destination, 1)
 }
 
 /// Explicit v2 delivery; legacy export remains byte-compatible.
 pub fn export_v2(archive: &Path, destination: &Path) -> Result<Value> {
-    export_version(archive, destination, true)
+    export_version(archive, destination, 2)
 }
 
-fn export_version(archive: &Path, destination: &Path, v2: bool) -> Result<Value> {
+/// Event declarations require explicit v3 selection; no route or grant is emitted.
+pub fn export_v3(archive: &Path, destination: &Path) -> Result<Value> {
+    export_version(archive, destination, 3)
+}
+
+fn export_version(archive: &Path, destination: &Path, version: u8) -> Result<Value> {
     let verified = crate::read_archive(archive)?;
     let selected = verified
         .files
@@ -302,6 +368,9 @@ fn export_version(archive: &Path, destination: &Path, v2: bool) -> Result<Value>
         .map(|(path, bytes)| (path.as_str(), bytes.as_slice()))
         .collect();
     let config = load(&selected)?;
+    if (version == 3) != config.events.is_some() {
+        return Err(fail("native event declarations require explicit v3 export"));
+    }
     let mut payload = BTreeMap::new();
     let mut hashes = BTreeMap::new();
     for paths in [&config.silk, &config.kit] {
@@ -316,15 +385,27 @@ fn export_version(archive: &Path, destination: &Path, v2: bool) -> Result<Value>
     }
     let mut manifest = json!({"schema":config.schema,"name":verified.manifest.package.name,
         "version":verified.manifest.package.version,"entry":config.entry,"files":hashes,"outputs":config.outputs});
-    if v2 {
+    if version >= 2 {
         if config.legacy {
-            return Err(fail("v2 export requires explicit authoring requirements"));
+            return Err(fail(
+                "v2/v3 export requires explicit authoring requirements",
+            ));
         }
         manifest["schema"] = json!("an-native-spool-v2");
         manifest["requirements"] = json!({"runtime":config.runtime,"os":"macos",
             "arch":"portable-source","interaction":"headless","gpu":"none",
             "inputs":config.inputs,"editable":config.editable,
             "capabilities":config.capabilities,"dependencies":config.dependencies});
+    }
+    if version == 3 {
+        manifest["schema"] = json!("an-native-spool-v3");
+        manifest["events"] = serde_json::to_value(&config.events)?;
+        if let Some(slot) = &config.state_input {
+            manifest["requirements"]["state_input"] = json!(slot);
+        }
+        if !config.binary_outputs.is_empty() {
+            manifest["binary_outputs"] = json!(config.binary_outputs);
+        }
     }
     let bytes = serde_json::to_vec_pretty(&manifest)?;
     package::new_directory(destination)?;

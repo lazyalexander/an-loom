@@ -43,8 +43,9 @@ round 1. Packaging, execution permission and safety evidence are distinct claims
 ## Functional delivery entry
 
 [develop-native](develop-native.md) now composes the existing native contracts.
-Next qualify an actual coding-tool handoff, then a bounded second-domain project.
-Weaver integration remains later than the spool-first product work. Update-lineage
+Actual tool-free Kimi handoff, the log-summary domain and optional reviewed
+Weaver preparation now have bounded qualification. Further Weaver orchestration
+remains later than the spool-first product work. Update-lineage
 and broader execution profiles are separate milestones, not prerequisites for
 using the qualified local shell route.
 
@@ -60,3 +61,54 @@ selected public materials, an actual harness draft, explicit developer review,
 a real code proposal and independent CLI execution before separately authorized
 host activation. It reuses existing task/candidate contracts and does not turn
 Weaver into a mandatory Loom or runtime dependency.
+
+
+## Local spool delivery milestones
+
+The immediate sequence is event-first: a minimal reliable workspace event handoff,
+then real headless input/runtime/binary-output support, followed by subscription,
+lifecycle and retention usability. High-frequency channels wait for a measured
+consumer. Native v3 now qualifies explicit accepted-artifact delivery and causal
+result confirmation with the host; it adds no business graph engine. See
+[event handoff](native-spool.md#explicit-v3-event-interfaces).
+
+The next headless slice now qualifies actual XLSX/PPTX using the existing
+log-report adapters, explicit v3 byte outputs and a separately selected host
+Python environment. V3 now also combines one fixed business artifact with a
+separate explicit checkpoint; the log accumulator qualifies direct and event
+handoff without host-owned domain rules. Multiple business inputs and daily
+subscription/retention usability remain separate work. The packaging path adds
+no dependency installer, document parser or global business graph to Loom.
+
+The current reviewed macOS shell route is usable, but is not the full local spool
+host. The authoritative runtime completion scope is the host's
+[implementation status](https://github.com/lazyalexander/an-agent/blob/dev-advance/doc/status.md).
+Track five bounded areas: interrupted completion, explicit state continuation,
+cooperative pause/suspension, retention/capacity, and release compatibility with
+final end-to-end qualification. These are milestones, not a promise of five PRs.
+
+Loom supplies selected contracts, project checks, immutable releases and qualified
+host clients. The host supplies execution/state/custody mechanisms. Do not grow a
+second supervisor, state interpreter or VM manager in Loom to satisfy these tasks.
+A new host contract lands and passes acceptance on host dev before Loom advances
+its relevant pin; unrelated historical qualification pins remain separate.
+
+Explicit repair of completed ledgers does not restart a task or manufacture
+termination evidence. Missing/unknown execution remains fenced. More examples,
+GPU/GUI, arbitrary hostile harnesses, public registries and additional backends
+are not prerequisites for this local headless closure. Main promotion remains
+maintainer-triggered; dev changes follow the gated merge/notification policy.
+
+Native state continuation uses existing v1/v2 exports: the host explicitly seeds
+and selects a state revision, accepts a successful output and commits against an
+expected version. Loom's narrow paired CLI qualification checks that handoff;
+host acceptance owns stale/cancelled/interrupted commit cases and fresh-environment
+continuation. No new packaging schema or automatic cross-release migration is
+implied. See [state handoff](native-spool.md#explicit-state-handoff).
+
+The first native control slice pauses admission between confirmed rounds, pins a
+checkpoint for suspension and explicitly resumes without executing work. The
+paired v1/v2 qualification covers those commands and unchanged exports. The host
+owns generation fences, settlement and control evidence; Loom owns no control
+state machine. In-flight cooperative safe points and process restoration remain
+outside this qualification.

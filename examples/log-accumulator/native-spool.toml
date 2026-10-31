@@ -1,0 +1,16 @@
+schema = "an-native-spool-v1"
+runtime = "macos-native-process-v1"
+entry = "silk/main.sh"
+silk = ["silk/main.sh"]
+kit = ["kit/accumulate.sh", "kit/transform.sh"]
+editable = ["kit/accumulate.sh"]
+inputs = ["batch.log"]
+state_input = "checkpoint.txt"
+outputs = ["state.txt", "report.txt"]
+capabilities = ["read-input", "write-declared-outputs"]
+dependencies = []
+acceptance = ["bash -n silk/main.sh", "bash -n kit/accumulate.sh", "bash -n kit/transform.sh", "python3 -B -m unittest discover -s tests -v"]
+
+[events]
+consumes = ["artifact.accepted"]
+produces = ["artifact.accepted"]
