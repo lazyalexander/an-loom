@@ -77,8 +77,9 @@ command, accept a late file, delete scratch materials or remove operation locks
 to turn an interrupted interaction into success. Inspection can remain available.
 
 The host now provides an explicit attempt-scoped supervisor for native file
-inputs and exact checkpoints through `spool-supervisor start/start-state/show/cancel`, reusing execution and
-receipt contracts. Loom supplies package and
+inputs, exact checkpoints and combined data/state through `spool-supervisor`
+(`start`, `start-state`, `start-data-state`, `show`, `cancel`), reusing execution
+and receipt contracts. Loom supplies package and
 request identity and receives the verified outcome. Supervisor startup, process
 ownership, cancellation and recovery belong to the host. A new package field,
 Loom daemon or model integration is unnecessary for this qualification.
@@ -87,7 +88,7 @@ The packaged event acceptance also runs the unmodified release through that
 supervised start, checks original termination evidence, accepts its exact output,
 and verifies preservation after private collection. Host CI owns client SIGKILL,
 continuing deadline/cancellation, supervisor death and uncertain-result refusal.
-Existing foreground, combined data/state, session and peer execution retains its qualified
+Existing foreground, event/session dispatch and peer execution retains its qualified
 scope. A package declaration cannot opt itself into supervisor authority or
 rewrite an unknown receipt.
 
@@ -95,6 +96,13 @@ Explicit checkpoint runs can use `spool-supervisor start-state` with an exact
 revision. Loom's native-state acceptance runs exported v1/v2 releases through
 this entry and preserves the existing state commit and custody checks. The host
 owns client-loss, cancellation, deadline and old-revision-versus-new-HEAD tests.
+
+The packaged log-accumulator acceptance uses `spool-supervisor start-data-state`
+for its direct combined runs. The host retains exact business/checkpoint bindings
+at approval and revalidates admission before execution. Loom keeps selection JSON
+as request material, not a shared mutable runtime control. Existing state-conflict,
+accepted-product and reference-retention assertions remain unchanged. Host tests
+own client/supervisor loss and the reservation-to-worker mutation window.
 
 ## Phased compatibility work
 
