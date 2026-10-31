@@ -41,8 +41,9 @@ Host tests own refusal/failure cases. CI pins the host implementing this command
 `native_events.py` uses the same prerequisites and arguments. It packages the
 existing native reference with explicit v3 event interfaces, loads two instances,
 and exercises host-owned publication, static subscription, approved delivery,
-formal acceptance and causal consumption confirmation. Fixed products and
-duplicate confirmation remain valid after work/private-input collection. This is
+formal acceptance, causal consumption confirmation and explicit stateless-success
+input-reference release. Fixed products and duplicate confirmation remain valid
+after work/private-input collection and reference release. This is
 an explicit foreground handoff; the host owns revocation/cancellation/fault cases.
 
 `native_documents.py` additionally needs `--python /selected/venv/bin/python`,

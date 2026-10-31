@@ -535,16 +535,22 @@ checks that its data/checkpoint revisions and release match the claims, which
 remain after private collection, state commit and unload. No release-format or
 manifest change is needed, and Loom owns no runtime reference store.
 
-The host's `spool-input-release INSTANCE RUN [--approve HASH]` initially supports
-only confirmed cancelled owners after work and snapshot collection. Successful
-owners and incomplete registrations stay retained. Host CI owns cancellation,
+The host's `spool-input-release INSTANCE RUN [--approve HASH]` preserves the
+confirmed cancelled-owner contract after work and snapshot collection. The added
+`spool-input-release INSTANCE RUN --delivery WORKSPACE SUBSCRIPTION [--approve HASH]`
+supports successful stateless event consumers after accepted outputs, original
+consumption acknowledgement and private collection. The paired event case checks
+explicit release, unchanged formal products and duplicate confirmation without
+execution. Successful stateful owners and incomplete registrations stay retained;
+opaque state dependencies are not inferred from content. Host CI owns cancellation,
 partial registration and lost-confirmation qualification. Source claims are not a
 complete census of old/unmanaged readers or opaque checkpoint dependencies. The
 operation deletes no payload and cannot authorize collection by itself.
 
 The remaining [retention/session handoff](session-retention-handoff.md) is a plan.
-Successful-owner release, formal payload collection and the session coordinator
-are not yet supported by this adapter. Unknown outcomes are not retried.
+Stateful-success release, formal payload collection and the session coordinator
+are not yet supported by this adapter. Unknown outcomes are not retried. Loom
+adds no release policy, package fields or runtime store for this host capability.
 
 ### Observation and control concurrency
 

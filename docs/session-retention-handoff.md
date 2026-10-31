@@ -36,7 +36,9 @@ Native harness IDs stay private and cannot grant access to a workspace.
 
 1. The packaged log case now checks host-owned data/state claims against exact
    revisions and the exported release, retaining them through collection and unload.
-   Only cancelled-owner release is currently qualified by the host. Successful
+   The packaged event case also checks explicit stateless-success reference release
+   after accepted outputs, original consumption acknowledgement and private collection.
+   Cancelled-owner release retains its existing host contract. Successful stateful
    owners, opaque state dependencies and legacy/unmanaged readers remain retained.
    Host tests own interruption, races and corruption; Loom does not infer deletion
    authority from a reference observation.

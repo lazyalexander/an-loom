@@ -9,7 +9,10 @@ A spool attempt owns the granted execution environment and lifecycle. Its
 internal **silks** are release-bound core code and pipeline skeleton; **kits** are
 adaptable glue working copies. See [the code contract](spool-code.md). They do not each
 receive a VM or independent grant. OpenShell is a replaceable host backend,
-never a Loom or semantic dependency. Existing one-program profiles are bounded
+never a Loom or semantic dependency. Its expansion is paused; native headless
+lifecycle work is the current priority. Backend suitability is host-owned and
+fail-closed: package checking or a headless interface cannot justify weaker
+isolation or an automatic native fallback. Existing one-program profiles are bounded
 specializations, not a completed multi-silk runtime. See the
 [implementation audit and staged migration](spool-boundary.md). Legacy `kit`
 spellings and historical Silk communication records remain compatibility data.
