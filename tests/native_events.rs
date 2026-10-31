@@ -108,3 +108,36 @@ fn binary_outputs_and_python_requests_are_explicit_and_version_bound() -> Result
     }
     Ok(())
 }
+
+#[test]
+fn state_input_is_preserved_protected_and_not_silently_downgraded() -> Result {
+    let temp = tempfile::tempdir()?;
+    let base = temp.path().canonicalize()?;
+    let root = project(
+        &base,
+        "state_input=\"checkpoint.txt\"\n[events]\nconsumes=[\"artifact.accepted\"]\nproduces=[\"artifact.accepted\"]\n",
+    )?;
+    let archive = an_loom::package::pack_project(&root)?;
+    let target = base.join("delivery");
+    export(&archive, &target, "export-native-spool-v3")?;
+    let manifest: Value = serde_json::from_slice(&fs::read(target.join("native-spool.json"))?)?;
+    assert_eq!(manifest["requirements"]["state_input"], "checkpoint.txt");
+    assert!(export(&archive, &base.join("legacy"), "export-native-spool-v2").is_err());
+    let task = base.join("task");
+    an_loom::task::prepare(&root, &task)?;
+    let task: Value = serde_json::from_slice(&fs::read(task.join("authority/task.json"))?)?;
+    assert_eq!(task["state_input"], "checkpoint.txt");
+    let config = root.join("native-spool.toml");
+    let text = fs::read_to_string(&config)?;
+    for slot in ["input.txt", "main.sh", "transform.sh", "../state", "tmp"] {
+        fs::write(
+            &config,
+            text.replace(
+                "state_input=\"checkpoint.txt\"",
+                &format!("state_input=\"{slot}\""),
+            ),
+        )?;
+        assert!(an_loom::package::pack_project(&root).is_err());
+    }
+    Ok(())
+}

@@ -157,6 +157,9 @@ pub(super) fn document(project: &Path) -> Result<Value> {
     if !authoring.binary_outputs.is_empty() {
         task["binary_outputs"] = json!(authoring.binary_outputs);
     }
+    if let Some(slot) = authoring.state_input {
+        task["state_input"] = json!(slot);
+    }
     Ok(task)
 }
 

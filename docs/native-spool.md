@@ -331,6 +331,31 @@ Use explicit `check`, `pack`, `verify` and `export-native-spool-v3` for this pat
 The existing `develop-native` convenience route still targets v2 shell checking;
 it is not qualified to provision Python dependencies or deliver v3 projects.
 
+## Separate business data and checkpoint inputs
+
+V3 authoring may add `state_input = "checkpoint.txt"`, separate from the one
+business `inputs` slot and all code basenames. Loom preserves the name in host
+requirements and coding-task briefs; it protects the selected authoring file
+under the existing task contract. V1/v2 export cannot drop this requirement.
+Existing declarations without the field retain their bytes and semantics.
+
+The host independently binds a fixed data artifact plus an explicitly selected
+committed state through `spool-start-data-state`, or adds `--state REVISION` to
+an artifact-event delivery. `AN_SPOOL_INPUT` and `AN_SPOOL_STATE` name separate
+read-only snapshots. No HEAD lookup, state merge, domain interpretation or retry
+is added to Loom. Starts, acceptance, checkpoint commit and event completion each
+remain independently approved host operations. Stale state cannot overwrite HEAD;
+accepted reports survive even when their proposed state conflicts.
+
+The [log accumulator](../examples/log-accumulator/README.md) reuses the existing
+summary transform and adds domain-owned cumulative counts. Its standalone tests
+need only Bash, awk and Python's standard library. The paired CLI qualification
+checks actual v3 packaging, direct/event input roles, a stale commit, and fixed
+outputs/state after private collection and unload. Host acceptance owns actual
+cancellation, changed selection and missing-evidence cases. See the
+[host state contract](https://github.com/lazyalexander/an-agent/blob/dev-advance/crates/an-agent-host/NATIVE-STATE.md#independent-business-data-and-state)
+for strict selectors, frozen previews and delivery identity rules.
+
 ## Runtime artifact discovery
 
 The host's `spool-artifacts INSTANCE RUN` returns verified fixed-version bindings

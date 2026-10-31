@@ -1,0 +1,5 @@
+schema_version = 1
+name = "log-accumulator"
+version = "0.1.0"
+description = "Headless log batches accumulated against an explicit checkpoint"
+include = ["loom.toml", "native-spool.toml", "README.md", "initial-state.txt", "sample.txt", "silk/main.sh", "kit/accumulate.sh", "kit/transform.sh", "tests/test_accumulate.py"]

@@ -168,6 +168,9 @@ The [log-report native handoff](examples/log-report/README.md#native-spool-event
 uses the same packaging path for two CPU/headless Python spools. An independently
 selected host environment produces editable XLSX/PPTX and passes fixed binary
 versions through workspace events; business adapters remain in the example.
+The [log accumulator](examples/log-accumulator/README.md) combines a separately
+selected business artifact and committed checkpoint. Loom packages its roles;
+the host owns fixed versions, stale-state conflicts and cancellation retention.
 
 The [native spool acceptance](docs/native-spool.md#optional-weaver-and-the-two-instance-acceptance-path) also covers an optional host-owned weaver proposal slot, two independent instances, fixed artifact handoff, cancellation and baseline restoration. Loom supplies packaging; it does not run the agent or own runtime permission.
 

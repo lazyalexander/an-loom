@@ -50,3 +50,10 @@ to create a PPTX. Native editable objects and retained products are verified.
 No GUI, model, automatic dependency installation or unknown-result retry occurs.
 The native-spool CI job records its portable acceptance summary; local runtime
 profiles and command logs remain private.
+
+`native_data_state.py` takes --loom, --host, --host-revision and a new --output
+directory. It packages examples/log-accumulator, binds fixed business and state
+versions through direct/event execution, rejects a stale commit and verifies
+native products/provenance after collection and unload. No extra dependency,
+model or GUI is needed. The host's corresponding suite owns real cancellation
+and missing-evidence tests; this paired suite owns package/host compatibility.

@@ -74,7 +74,9 @@ result confirmation with the host; it adds no business graph engine. See
 
 The next headless slice now qualifies actual XLSX/PPTX using the existing
 log-report adapters, explicit v3 byte outputs and a separately selected host
-Python environment. Multiple business inputs alongside selected state and daily
+Python environment. V3 now also combines one fixed business artifact with a
+separate explicit checkpoint; the log accumulator qualifies direct and event
+handoff without host-owned domain rules. Multiple business inputs and daily
 subscription/retention usability remain separate work. The packaging path adds
 no dependency installer, document parser or global business graph to Loom.
 
