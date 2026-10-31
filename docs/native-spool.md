@@ -528,3 +528,14 @@ concurrent-reader behavior and marker faults. Loom adds no runtime retirement po
 The next [retention/session handoff](session-retention-handoff.md) is a plan.
 The native reference ledger, formal payload collector and session coordinator
 are not yet supported by this adapter.
+
+### Observation and control concurrency
+
+The qualified host pending/show/watch path reads a bounded fixed log without taking
+its workspace mutation lock or repairing workspace projections. Its additive
+`observation` metadata identifies the log and reports whether it changed by the
+end; external evidence remains non-atomic. Loom must not turn an observed phase
+into execution, cancellation confirmation or collection authority. Mutating host
+commands still revalidate under their original locks. Malformed captured evidence
+fails closed; unknown work is never retried. Host CI owns the concurrent observer/
+revocation matrix; Loom retains its narrow packaged delivery/state smoke tests.
