@@ -325,3 +325,10 @@ Loom reconciles that retained ledger and publishes the same frozen archive.
 Content identity, check request identity and host execution attempt are distinct.
 Neither a model assertion nor a standalone operator success record substitutes
 for the qualified execution evidence. See [the contract](candidate-checks.md).
+
+## Planned session and retention coordination
+
+See [the development handoff](session-retention-handoff.md) for the next bounded
+work: host-owned artifact references and collection, then a headless session/thread
+skeleton and explicit context selection. These are proposed extensions, not
+additional Loom runtime responsibilities. GUI and TUI remain deferred.
