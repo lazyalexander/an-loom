@@ -109,6 +109,30 @@ def main():
     assert saved.read_text() == "total=6\nINFO=4\nWARN=0\nERROR=2\n"
     version = json.loads((Path(artifacts["catalog"]) / "revisions" / report["binding"]["revision"] / "revision.json").read_text())
     assert [p["revision"] for p in version["source"]["input_revisions"]] == [data, current]
+    # A Loom-packaged stateful release also supports finite host dispatch.
+    next_event = approved("spool-event-publish", ws, a, "newer", "report.txt")["event"]
+    dispatch = root / "dispatch.local.json"
+    dispatch.write_text(json.dumps({"schema": "an-native-event-dispatch-request-v1", "name": "next-log",
+        "entries": [{"event": next_event["id"], "subscription": "logs", "state_revision": head}]}))
+    preview = call(host, "spool-events-dispatch", ws, dispatch)
+    next_run = preview["plan"]["entries"][0]["plan"]["context"]["delivery"]
+    assert not (b / "runs" / next_run / "job").exists()
+    assert preview["plan"]["entries"][0]["plan"]["start"]["state_input"]["binding"]["revision"] == head
+    result = call(host, "spool-events-dispatch", ws, dispatch, "--approve", preview["approval_sha256"])
+    assert result["reason"] == "completed" and result["consumed"] is False
+    approved("spool-accept", b, next_run)
+    next_products = call(host, "spool-artifacts", b, next_run)
+    next_report = next(p for p in next_products["outputs"] if p["path"] == "report.txt")
+    next_saved = root / "next-report.txt"
+    call(host, "artifact-checkout", next_products["catalog"], next_report["binding"]["revision"], next_saved)
+    assert next_saved.read_text() == "total=7\nINFO=5\nWARN=0\nERROR=2\n"
+    head = approved("spool-state-commit", b, head, next_run)["revision"]
+    approved("spool-event-complete", ws, next_event["id"], "logs")
+    approved("spool-reclaim", b, next_run)
+    approved("spool-reclaim-snapshots", b, next_run)
+    assert call(host, "spool-events-dispatch", ws, dispatch)["executed"] is False
+    assert len(list((b / "runs" / next_run / "job/attempts").iterdir())) == 1
+    assert saved.read_text() == "total=6\nINFO=4\nWARN=0\nERROR=2\n"
     approved("spool-unload", b)
     state = call(host, "spool-state-show", b)
     assert state["head"] == head
@@ -116,7 +140,7 @@ def main():
         "host_revision": args.host_revision, "host_sha256": hashlib.sha256(host.read_bytes()).hexdigest(),
         "loom_sha256": hashlib.sha256(loom.read_bytes()).hexdigest(), "release": exported,
         "data_revision": data, "initial_state": initial, "committed_state": head,
-        "stale_commit_refused": True, "outputs_survive_collection": True,
+        "stale_commit_refused": True, "outputs_survive_collection": True, "finite_dispatch_qualified": True,
         "model_invoked": False, "automatic_retries": 0}
     (root / "acceptance.json").write_text(json.dumps(summary, indent=2))
     print(json.dumps(summary))
