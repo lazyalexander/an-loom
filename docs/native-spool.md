@@ -123,6 +123,25 @@ reclaim-before-commit and post-unload inspection. Host tests own the full failur
 matrix. This is protocol evidence, not a new domain workflow or generic Loom
 state-management capability.
 
+### Optional checkpoint dependency declarations
+
+A domain author can supply a host-reviewed list of accepted artifacts referenced
+by one exact checkpoint using `spool-state-dependencies INSTANCE REVISION REQUEST`.
+The request schema is `an-native-checkpoint-dependencies-v1`; its `artifacts`
+entries identify producer `instance`, `run`, `output` and exact `revision`.
+The host verifies source custody and owns immutable registration/source pins.
+Loom does not parse state to infer dependencies, grant file access or authorize
+collection. Existing release formats and standalone execution remain unchanged.
+
+Pins survive HEAD advancement, cancelled-attempt reference release and private
+collection. Missing registration completion blocks use of that checkpoint rather
+than retrying. Undeclared state is not dependency-free; successor checkpoints do
+not implicitly inherit declarations. There is no native payload deletion or
+checkpoint-pin release in this slice. See the authoritative
+[host contract](https://github.com/lazyalexander/an-agent/blob/dev-advance/doc/native-state.md#explicit-checkpoint-artifact-dependencies).
+Host real headless tests own the interruption/protection matrix; Loom's existing
+package-to-host qualification pins the corresponding host revision.
+
 ### Round-boundary host control
 
 The qualified host also exposes `spool-pause`, `spool-suspend INSTANCE REVISION`
