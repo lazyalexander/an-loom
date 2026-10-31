@@ -139,8 +139,23 @@ def main():
     assert destination.read_text() == "Report\nREPORT\nREPORT\nHELLO\n"
     assert (workspace / "facts/log.jsonl").read_bytes() == facts_before
     assert call(host, "spool-input-references", a, continuation)["disposition"] == "registered"
+    # The same unmodified exported release can use the host's independent owner.
+    supervised_input = root / "supervised-input.txt"
+    supervised_input.write_text("supervised\n")
+    managed = approved("spool-supervisor", "start", a, "supervised", supervised_input, 15)
+    assert managed["status"] == "succeeded"
+    view = call(host, "spool-supervisor", "show", a, "supervised")
+    assert view["native"]["termination_confirmed"] is True
+    approved("spool-accept", a, "supervised")
+    managed_outputs = call(host, "spool-artifacts", a, "supervised")
+    managed_file = root / "supervised-report.txt"
+    call(host, "artifact-checkout", managed_outputs["catalog"],
+         managed_outputs["outputs"][0]["binding"]["revision"], managed_file)
+    assert managed_file.read_text() == "Report\nSUPERVISED\n"
+    approved("spool-reclaim", a, "supervised")
+    assert call(host, "spool-artifacts", a, "supervised") == managed_outputs
     summary = {"schema": "loom-native-event-qualification-v1", "passed": True,
-               "peer_round_trip": True, "private_workspace_mailbox": False,
+               "independent_supervisor_package": True, "peer_round_trip": True, "private_workspace_mailbox": False,
                "host_revision": options.host_revision, "host_sha256": hashlib.sha256(host.read_bytes()).hexdigest(),
                "loom_sha256": hashlib.sha256(loom.read_bytes()).hexdigest(), "platform": platform.platform(),
                "release": exported["release"], "event": event["id"], "result_revision": report,
