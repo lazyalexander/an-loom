@@ -82,6 +82,14 @@ load to another directory restores the kit baseline while retaining prior produc
 Reclaim affects work scratch; release, input evidence and formal products are not
 implicitly deleted. Outputs remain in the per-run host artifact catalog.
 
+For an independently supervised start, a prelaunch cancellation is terminal only
+when the host verifies the original worker's request-bound no-launch completion
+and absence of execution/input-claim records. It then permits round closure or
+unload, but not artifact acceptance, collection or replay. Missing or contradictory
+evidence stays unknown. Loom neither infers termination from a cancelled client
+nor repairs host records; the host owns this fault matrix and its real worker CLI
+qualification. No release-format or packaging change is required.
+
 Kit edits are allowed between runs. Runtime code snapshots are read-only. Domain
 scripts use `AN_SPOOL_SILK_DIR`, `AN_SPOOL_KIT_DIR` and `AN_SPOOL_INPUT`; their current
 directory is writable scratch. This is not live agent self-modification or strong
