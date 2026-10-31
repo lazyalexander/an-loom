@@ -90,7 +90,7 @@ resolution and automatic retention are not implemented by this adapter.
 
 ## Explicit state handoff
 
-The host's optional [native state contract](https://github.com/lazyalexander/an-agent/blob/dev-advance/crates/an-agent-host/NATIVE-STATE.md)
+The host's optional [native state contract](https://github.com/lazyalexander/an-agent/blob/dev-advance/doc/native-state.md)
 works with existing v1/v2 exports. An author defines the opaque state format and
 its validation in spool code, selects an existing text output as next state, and
 uses the one declared input for the selected state document. No extra Loom state
@@ -134,7 +134,7 @@ Activation upgrades the host's private instance record so older hosts refuse it
 instead of ignoring control. Package identity and v1/v2 export formats do not
 change. The safe point is a completed round; in-flight signaling, process/VM
 images and automatic restart remain unsupported. See the host's
-[native control contract](https://github.com/lazyalexander/an-agent/blob/dev-advance/crates/an-agent-host/NATIVE-CONTROL.md).
+[native control contract](https://github.com/lazyalexander/an-agent/blob/dev-advance/doc/native-spool.md#native-control-at-round-boundaries).
 
 ### Private snapshot retention
 
@@ -149,7 +149,7 @@ Consumers use fixed artifact checkout or explicit state selection, rather than
 private snapshot paths. This does not enable general artifact GC or implicit
 discovery of references inside opaque business state. Native preparation adds
 filesystem headroom checks; these are admission pressure, not runtime quotas.
-See [the host storage contract](https://github.com/lazyalexander/an-agent/blob/dev-advance/crates/an-agent-host/NATIVE-STORAGE.md).
+See [the host storage contract](https://github.com/lazyalexander/an-agent/blob/dev-advance/doc/native-storage.md).
 
 ## Acceptance and next ownership
 
@@ -173,7 +173,7 @@ check/pack/verify and both v1/v2 exporters, compares them and executes independe
 state histories while retaining the old pins. Host tests own unsupported-request,
 stale-approval and failed-candidate refusal. No new Loom release format, updater,
 dependency resolver or runtime authority is introduced. See
-[the host release contract](https://github.com/lazyalexander/an-agent/blob/dev-advance/crates/an-agent-host/NATIVE-RELEASES.md).
+[the host release contract](https://github.com/lazyalexander/an-agent/blob/dev-advance/doc/native-state.md#native-release-review-and-independent-continuation).
 
 `cargo test --test native_spool --locked` checks deterministic exclusive export and
 invalid role/output bindings. The ignored real host test requires a qualified
@@ -289,7 +289,7 @@ delivery, accepts and confirms its result, and verifies fixed products plus
 duplicate confirmation after scratch/snapshot collection. This is explicit
 foreground dispatch, not a background event bus or model integration. Host tests
 own cancellation, revocation and missing-evidence cases. See
-[the host event contract](https://github.com/lazyalexander/an-agent/blob/dev-advance/crates/an-agent-host/NATIVE-EVENTS.md).
+[the host event contract](https://github.com/lazyalexander/an-agent/blob/dev-advance/doc/native-events.md).
 
 ## Native Python and byte products
 
@@ -316,7 +316,7 @@ its snapshot filename; `source.xlsx` need not inherit the catalog's `content.bin
 name. Input/code basename conflicts refuse. Runtime selection is not publisher
 authentication, permission to install packages or a hostile-harness sandbox.
 The system standard library remains an operator-owned dependency. See
-[the host contract](https://github.com/lazyalexander/an-agent/blob/dev-advance/crates/an-agent-host/NATIVE-PYTHON.md)
+[the host contract](https://github.com/lazyalexander/an-agent/blob/dev-advance/doc/native-spool.md#operator-selected-native-python-and-binary-products)
 for the strict JSON, inventory algorithm and limits.
 
 The [log-report example](../examples/log-report/README.md#native-spool-event-handoff)
@@ -354,7 +354,7 @@ need only Bash, awk and Python's standard library. The paired CLI qualification
 checks actual v3 packaging, direct/event input roles, a stale commit, and fixed
 outputs/state after private collection and unload. Host acceptance owns actual
 cancellation, changed selection and missing-evidence cases. See the
-[host state contract](https://github.com/lazyalexander/an-agent/blob/dev-advance/crates/an-agent-host/NATIVE-STATE.md#independent-business-data-and-state)
+[host state contract](https://github.com/lazyalexander/an-agent/blob/dev-advance/doc/native-state.md#independent-business-data-and-state)
 for strict selectors, frozen previews and delivery identity rules.
 
 ## Runtime artifact discovery
@@ -519,7 +519,7 @@ A torn/invalid record fails closed and is not overwritten as a retry. It is not
 access revocation for raw files, independent copies or an older host executable;
 use the qualified host consistently. There is no complete reference census,
 automatic GC or deletion grant. Native release schemas and old package bytes do
-not change. See [the host storage contract](https://github.com/lazyalexander/an-agent/blob/dev-advance/crates/an-agent-host/NATIVE-STORAGE.md#retiring-new-artifact-input-admission).
+not change. See [the host storage contract](https://github.com/lazyalexander/an-agent/blob/dev-advance/doc/native-storage.md#retiring-new-artifact-input-admission).
 
 The packaged log-spool smoke closes one old producer output, refuses a new
 stateful input selection, and preserves existing consumption proof, independent
