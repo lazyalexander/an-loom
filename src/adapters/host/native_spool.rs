@@ -32,6 +32,8 @@ struct Native {
     editable: Vec<String>,
     #[serde(default)]
     inputs: Vec<String>,
+    #[serde(default)]
+    state_input: Option<String>,
     outputs: Vec<String>,
     #[serde(default)]
     binary_outputs: Vec<String>,
@@ -65,6 +67,7 @@ pub(crate) struct Authoring {
     pub kit: Vec<String>,
     pub editable: Vec<String>,
     pub inputs: Vec<String>,
+    pub state_input: Option<String>,
     pub outputs: Vec<String>,
     pub binary_outputs: Vec<String>,
     pub capabilities: Vec<String>,
@@ -86,6 +89,7 @@ pub(crate) fn authoring(files: &BTreeMap<&str, &[u8]>) -> Result<Authoring> {
         kit: native.kit,
         editable: native.editable,
         inputs: native.inputs,
+        state_input: native.state_input,
         outputs: native.outputs,
         binary_outputs: native.binary_outputs,
         capabilities: native.capabilities,
@@ -129,7 +133,10 @@ fn interpret(config: &Native, files: &BTreeMap<&str, &[u8]>) -> Result<()> {
         return Err(fail("unsupported native spool contract"));
     }
     if config.legacy {
-        if config.events.is_some() || !config.binary_outputs.is_empty() {
+        if config.events.is_some()
+            || !config.binary_outputs.is_empty()
+            || config.state_input.is_some()
+        {
             return Err(fail("events require explicit authoring requirements"));
         }
         roles(config, files)?;
@@ -153,6 +160,21 @@ fn interpret(config: &Native, files: &BTreeMap<&str, &[u8]>) -> Result<()> {
         return Err(fail("missing native input"));
     }
     slots(&config.inputs, "invalid input slot")?;
+    if let Some(slot) = &config.state_input
+        && (config.events.is_none()
+            || config.inputs.len() != 1
+            || !identifier(slot)
+            || matches!(slot.as_str(), "kit" | "tmp")
+            || config.inputs.contains(slot)
+            || config.silk.iter().chain(&config.kit).any(|p| {
+                p.rsplit('/').next() == Some(slot.as_str())
+                    || p.rsplit('/').next() == config.inputs.first().map(String::as_str)
+            }))
+    {
+        return Err(fail(
+            "state input requires distinct v3 data, state and code slots",
+        ));
+    }
     slots(&config.outputs, "invalid output slot")?;
     let binary: BTreeSet<_> = config.binary_outputs.iter().collect();
     if (!binary.is_empty() && config.events.is_none())
@@ -378,6 +400,9 @@ fn export_version(archive: &Path, destination: &Path, version: u8) -> Result<Val
     if version == 3 {
         manifest["schema"] = json!("an-native-spool-v3");
         manifest["events"] = serde_json::to_value(&config.events)?;
+        if let Some(slot) = &config.state_input {
+            manifest["requirements"]["state_input"] = json!(slot);
+        }
         if !config.binary_outputs.is_empty() {
             manifest["binary_outputs"] = json!(config.binary_outputs);
         }
