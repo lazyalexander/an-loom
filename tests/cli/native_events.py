@@ -74,12 +74,19 @@ def main():
     approved("spool-start", a, "produce", seed, "15")
     approved("spool-accept", a, "produce")
     event = approved("spool-event-publish", workspace, a, "produce", "report.txt")["event"]
+    inventory = call(host, "spool-events-pending", workspace)
+    assert inventory["execution_granted"] is False
+    assert inventory["deliveries"][0]["phase"] == "awaiting-authorization"
+    assert list((b / "runs").iterdir()) == []
     delivered = approved("spool-event-deliver", workspace, event["id"], "reports")
     assert delivered["result"]["workspace"]["termination_confirmed"] is True
     assert delivered["consumed"] is False
     run = delivered["context"]["delivery"]
+    assert call(host, "spool-events-pending", workspace)["deliveries"][0]["phase"] == "awaiting-acceptance"
     approved("spool-accept", b, run)
+    assert call(host, "spool-events-pending", workspace)["deliveries"][0]["phase"] == "awaiting-confirmation"
     complete = approved("spool-event-complete", workspace, event["id"], "reports")
+    assert call(host, "spool-events-pending", workspace)["deliveries"][0]["phase"] == "consumed"
     receipt = complete["receipt"]
     assert receipt["context"]["event"] == event["id"]
     assert receipt["result_event"]["event"]["cause"] == receipt["context"]
@@ -98,7 +105,8 @@ def main():
                "host_revision": options.host_revision, "host_sha256": hashlib.sha256(host.read_bytes()).hexdigest(),
                "loom_sha256": hashlib.sha256(loom.read_bytes()).hexdigest(), "platform": platform.platform(),
                "release": exported["release"], "event": event["id"], "result_revision": report,
-               "model_invoked": False, "execution_retried": False, "background_dispatch": False}
+               "model_invoked": False, "execution_retried": False, "background_dispatch": False,
+               "host_delivery_inventory_qualified": True}
     (root / "acceptance.json").write_text(json.dumps(summary, indent=2))
     print(json.dumps(summary))
 

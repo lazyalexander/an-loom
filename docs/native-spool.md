@@ -388,3 +388,21 @@ pinned host revision: preview is inert, restoring the kit preserves instance
 identity, a new run uses release-baseline code, and earlier pinned products remain
 readable. This is a host lifecycle capability, not a Loom implementation of kit
 mutation or an additional grant. Other historical host jobs retain their own pins.
+
+## Host-owned event inventory
+
+The host provides `spool-events-pending WORKSPACE` and foreground
+`spool-events-watch WORKSPACE SECONDS INTERVAL_MS`. Inventory associates matching
+fixed events and subscriptions with admission refusals and evidence-derived
+delivery phases. Watch emits initial/changed NDJSON snapshots and a final stop
+summary; it does not promise every intermediate transition. Neither command
+prepares a run, selects state, acknowledges consumption or grants execution.
+Stopping observation does not cancel an independently admitted delivery.
+
+Loom continues to declare/package interfaces only. Runtime observation, polling,
+subscription admission and execution remain in an-agent. Do not add a second
+scheduler in Loom or treat a coding-task instruction as runtime authority.
+The paired native event acceptance observes pending, acceptance, confirmation
+and consumed phases for an actual Loom-built release. Host acceptance owns
+monitor signals, deadline and evidence-loss cases. This P1 slice does not add
+automatic dispatch, latest-state selection or broad batch authorization.
