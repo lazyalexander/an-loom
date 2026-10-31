@@ -524,3 +524,7 @@ The packaged log-spool smoke closes one old producer output, refuses a new
 stateful input selection, and preserves existing consumption proof, independent
 state and saved reports. Host tests own concurrent retirement, cancellation,
 concurrent-reader behavior and marker faults. Loom adds no runtime retirement policy.
+
+The next [retention/session handoff](session-retention-handoff.md) is a plan.
+The native reference ledger, formal payload collector and session coordinator
+are not yet supported by this adapter.
