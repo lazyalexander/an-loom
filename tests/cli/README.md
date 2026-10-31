@@ -64,3 +64,6 @@ actual packaged v3 release. It does not implement monitoring or dispatch in Loom
 The data/state CLI smoke also submits a finite explicitly state-bound host
 batch for the actual packaged log accumulator. Host suites own its multi-entry
 lifecycle, cancellation and ledger-fault guarantees.
+
+The data/state smoke also checks host subscription pause/resume and stale batch
+approvals for the actual packaged log spool; Loom owns no runtime control ledger.

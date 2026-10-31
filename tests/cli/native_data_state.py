@@ -118,7 +118,15 @@ def main():
     next_run = preview["plan"]["entries"][0]["plan"]["context"]["delivery"]
     assert not (b / "runs" / next_run / "job").exists()
     assert preview["plan"]["entries"][0]["plan"]["start"]["state_input"]["binding"]["revision"] == head
-    result = call(host, "spool-events-dispatch", ws, dispatch, "--approve", preview["approval_sha256"])
+    approved("spool-event-pause", ws, "logs")
+    call(host, "spool-events-dispatch", ws, dispatch, "--approve", preview["approval_sha256"], success=False)
+    approved("spool-event-resume", ws, "logs")
+    call(host, "spool-events-dispatch", ws, dispatch, "--approve", preview["approval_sha256"], success=False)
+    assert not (b / "runs" / next_run / "job").exists()
+    fresh = call(host, "spool-events-dispatch", ws, dispatch)
+    assert fresh["plan"]["entries"][0]["plan"]["context"]["delivery"] == next_run
+    assert fresh["approval_sha256"] != preview["approval_sha256"]
+    result = call(host, "spool-events-dispatch", ws, dispatch, "--approve", fresh["approval_sha256"])
     assert result["reason"] == "completed" and result["consumed"] is False
     approved("spool-accept", b, next_run)
     next_products = call(host, "spool-artifacts", b, next_run)
@@ -126,6 +134,7 @@ def main():
     next_saved = root / "next-report.txt"
     call(host, "artifact-checkout", next_products["catalog"], next_report["binding"]["revision"], next_saved)
     assert next_saved.read_text() == "total=7\nINFO=5\nWARN=0\nERROR=2\n"
+    approved("spool-event-pause", ws, "logs")  # Pause must not block already-admitted custody.
     head = approved("spool-state-commit", b, head, next_run)["revision"]
     approved("spool-event-complete", ws, next_event["id"], "logs")
     approved("spool-reclaim", b, next_run)
@@ -140,7 +149,7 @@ def main():
         "host_revision": args.host_revision, "host_sha256": hashlib.sha256(host.read_bytes()).hexdigest(),
         "loom_sha256": hashlib.sha256(loom.read_bytes()).hexdigest(), "release": exported,
         "data_revision": data, "initial_state": initial, "committed_state": head,
-        "stale_commit_refused": True, "outputs_survive_collection": True, "finite_dispatch_qualified": True,
+        "stale_commit_refused": True, "outputs_survive_collection": True, "finite_dispatch_qualified": True, "subscription_control_qualified": True,
         "model_invoked": False, "automatic_retries": 0}
     (root / "acceptance.json").write_text(json.dumps(summary, indent=2))
     print(json.dumps(summary))
