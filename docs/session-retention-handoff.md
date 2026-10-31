@@ -1,13 +1,15 @@
 # Session and retention development handoff
 
 Status: native input-reference handoff qualified; the remaining retention/session
-work is a coordinated plan. No manifest, runtime grant or package format changes
+work is a coordinated plan. A first host-owned foreground session/finite-thread
+adapter is now paired with the packaged event case. No manifest, runtime grant or package format changes
 are required for the initial handoff. GUI and TUI are deferred. Local headless
 execution remains the qualification target.
 
 The host's [session and retention plan](https://github.com/lazyalexander/an-agent/blob/dev-advance/doc/session-and-retention.md)
-is authoritative for the proposed runtime work. It separates formal artifact
-reference release/collection from the subsequent minimal session/thread layer.
+is authoritative for runtime scope. Formal artifact reference release/collection
+remains separate from session/thread coordination; closing a session releases no
+artifact references.
 Existing [native spool](native-spool.md) contracts remain the implemented surface.
 
 ## Loom's part
@@ -25,7 +27,7 @@ than expecting the host to infer them from text. Do not add speculative manifest
 fields before the host contract exists. A human-edited product is a new revision;
 a summary is a derived context view, not authoritative business state.
 
-A future host session groups a bounded engagement; a logical thread scopes context
+A host session groups a bounded engagement; a logical thread scopes context
 and cancellation. Neither replaces release/instance/attempt identity or runtime
 authorization. Existing coding agents retain their own sessions, compaction and
 tape. Weaver/harness adapters exchange explicitly selected material and candidate
@@ -46,9 +48,13 @@ Native harness IDs stay private and cannot grant access to a workspace.
    dependency blocks it and an explicitly released version becomes unavailable
    without changing unrelated products or package bytes. Missing content must
    not silently select another version or rerun a command.
-3. When host session/thread commands exist, associate packaged execution with
-   explicit host identities. Verify one session's cancellation leaves another
-   independent session alone. Do not add Loom-side retry or lifecycle policy.
+3. The packaged event case now uses `session-create`, digest-approved `session-run`,
+   `session-show` and `session-control ... closed`, then accepts and hands off its
+   products normally. A logical thread binds one finite dispatch; fixed state
+   selections remain in the existing dispatch request. Host CI owns overlapping
+   session cancellation, stale generations and missing evidence. Simultaneous
+   same-workspace admission remains fail-fast; there is no automatic retry,
+   background scheduler or Loom-side lifecycle policy. No package fields change.
 4. Reuse explicit context packets and bounded receipt-linked export. Verify the
    intended audience and source identity, record bytes and model-call count, and
    distinguish fixture evidence from live provider usage. Unknown usage is not
