@@ -119,7 +119,28 @@ def main():
     duplicate = call(host, "spool-event-deliver", workspace, event["id"], "reports")
     assert duplicate["executed"] is False and duplicate["disposition"] == "already-consumed"
     assert len(list((b / "runs" / run / "job/attempts").iterdir())) == 1
+    # Peer calls use the same packaged entrypoints without a workspace mailbox.
+    facts_before = (workspace / "facts/log.jsonl").read_bytes()
+    peer = root / "peer-request.local.json"
+    peer.write_text(json.dumps({"schema": "an-native-peer-request-v1",
+        "source_run": "produce", "source_output": "report.txt", "target": str(b),
+        "reply_output": "report.txt", "wall_seconds": 15}))
+    approved("spool-peer", "request", a, "packaged", peer)
+    wait = call(host, "spool-peer", "show", a, "packaged")
+    assert wait["waiting_for_reply"] and not wait["waiting_process_created"]
+    peer_run = approved("spool-peer", "run", a, "packaged", "request")["run"]
+    approved("spool-accept", b, peer_run)
+    approved("spool-peer", "reply", a, "packaged")
+    continuation = approved("spool-peer", "run", a, "packaged", "response")["run"]
+    approved("spool-accept", a, continuation)
+    final = call(host, "spool-artifacts", a, continuation)
+    destination = root / "peer-report.txt"
+    call(host, "artifact-checkout", final["catalog"], final["outputs"][0]["binding"]["revision"], destination)
+    assert destination.read_text() == "Report\nREPORT\nREPORT\nHELLO\n"
+    assert (workspace / "facts/log.jsonl").read_bytes() == facts_before
+    assert call(host, "spool-input-references", a, continuation)["disposition"] == "registered"
     summary = {"schema": "loom-native-event-qualification-v1", "passed": True,
+               "peer_round_trip": True, "private_workspace_mailbox": False,
                "host_revision": options.host_revision, "host_sha256": hashlib.sha256(host.read_bytes()).hexdigest(),
                "loom_sha256": hashlib.sha256(loom.read_bytes()).hexdigest(), "platform": platform.platform(),
                "release": exported["release"], "event": event["id"], "result_revision": report,
