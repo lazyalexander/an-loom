@@ -568,17 +568,22 @@ confirmed cancelled-owner contract after work and snapshot collection. The added
 supports successful stateless event consumers after accepted outputs, original
 consumption acknowledgement and private collection. The paired event case checks
 explicit release, unchanged formal products and duplicate confirmation without
-execution. Successful stateful owners and incomplete registrations stay retained;
-opaque state dependencies are not inferred from content. Host CI owns cancellation,
-partial registration and lost-confirmation qualification. Source claims are not a
-complete census of old/unmanaged readers or opaque checkpoint dependencies. The
-operation deletes no payload and cannot authorize collection by itself.
+execution. Incomplete registration stays retained. Host CI owns interruption and
+release faults. Source observations do not authorize payload collection.
 
 The remaining [retention/session handoff](session-retention-handoff.md) is a plan.
-Stateful-success release and formal payload collection remain unsupported. The
-packaged event smoke now runs in an explicit host session/finite thread and closes
-the session before ordinary product acceptance; it introduces no release fields. Unknown outcomes are not retried. Loom
-adds no release policy, package fields or runtime store for this host capability.
+A successful combined data/state event may release its two attempt claims using
+`--delivery WORKSPACE SUBSCRIPTION --coverage FILE` with separate host approval.
+The spool emits a declared `checkpoint-input-policy.json` alongside the state
+output, classifying each of the two managed roles as `checkpoint-pin` or
+`not-required`. The operator approves matching exact versions. The host reads
+the accepted policy from the original delivery and checks the commit, input slots,
+independent pins, original acknowledgement and private collection. For batch A
+and parent state B, a checkpoint pin on A survives release of both temporary
+claims. Opaque domain semantics belong to the author. The host owns verification,
+release evidence and uncertain-result refusal. See the [host custody contract](https://github.com/lazyalexander/an-agent/blob/dev-advance/doc/native-storage.md).
+Formal native payload collection remains unsupported. The packaged event smoke
+closes its host session before product acceptance. Unknown outcomes are not retried.
 
 ### Observation and control concurrency
 

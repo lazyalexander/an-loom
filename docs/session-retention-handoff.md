@@ -110,8 +110,9 @@ own client/supervisor loss and the reservation-to-worker mutation window.
    revisions and the exported release, retaining them through collection and unload.
    The packaged event case also checks explicit stateless-success reference release
    after accepted outputs, original consumption acknowledgement and private collection.
-   Cancelled-owner release retains its existing host contract. Successful stateful
-   owners, opaque state dependencies and legacy/unmanaged readers remain retained.
+   The host also qualifies successful combined event release under an accepted
+   spool policy and approved exhaustive input coverage. Other stateful owners,
+   opaque dependencies and legacy/unmanaged readers remain conservatively retained.
    Host tests own interruption, races and corruption; Loom does not infer deletion
    authority from a reference observation.
 2. After the host qualifies formal collection, verify that a declared retained
