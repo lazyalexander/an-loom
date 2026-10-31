@@ -425,3 +425,20 @@ stateful event through the host dispatcher, independently accepts/commits/comple
 it and checks pinned earlier products plus no repeated attempt after collection.
 Host acceptance owns multi-entry stop/cancel, real ledger faults and unknown-result
 fences. Existing standalone and direct-delivery paths remain supported.
+
+## Host subscription admission control
+
+`spool-event-pause` and `spool-event-resume` are explicitly approved host
+operations on a fixed subscription. Pause blocks new admission, without cancelling
+running work or blocking already-admitted acceptance/commit/completion. Resume
+requires fresh delivery/batch approval and the same target instance/generation;
+it does not replay a recorded batch or undo permanent revocation.
+
+The host preserves route/delivery identity and records predecessor-bound control
+generations. First use upgrades workspace metadata to v2 so earlier hosts refuse
+new opens; existing v1 workspaces without control remain supported. Mixed old/new
+host processes on one upgraded workspace are not qualified. This does not change
+Loom release formats or allow a project declaration to authorize runtime actions.
+The paired log-spool acceptance checks pause/resume, stale batch approval refusal,
+unchanged delivery identity, custody while paused and retained products/checkpoint.
+Host suites own concurrent admission, history faults and old-host qualification.
