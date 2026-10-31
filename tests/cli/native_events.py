@@ -4,6 +4,7 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
+from host_qualification import require_native_workspace
 import platform
 import signal
 import subprocess
@@ -16,8 +17,7 @@ def main():
     parser.add_argument("--host-revision", required=True)
     parser.add_argument("--output", type=Path, required=True)
     options = parser.parse_args()
-    if platform.system() != "Darwin":
-        raise SystemExit("Real macOS native enforcement required; no fallback")
+    require_native_workspace()
     root = options.output.resolve()
     root.mkdir(mode=0o700)
     loom, host = options.loom.resolve(strict=True), options.host.resolve(strict=True)
@@ -74,12 +74,19 @@ def main():
     approved("spool-start", a, "produce", seed, "15")
     approved("spool-accept", a, "produce")
     event = approved("spool-event-publish", workspace, a, "produce", "report.txt")["event"]
+    inventory = call(host, "spool-events-pending", workspace)
+    assert inventory["execution_granted"] is False
+    assert inventory["deliveries"][0]["phase"] == "awaiting-authorization"
+    assert list((b / "runs").iterdir()) == []
     delivered = approved("spool-event-deliver", workspace, event["id"], "reports")
     assert delivered["result"]["workspace"]["termination_confirmed"] is True
     assert delivered["consumed"] is False
     run = delivered["context"]["delivery"]
+    assert call(host, "spool-events-pending", workspace)["deliveries"][0]["phase"] == "awaiting-acceptance"
     approved("spool-accept", b, run)
+    assert call(host, "spool-events-pending", workspace)["deliveries"][0]["phase"] == "awaiting-confirmation"
     complete = approved("spool-event-complete", workspace, event["id"], "reports")
+    assert call(host, "spool-events-pending", workspace)["deliveries"][0]["phase"] == "consumed"
     receipt = complete["receipt"]
     assert receipt["context"]["event"] == event["id"]
     assert receipt["result_event"]["event"]["cause"] == receipt["context"]
@@ -91,6 +98,15 @@ def main():
     for instance, name in [(a, "produce"), (b, run)]:
         approved("spool-reclaim", instance, name)
         approved("spool-reclaim-snapshots", instance, name)
+    released = approved("spool-input-release", b, run, "--delivery", workspace, "reports")
+    assert released["status"] == "succeeded" and released["payloads_deleted"] is False
+    repeated = call(host, "spool-input-release", b, run, "--delivery", workspace, "reports")
+    assert repeated["already_released"] is True and repeated["executed"] is False
+    references = call(host, "spool-input-references", b, run)
+    assert len(references["claims"]) == 1
+    assert references["claims"][0]["release"]["approval_sha256"] == released["approval_sha256"]
+    assert call(host, "spool-artifacts", b, run) == outputs
+    assert saved.read_text() == "Report\nREPORT\nHELLO\n"
     duplicate = call(host, "spool-event-deliver", workspace, event["id"], "reports")
     assert duplicate["executed"] is False and duplicate["disposition"] == "already-consumed"
     assert len(list((b / "runs" / run / "job/attempts").iterdir())) == 1
@@ -98,7 +114,9 @@ def main():
                "host_revision": options.host_revision, "host_sha256": hashlib.sha256(host.read_bytes()).hexdigest(),
                "loom_sha256": hashlib.sha256(loom.read_bytes()).hexdigest(), "platform": platform.platform(),
                "release": exported["release"], "event": event["id"], "result_revision": report,
-               "model_invoked": False, "execution_retried": False, "background_dispatch": False}
+               "model_invoked": False, "execution_retried": False, "background_dispatch": False,
+               "host_delivery_inventory_qualified": True,
+               "successful_stateless_input_release_qualified": True}
     (root / "acceptance.json").write_text(json.dumps(summary, indent=2))
     print(json.dumps(summary))
 

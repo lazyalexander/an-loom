@@ -9,7 +9,10 @@ A spool attempt owns the granted execution environment and lifecycle. Its
 internal **silks** are release-bound core code and pipeline skeleton; **kits** are
 adaptable glue working copies. See [the code contract](spool-code.md). They do not each
 receive a VM or independent grant. OpenShell is a replaceable host backend,
-never a Loom or semantic dependency. Existing one-program profiles are bounded
+never a Loom or semantic dependency. Its expansion is paused; native headless
+lifecycle work is the current priority. Backend suitability is host-owned and
+fail-closed: package checking or a headless interface cannot justify weaker
+isolation or an automatic native fallback. Existing one-program profiles are bounded
 specializations, not a completed multi-silk runtime. See the
 [implementation audit and staged migration](spool-boundary.md). Legacy `kit`
 spellings and historical Silk communication records remain compatibility data.
@@ -26,22 +29,22 @@ The product goal remains natural assistance inside existing applications.
 an-loom serves the developers who make that assistance possible. CLI support
 comes first; a graphical workflow editor is optional future presentation.
 
-## Observed starting point
+## Implemented starting point
 
-The inspected an-waver main checkout provides content-addressed file packaging,
-archive verification, explicit include lists, bounded source inspection, starter
-templates, build-result reception and command briefs for other coding tools.
+Loom provides allowlisted content-addressed packaging, archive verification,
+bounded source inspection, starter templates, candidate/check identity binding,
+build-result reception and bounded tasks for existing coding tools. The legacy
+deployment adapter remains a fixed Rust source and two predefined profiles.
+The separate [native spool adapter](native-spool.md) exports release-bound
+silk/kit roles, headless runtime requests, explicit state slots and v3 events.
+Generic packaging does not imply arbitrary controlled runtime support.
 
-Its spool adapter assumes a fixed Rust source path and executable and accepts
-two predefined stdio/file profiles. Declaration generation is tied to those
-profiles. Code-tool integration prepares instructions rather than managing a
-complete development session. These are useful foundations, but do not yet
-provide a project model for assembling existing multi-component domain workflows.
-
-The inspected an-agent host already has execution backend reconciliation,
-immutable artifact revisions, bounded instance commits and checkpoint delivery.
-Those implementations remain narrow acceptance profiles. A replacement developer
-tool must not advertise a general runtime that the host cannot admit or execute.
+Paired acceptance qualifies real native instances, kit edits/reset, cancellation,
+fixed artifacts/state, finite event operation and private-material collection.
+The host owns those guarantees. Loom does not replace a coding tool's session,
+the host's supervisor, or the domain project's own workflow/acceptance rules.
+Use [development rounds](development-rounds.md) for authoring/check status and
+[native spool](native-spool.md) for the qualified package/host handoff.
 
 ## Responsibilities
 
@@ -240,7 +243,8 @@ cancellation and acceptance behavior must come from the actual host contract.
 ## Platform policy
 
 See [platform boundaries](platforms.md). Host, shuttle and workload targets are
-independent. CPU Linux is the workflow deployment default; a per-target binary
+independent. Local reviewed headless execution is the current delivery target;
+future Linux profiles require independent qualification. A per-target binary
 does not imply portable sandbox or GUI semantics. GPU/platform variants must be
 explicit. Loom describes and validates requirements; the host grants execution
 and the backend enforces the selected boundary.
@@ -325,3 +329,10 @@ Loom reconciles that retained ledger and publishes the same frozen archive.
 Content identity, check request identity and host execution attempt are distinct.
 Neither a model assertion nor a standalone operator success record substitutes
 for the qualified execution evidence. See [the contract](candidate-checks.md).
+
+## Planned session and retention coordination
+
+See [the development handoff](session-retention-handoff.md) for the next bounded
+work: host-owned artifact references and collection, then a headless session/thread
+skeleton and explicit context selection. These are proposed extensions, not
+additional Loom runtime responsibilities. GUI and TUI remain deferred.

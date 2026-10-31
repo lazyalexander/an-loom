@@ -9,7 +9,10 @@ an-agent owns runtime authority, model/context services, state and artifact
 custody. A spool execution attempt is the isolation and lifecycle unit. Internal **silks**
 provide stable core steps; editable **kit** working copies provide bounded glue
 within the same granted environment. OpenShell is an optional,
-replaceable backend; shuttles connect applications through host authorization.
+replaceable backend with expansion paused; shuttles connect applications through
+host authorization. Current runtime work prioritizes reviewed local headless spools.
+Headless execution is not a trust classification: unsupported isolation requirements
+must refuse, never silently fall back to a weaker native environment.
 See [the boundary, implementation audit and migration](docs/spool-boundary.md).
 
 The first slice migrates identified packaging and validation code from an-waver
@@ -19,8 +22,8 @@ compiles and tests the selected Rust source. Loom receives matching output, emit
 the fixed host declaration, and assembles a portable local release.
 
 The implemented deployment adapter is deliberately narrow: one dependency-free
-Rust source, one executable, `file-kit-v1`, and the host's existing macOS isolated
-build. General packages may contain other languages and files. A new build or
+Rust source, one executable, `file-kit-v1`, and the host's existing isolated
+build profile. See the [platform support and qualification matrix](docs/platforms.md). General packages may contain other languages and files. A new build or
 runtime profile requires a separately qualified adapter and host support.
 This is not yet a general multi-stage workflow executor or a code-generation agent.
 
@@ -160,7 +163,7 @@ The [implementation boundary audit](docs/architecture.md#implementation-boundary
 ## Reviewed native spool packages
 
 The [native spool adapter](docs/native-spool.md) exports read-only silk code and
-kit baselines for an-agent's bounded macOS instance lifecycle. The included
+kit baselines for an-agent's qualified headless instance lifecycle. The included
 [lightweight text spool](examples/native-spool/README.md) needs no model or install
 hook. Packaging remains independent from host authorization and execution.
 
@@ -172,7 +175,7 @@ The [log accumulator](examples/log-accumulator/README.md) combines a separately
 selected business artifact and committed checkpoint. Loom packages its roles;
 the host owns fixed versions, stale-state conflicts and cancellation retention.
 
-The [native spool acceptance](docs/native-spool.md#optional-weaver-and-the-two-instance-acceptance-path) also covers an optional host-owned weaver proposal slot, two independent instances, fixed artifact handoff, cancellation and baseline restoration. Loom supplies packaging; it does not run the agent or own runtime permission.
+The [native spool acceptance](docs/native-spool.md#optional-weaver-and-the-two-instance-acceptance-path) also covers the optional host kit proposal slot (with legacy Weaver tokens), two independent instances, fixed artifact handoff, cancellation and baseline restoration. Loom supplies packaging; it does not run the agent or own runtime permission.
 
 The native starter includes a selected `AGENTS.md` describing file roles and
 development boundaries. Follow [the six-round qualification status](docs/development-rounds.md)

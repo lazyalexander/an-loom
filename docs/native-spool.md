@@ -1,7 +1,8 @@
 # Native spool packaging and host handoff
 
-This qualified adapter exports reviewed macOS shell spools and explicit v3 Python
-requests with binary products. It does not implement
+This qualified adapter exports reviewed shell spools and explicit v3 Python
+requests with binary products. See the [platform matrix](platforms.md) for current
+export and real-host coverage. It does not implement
 runtime authorization, supervision, cleanup or a domain pipeline engine. The
 legacy file-kit deployment adapter and its wire names are unchanged.
 
@@ -205,7 +206,7 @@ revoked, duplicate, foreign or protected-path proposals are refused. Starting a 
 requires a separate approval after application. The slot launches no model and
 keeps model/context behavior outside Loom.
 
-The real macOS acceptance now exercises this sequence using the actual release
+The real native acceptance now exercises this sequence using the actual release
 exported from `examples/native-spool`, without a fake execution backend:
 
 1. Load two independent instances of one release (two silks and one kit).
@@ -388,3 +389,176 @@ pinned host revision: preview is inert, restoring the kit preserves instance
 identity, a new run uses release-baseline code, and earlier pinned products remain
 readable. This is a host lifecycle capability, not a Loom implementation of kit
 mutation or an additional grant. Other historical host jobs retain their own pins.
+
+## Host-owned event inventory
+
+The host provides `spool-events-pending WORKSPACE` and foreground
+`spool-events-watch WORKSPACE SECONDS INTERVAL_MS`. Inventory associates matching
+fixed events and subscriptions with admission refusals and evidence-derived
+delivery phases. Watch emits initial/changed NDJSON snapshots and a final stop
+summary; it does not promise every intermediate transition. Neither command
+prepares a run, selects state, acknowledges consumption or grants execution.
+Stopping observation does not cancel an independently admitted delivery.
+
+Loom continues to declare/package interfaces only. Runtime observation, polling,
+subscription admission and execution remain in an-agent. Do not add a second
+scheduler in Loom or treat a coding-task instruction as runtime authority.
+The paired native event acceptance observes pending, acceptance, confirmation
+and consumed phases for an actual Loom-built release. Host acceptance owns
+monitor signals, deadline and evidence-loss cases. This P1 slice does not add
+automatic dispatch, latest-state selection or broad batch authorization.
+
+## Finite host dispatch with fixed state
+
+The host's `spool-events-dispatch WORKSPACE REQUEST_JSON [--approve HASH]` accepts
+1..16 explicitly selected existing event/subscription pairs, each with an exact
+`state_revision` where required. Preview and hash approval bind every delivery's
+start plan; no latest state, wildcard or future-event authorization is inferred.
+SIGTERM drains the selected entry and stops further selection; SIGINT requests
+its supervised cancellation. A durable intent fences the entire batch against
+replay/resume, including after missing results or ledger failure. Observation is
+available through `spool-events-dispatch-show`; repeating a recorded request never
+runs the remainder. Products/state acceptance and completion remain explicit.
+
+Loom adds no runtime scheduler, signal handler or state policy. The existing
+log-accumulator paired acceptance packages the same v3 contract, submits a fixed
+stateful event through the host dispatcher, independently accepts/commits/completes
+it and checks pinned earlier products plus no repeated attempt after collection.
+Host acceptance owns multi-entry stop/cancel, real ledger faults and unknown-result
+fences. Existing standalone and direct-delivery paths remain supported.
+
+## Host subscription admission control
+
+`spool-event-pause` and `spool-event-resume` are explicitly approved host
+operations on a fixed subscription. Pause blocks new admission, without cancelling
+running work or blocking already-admitted acceptance/commit/completion. Resume
+requires fresh delivery/batch approval and the same target instance/generation;
+it does not replay a recorded batch or undo permanent revocation.
+
+The host preserves route/delivery identity and records predecessor-bound control
+generations. First use upgrades workspace metadata to v2 so earlier hosts refuse
+new opens; existing v1 workspaces without control remain supported. Mixed old/new
+host processes on one upgraded workspace are not qualified. This does not change
+Loom release formats or allow a project declaration to authorize runtime actions.
+The paired log-spool acceptance checks pause/resume, stale batch approval refusal,
+unchanged delivery identity, custody while paused and retained products/checkpoint.
+Host suites own concurrent admission, history faults and old-host qualification.
+
+## Host dispatch summary reconstruction
+
+The host's explicitly approved `spool-events-dispatch-reconcile WORKSPACE NAME`
+can reconstruct a missing completed-batch summary only from all original entry
+records, exact delivery/start bindings and confirmed successful native receipts.
+It never runs a process, resumes a partial batch, accepts output or commits state.
+Missing or contradictory evidence refuses. Loom's paired log-spool smoke loses
+only the known completed batch projection after custody/collection, reconstructs
+it and verifies that the attempt count remains one. This is not arbitrary crash
+recovery. Runtime reconciliation remains host-owned.
+
+## Host receiver succession
+
+`spool-event-replace WORKSPACE OLD NEW ROUTE_JSON [--approve HASH]` reuses the
+existing strict route request format and replaces future receiver admission only.
+The producer/event slot stays fixed, the successor uses a fresh name, and the
+old route and all admitted delivery identities remain retained. Replacement does
+not run a process, cancel old work or migrate state. An immutable catalog commit
+retires old admission and binds a fixed log-prefix cutover; earlier events cannot
+be replayed through the successor. New events still need explicit execution
+approval and a selected checkpoint. Old pending/batch approvals cannot retarget
+work to the new instance, and resuming old admission is refused.
+
+First use upgrades host workspace metadata to v3; old hosts refuse new opens.
+Prior v1/v2 workspaces remain supported and v3 preserves existing control history.
+Keep old instance directories for historical custody; do not mix already-running
+old/new hosts on an upgraded workspace. This is not automatic release upgrade,
+state migration, route-history GC or arbitrary topology editing. Existing bounds
+still count retired declarations. An unrelated separately approved route remains
+a distinct authority, not a promise of global exactly-once behavior.
+
+The packaged log-spool smoke loads a second instance of the same exact release,
+explicitly seeds it from a pinned checkpoint, refuses historical delivery through
+the successor, then processes a new event through finite dispatch and verifies
+independent state/products. Loom declares/checks/packages the existing interface;
+cutover, authority, supervision and custody stay in an-agent. The host suite owns
+in-flight replacement, stale approval, uncertain-result and old-host refusal cases.
+
+## Finite private-material maintenance
+
+The host's `spool-storage-collect INSTANCE REQUEST_JSON [--approve HASH]` groups
+1..16 selected runs for either work or private-input-snapshot collection. Every
+existing per-run preview is validated before deletion and bound by the aggregate
+approval. Original operations retain their locks, exact inventories and durable
+one-shot deletion fences. Work and snapshots are separate explicitly approved
+phases. Cancel/unknown results stop further items; this is not an atomic batch,
+auto-resume or rollback service. Formal artifacts, state, release/kit and evidence
+stay retained. Loom adds no runtime collector or retention authority.
+
+The packaged log-spool acceptance collects two accepted runs through each phase,
+then verifies explicit state commit, stale-state refusal and fixed downstream
+products as before. The host suite owns larger multi-round inputs, concurrent
+consumer progress, cancellation and lost collection receipt fences. Native formal
+payload deletion still requires a host-owned reference/release contract; Loom
+declarations or absence of observed readers cannot authorize it.
+
+## Host artifact input admission retirement
+
+`spool-artifact-retire INSTANCE RUN OUTPUT [--approve HASH]` closes one verified
+accepted native output to new revision-based inputs without deleting payloads or
+changing their identities. New checkout/edit-parent selection, native business
+input/event delivery and workspace artifact preparation honor the host fence.
+Old direct/event/batch previews cannot authorize a new acquisition after closure.
+Other outputs and new revisions are independent. Already-acquired inputs,
+output acceptance, state commit, causal confirmation and private collection can
+still verify retained evidence. A committed checkpoint is an independent version.
+
+Closure writes use the catalog's existing lock and exclusive creation. Immutable
+input reads check the monotonic fence before and after acquisition, preserving
+concurrent readers. Already-acquired bytes can finish; a concurrent closure may
+refuse preparation without authorizing a retry.
+A torn/invalid record fails closed and is not overwritten as a retry. It is not
+access revocation for raw files, independent copies or an older host executable;
+use the qualified host consistently. There is no complete reference census,
+automatic GC or deletion grant. Native release schemas and old package bytes do
+not change. See [the host storage contract](https://github.com/lazyalexander/an-agent/blob/dev-advance/crates/an-agent-host/NATIVE-STORAGE.md#retiring-new-artifact-input-admission).
+
+The packaged log-spool smoke closes one old producer output, refuses a new
+stateful input selection, and preserves existing consumption proof, independent
+state and saved reports. Host tests own concurrent retirement, cancellation,
+concurrent-reader behavior and marker faults. Loom adds no runtime retirement policy.
+
+### Native input reference handoff
+
+The host now registers exact managed artifact/checkpoint inputs when admitting a
+new native run. `spool-input-references INSTANCE RUN` reports the run-bound claims;
+preview and raw-file selection do not acquire them. The packaged log-spool smoke
+checks that its data/checkpoint revisions and release match the claims, which
+remain after private collection, state commit and unload. No release-format or
+manifest change is needed, and Loom owns no runtime reference store.
+
+The host's `spool-input-release INSTANCE RUN [--approve HASH]` preserves the
+confirmed cancelled-owner contract after work and snapshot collection. The added
+`spool-input-release INSTANCE RUN --delivery WORKSPACE SUBSCRIPTION [--approve HASH]`
+supports successful stateless event consumers after accepted outputs, original
+consumption acknowledgement and private collection. The paired event case checks
+explicit release, unchanged formal products and duplicate confirmation without
+execution. Successful stateful owners and incomplete registrations stay retained;
+opaque state dependencies are not inferred from content. Host CI owns cancellation,
+partial registration and lost-confirmation qualification. Source claims are not a
+complete census of old/unmanaged readers or opaque checkpoint dependencies. The
+operation deletes no payload and cannot authorize collection by itself.
+
+The remaining [retention/session handoff](session-retention-handoff.md) is a plan.
+Stateful-success release, formal payload collection and the session coordinator
+are not yet supported by this adapter. Unknown outcomes are not retried. Loom
+adds no release policy, package fields or runtime store for this host capability.
+
+### Observation and control concurrency
+
+The qualified host pending/show/watch path reads a bounded fixed log without taking
+its workspace mutation lock or repairing workspace projections. Its additive
+`observation` metadata identifies the log and reports whether it changed by the
+end; external evidence remains non-atomic. Loom must not turn an observed phase
+into execution, cancellation confirmation or collection authority. Mutating host
+commands still revalidate under their original locks. Malformed captured evidence
+fails closed; unknown work is never retried. Host CI owns the concurrent observer/
+revocation matrix; Loom retains its narrow packaged delivery/state smoke tests.

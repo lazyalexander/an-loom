@@ -2,8 +2,11 @@
 
 `native_state.py` qualifies unchanged v1/v2 exports from the existing native text
 reference against an explicitly selected real host. It requires Python 3 standard
-library, macOS native enforcement and two already built binaries. It never builds
-inside a scenario or invokes a model.
+library, the qualified native workspace backend and two already built binaries. It never builds
+inside a scenario or invokes a model. All Python CLI cases consult the local
+`host_qualification.py` entry helper before creating fixtures or invoking a host.
+See the [platform matrix](../../docs/platforms.md); the helper is a prerequisite,
+not an enforcement probe or a source of runtime authority.
 
 ```sh
 python3 tests/cli/native_state.py --loom target/debug/an-loom \
@@ -38,8 +41,9 @@ Host tests own refusal/failure cases. CI pins the host implementing this command
 `native_events.py` uses the same prerequisites and arguments. It packages the
 existing native reference with explicit v3 event interfaces, loads two instances,
 and exercises host-owned publication, static subscription, approved delivery,
-formal acceptance and causal consumption confirmation. Fixed products and
-duplicate confirmation remain valid after work/private-input collection. This is
+formal acceptance, causal consumption confirmation and explicit stateless-success
+input-reference release. Fixed products and duplicate confirmation remain valid
+after work/private-input collection and reference release. This is
 an explicit foreground handoff; the host owns revocation/cancellation/fault cases.
 
 `native_documents.py` additionally needs `--python /selected/venv/bin/python`,
@@ -57,3 +61,26 @@ versions through direct/event execution, rejects a stale commit and verifies
 native products/provenance after collection and unload. No extra dependency,
 model or GUI is needed. The host's corresponding suite owns real cancellation
 and missing-evidence tests; this paired suite owns package/host compatibility.
+
+The native event CLI suite also checks host-owned delivery inventory for an
+actual packaged v3 release. It does not implement monitoring or dispatch in Loom.
+
+The data/state CLI smoke also submits a finite explicitly state-bound host
+batch for the actual packaged log accumulator. Host suites own its multi-entry
+lifecycle, cancellation and ledger-fault guarantees.
+
+The data/state smoke also checks host subscription pause/resume and stale batch
+approvals for the actual packaged log spool; Loom owns no runtime control ledger.
+
+The data/state smoke also cuts over to a second instance of the same packaged
+release. It checks explicit fixed-checkpoint seeding, historical-event refusal,
+new-event dispatch and independent old/new state. Runtime cutover remains host-owned.
+
+The data/state smoke uses finite host private-material maintenance for two runs,
+retaining state-commit, stale conflict and downstream-product assertions. Larger
+capacity/concurrency/collection-fault acceptance remains host-owned.
+
+The data/state smoke also closes one old accepted producer version through the
+host, refuses new revision checkout/input selection, and retains original
+accepted-output inventory, consumption confirmation, checkpoints and saved
+reports. Host suites own concurrent admission/cancellation and record-fault cases.

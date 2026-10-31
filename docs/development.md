@@ -2,13 +2,13 @@
 
 ## Requirements
 
-Loom uses Rust 2024 and Cargo, with toolchain 1.98.0 pinned for qualification. Generic packaging and contract tests are portable.
+Loom uses Rust 2024 and Cargo, with toolchain 1.98.0 pinned for qualification.
+See the [platform matrix](platforms.md) for packaging and execution coverage.
 The first controlled build adapter requires native macOS, an installed Rust
 toolchain and Xcode or Command Line Tools. The operator supplies an independent
-`an-agent-host` binary supporting `build-kit` and `file-kit-v1`. CI currently pins
-host revision `deb3721e0429bd31f325ba3b55d8c646af1eacdf`, which removes
-linker debug paths before accepting compiled programs. The corresponding host
-PR must be reviewed before adopting this integration as the default.
+`an-agent-host` binary supporting `build-kit` and `file-kit-v1`. The exact qualified
+host revisions are pinned in [CI](../.github/workflows/ci.yml); the build adapter
+removes linker debug paths before accepting compiled programs.
 
 No model API, model download, Docker, GUI application or an-agent runtime library
 dependency is needed for this acceptance. Existing mature pipelines can be

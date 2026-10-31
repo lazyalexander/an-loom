@@ -5,7 +5,7 @@ import hashlib
 import importlib.util
 import json
 from pathlib import Path
-import platform
+from host_qualification import require_native_workspace
 import shutil
 import signal
 import subprocess
@@ -26,8 +26,7 @@ def main():
     parser.add_argument("--host-revision", required=True)
     parser.add_argument("--output", type=Path, required=True)
     options = parser.parse_args()
-    if platform.system() != "Darwin":
-        raise SystemExit("Real macOS native enforcement required; no fallback")
+    require_native_workspace()
     root = options.output.resolve()
     root.mkdir(mode=0o700)
     host, loom = options.host.resolve(strict=True), options.loom.resolve(strict=True)

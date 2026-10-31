@@ -58,10 +58,11 @@ A silk exit is not evidence that the whole spool attempt has terminated.
 
 | Surface | Implemented | Still missing |
 | --- | --- | --- |
-| Project/package/release | Allowlisted files, deterministic inventory, bounded verification and fixed host deployment | General multi-silk authoring/runtime contract |
-| CLI source binding | One Rust entrypoint, build record, declaration and source evidence | Arbitrary dependency assembly and internal dispatch |
+| Project/package/release | Allowlisted deterministic packaging and separate legacy/native deployment adapters | Arbitrary dependency assembly and general cross-backend runtime |
+| Native roles and inputs | v1/v2 compatibility, v3 events, explicit state slots, operator-selected Python and byte products | Arbitrary languages, runtime provisioning or implicit state migration |
+| CLI source binding | Legacy Rust entrypoint plus native silk/kit inventories and candidate/check binding | Domain sequencing remains project code, not a Loom DSL |
 | Embedded host bodies | Existing trusted in-process `SpoolBeat` integration | Mounting is not execution isolation; this is not an untrusted spool runner |
-| Host file deployment | Release-bound single entry; Native/OpenShell share operation settlement | Whole-spool multi-step execution in one environment |
+| Host file deployment | Native/OpenShell operation settlement; separate native facade qualifies two silk steps in one attempt | General hostile-process containment or cross-backend multi-silk ABI |
 | Reviewed workspace examples | Trusted operator-selected workflows, binary custody and native editor evidence | Production spool identity/authority binding; not a hostile-agent sandbox |
 | OpenShell adapter | Optional qualified single-program file profile | Broad agent/network/credential coverage must not be inferred from upstream support |
 
@@ -84,22 +85,20 @@ Historical Silk protocol and Silksong data keep their original meaning. A new
 executable silk is not that protocol. Do not reclassify old tape or communication
 records by string replacement. A later protocol migration needs explicit schemas.
 
-## Next bounded slices
+## Current qualification and deferred scope
 
-1. Land these contracts and compatible authoring names without changing isolation.
-2. Bind production requests to an owning spool release/attempt, selected internal
-   program, input/state versions and effective grants. Keep developer workspace
-   execution visibly separate until it satisfies that contract.
-3. Reconcile real execution paths using existing host identity, cancellation,
-   artifact and retention mechanisms. Only add missing capability fields backed
-   by platform/version/profile evidence. Preserve CLI compatibility and refuse
-   weaker fallback; do not add a second VM backend.
-4. Qualify one spool with two internal silks in one execution environment. Verify
-   that no inner call provisions a VM, cancellation covers remaining workers,
-   stale generations cannot publish, and accepted artifacts survive reclamation.
-5. Consider persistent environments, pause/suspend or another backend only after
-   concrete use requires them. Snapshot/restore is not business-state recovery or
-   rollback of external application effects.
+The [native spool contract](native-spool.md) now has real package/host acceptance
+for two internal silk steps, editable-kit baseline restoration, independent
+instances, fixed business/state inputs and explicit workspace-event operation.
+The host owns cancellation, settlement, custody, finite private collection and
+artifact input admission retirement. Loom supplies checked package bytes and
+narrow compatibility tests; it does not add a parallel runtime control plane.
+
+Live process/VM restoration, arbitrary dependencies, automatic state migration
+and formal payload GC remain separate contracts. A completed admission or
+private-collection feature does not establish them. Further backend work requires
+a concrete workload. The [development rounds](development-rounds.md) track Loom
+authoring/check delivery; host operational plans belong to an-agent.
 
 The host owns runtime enforcement and acceptance. Loom can check declarations
 and prepare tests, but cannot certify those guarantees from a successful build.
