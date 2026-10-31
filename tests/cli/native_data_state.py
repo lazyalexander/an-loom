@@ -142,6 +142,12 @@ def main():
     assert call(host, "spool-events-dispatch", ws, dispatch)["executed"] is False
     assert len(list((b / "runs" / next_run / "job/attempts").iterdir())) == 1
     assert saved.read_text() == "total=6\nINFO=4\nWARN=0\nERROR=2\n"
+    summary_path = ws / "dispatches/next-log/result.json"
+    summary_path.unlink()  # Known completed execution; lose only its batch projection.
+    call(host, "spool-events-dispatch", ws, dispatch, success=False)
+    restored = approved("spool-events-dispatch-reconcile", ws, "next-log")
+    assert restored["executed"] is False and restored["summary_reconstructed"] is True
+    assert len(list((b / "runs" / next_run / "job/attempts").iterdir())) == 1
     approved("spool-unload", b)
     state = call(host, "spool-state-show", b)
     assert state["head"] == head

@@ -442,3 +442,14 @@ Loom release formats or allow a project declaration to authorize runtime actions
 The paired log-spool acceptance checks pause/resume, stale batch approval refusal,
 unchanged delivery identity, custody while paused and retained products/checkpoint.
 Host suites own concurrent admission, history faults and old-host qualification.
+
+## Host dispatch summary reconstruction
+
+The host's explicitly approved `spool-events-dispatch-reconcile WORKSPACE NAME`
+can reconstruct a missing completed-batch summary only from all original entry
+records, exact delivery/start bindings and confirmed successful native receipts.
+It never runs a process, resumes a partial batch, accepts output or commits state.
+Missing or contradictory evidence refuses. Loom's paired log-spool smoke loses
+only the known completed batch projection after custody/collection, reconstructs
+it and verifies that the attempt count remains one. This is not arbitrary crash
+recovery. Runtime reconciliation remains host-owned.
