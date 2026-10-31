@@ -79,7 +79,7 @@ def main():
     for name, version in [("first", versions[0]), ("stale", versions[1])]:
         request.write_text(json.dumps({"schema": "an-native-data-state-v1", "state_revision": initial,
             "data": {"catalog": version["catalog"], "revision": version["outputs"][0]["binding"]["revision"]}}))
-        started = approved("spool-start-data-state", b, name, request, 15)
+        started = approved("spool-supervisor", "start-data-state", b, name, request, 15)
         assert started["workspace"]["termination_confirmed"] is True
         approved("spool-accept", b, name)
     references = call(host, "spool-input-references", b, "first")

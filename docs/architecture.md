@@ -336,3 +336,34 @@ See [the development handoff](session-retention-handoff.md) for the next bounded
 work: host-owned artifact references and collection, then a headless session/thread
 skeleton and explicit context selection. These are proposed extensions, not
 additional Loom runtime responsibilities. GUI and TUI remain deferred.
+
+## Context and work handoff principles
+
+The [host architecture](https://github.com/lazyalexander/an-agent/blob/dev-advance/doc/architecture.md)
+and Loom share four rules for future development/harness consumers:
+
+1. Filter context by visibility before summarizing or paging it. Preserve source,
+   exact revision, purpose, audience and read pointers; summaries inherit disclosure
+   restrictions. These are design constraints, not a generic context router claim.
+2. Distinguish context delivery, a work request and an execution grant. Subscriptions
+   and project instructions cannot increase permissions. Workspace holds materials
+   and facts; directed spool messages travel through authorized protocols.
+3. Keep event handling ownership separate from authorization provenance. Who must
+   handle, acknowledge or return information does not determine who may disclose
+   it or execute a side effect. Correlation supplies context only.
+4. Keep a continuing work goal and handoff state separate from each admitted
+   attempt. Exact inputs/state and termination evidence belong to the host. A
+   pending goal or recovery prompt cannot authorize retrying an unknown execution.
+
+Weaver/harness adapters may prepare role prompts, paged context, human handoffs
+and recovery inspection suggestions. Loom prepares and validates development
+materials and packages the selected bytes. The host grants access, supervises
+execution and owns state/artifact custody; no model loop or runtime supervisor
+moves into Loom. An external application's discussion "Thread" is not an OS thread.
+
+Design reference: [dsh-superagent-prototype at 6337fc8](https://github.com/deepseek-ai/dsh-superagent-prototype/tree/6337fc823ce20251c8de8085948165c81aaa701e).
+Its domain/authorization/execution documents and effect-queue tests are useful
+when implementing a matching need. Full-access execution and automatic restart
+reassignment are not inherited guarantees. This is a reference, not a dependency
+or code import. GitHub/Feishu integration is deferred and may later serve as an
+optional capability test, not the primary delivery goal.
