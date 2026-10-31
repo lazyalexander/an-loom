@@ -64,7 +64,7 @@ def main():
         history = [revision]
         controls = []
         for run, expected in [("first", "Report\nHELLO\n"), ("second", "Report\nREPORT\nHELLO\n")]:
-            result = approved("spool-start-state", instance, run, revision, "15")
+            result = approved("spool-supervisor", "start-state", instance, run, revision, "15")
             assert result["status"] == "succeeded"
             assert result["workspace"]["termination_confirmed"] is True
             approved("spool-accept", instance, run)
