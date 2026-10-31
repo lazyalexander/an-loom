@@ -2,8 +2,11 @@
 
 `native_state.py` qualifies unchanged v1/v2 exports from the existing native text
 reference against an explicitly selected real host. It requires Python 3 standard
-library, macOS native enforcement and two already built binaries. It never builds
-inside a scenario or invokes a model.
+library, the qualified native workspace backend and two already built binaries. It never builds
+inside a scenario or invokes a model. All Python CLI cases consult the local
+`host_qualification.py` entry helper before creating fixtures or invoking a host.
+See the [platform matrix](../../docs/platforms.md); the helper is a prerequisite,
+not an enforcement probe or a source of runtime authority.
 
 ```sh
 python3 tests/cli/native_state.py --loom target/debug/an-loom \

@@ -1,46 +1,53 @@
-# Host, application and workflow targets
+# Platform support and qualification
 
-The desired split is coherent when these targets are explicit:
+Loom owns authoring, checking and package handoff. The host owns runtime support;
+use the authoritative [an-agent runtime matrix](https://github.com/lazyalexander/an-agent/blob/dev-advance/doc/platforms.md)
+instead of duplicating that table here. These two documents are the platform
+entry points. Feature contracts link here; historical acceptance reports keep
+their original OS, architecture and revision evidence.
 
-| Target | Packaging and responsibility | Current evidence |
-| --- | --- | --- |
-| an-agent control host | Per-OS/CPU binaries; grants, context, supervision and custody | Native file execution on macOS/Linux CI; workspace development on macOS |
-| Application shuttle | Per-application OS integration, native API or GUI | Qualified separately by each shuttle; no universal GUI promise |
-| Workflow/spool | CPU Linux by default, pinned architecture/dependencies; alternative profiles explicit | Policy direction; this Kimi development example still uses the existing macOS build profile |
-| Loom | Native development/packaging CLI; describes requirements and delegates execution | Linux/macOS packaging and quality CI |
+The current coordinated delivery target is local, reviewed **headless** spools.
+Existing Linux implementations and CI remain intact, with no Linux compatibility
+expansion in this phase. Linux deployment remains a possible future profile,
+not a default that converts today's native releases or grants broader access.
 
-Per-target Rust binaries help distribution. They do not make one executable run
-on every system or reproduce filesystem, sandbox, GUI and driver semantics.
-Cross-compilation needs target libraries, an appropriate linker and native
-dependencies; see [Rust's target guidance](https://rust-lang.github.io/rustup/cross-compilation.html).
-Protocol/process boundaries are preferable to assuming a portable Rust dylib ABI.
-Windows remains unqualified here.
+## Loom and handoff matrix
 
-```mermaid
-flowchart LR
-    Loom[Loom: author, check, package] --> Host[an-agent control host]
-    App[Native application] <--> Shuttle[Platform-specific shuttle]
-    Shuttle <--> Host
-    Host --> CPU[Admitted CPU Linux workflow]
-    Host --> GPU[Optional authorized GPU/model worker]
-    CPU --> Outputs[Candidate artifacts and reports]
-    GPU --> Outputs
-    Outputs --> Host
-```
+| Surface | macOS | Linux | Other platforms | Evidence and limits |
+| --- | --- | --- | --- | --- |
+| Rust authoring, checking, deterministic packaging and quality tools | CI | CI | Unqualified | [CI jobs](../.github/workflows/ci.yml); this is package tooling, not execution isolation |
+| Native spool manifest/export adapter | Contract tests and real host handoff | Offline contract tests | Unqualified | Existing shell/Python target identifiers remain unchanged; producing a package does not enable its target runtime |
+| Controlled build/development and native spool execution acceptance | Qualified host lane | No new execution lane | Unqualified | Exact host revisions in CI; [acceptance map](acceptance.md) and [CLI cases](../tests/cli/README.md) |
+| Domain programs used independently | Example-specific tests | Example-specific tests where configured | Example-specific | Ordinary CLI success has no managed host-execution guarantee |
+| Application shuttles and GPU workflows | Separately qualified | Separately qualified | Separately qualified | Application APIs, GUI sessions, drivers and external services are outside Loom's package runtime |
 
-This is a target ownership diagram, not a claim that new Linux/GPU backends ship
-in this PR. A local ARM Linux VM is a reasonable initial CPU development target;
-native Linux must not require Lima or Docker. Existing macOS-only build profiles
-must be separately adapted and qualified before advertising Linux development.
-Do not use the trusted workspace job profile to contain an untrusted coding agent.
+Per-target binaries simplify distribution but do not reproduce sandbox, filesystem,
+GUI or driver behavior. OS and architecture are explicit target requirements.
+Unsupported requests refuse; no automatic CPU fallback, unrestricted host shell
+or VM GPU passthrough is inferred. A workflow may request a separately qualified
+GPU/service profile or an application shuttle, with host-owned credentials,
+cancellation and artifact handoff.
 
-CPU Linux as the default does not prohibit a GPU-dependent workflow. Declare a
-separate execution variant, request a host-mediated remote model/GPU service, or
-use an application-specific native shuttle. The host controls credentials,
-network and artifact exchange. Cancellation confirmation and late-result rejection
-must be qualified for remote work. Never silently run an unsupported GPU task on
-CPU, grant a broader host shell, or assume VM GPU passthrough.
+## Where platform decisions belong
 
-Domain authors choose algorithms and device requirements; Loom checks explicit
-project/deployment contracts; an-agent admits capabilities; the selected backend
-enforces them. A default policy is not an automatic cross-platform converter.
+- Loom's `adapters/host` validates the selected, versioned host contract. Existing
+  `macos-native-*-v1` runtime names, target `os` fields and evidence backend IDs
+  are compatibility data, not generic domain decisions. Do not rewrite old
+  releases or relax a receipt check to make its name appear portable.
+- Host backend and filesystem adapters own enforcement and OS-specific APIs.
+  Loom must not add native launch, lifecycle or file-custody policy to compensate
+  for an unsupported runtime.
+- Python CLI cases consult the local `tests/cli/host_qualification.py` before
+  fixture creation or host invocation. This retains the current prerequisite;
+  it is not a sandbox probe, authorization or a substitute for real acceptance.
+  Rust OS-specific tests and CI runner selection remain explicit test entry points.
+- Domain code stays in the project; source language is not a host capability.
+  The same headless lifecycle interfaces do not imply that every backend can
+  pause, suspend, recover memory or interact with a display.
+
+The host runtime matrix is authoritative for execution. This matrix is
+authoritative for Loom tooling and paired handoff coverage. A new target requires
+adapter work, an explicit selected host revision, real evidence and coordinated
+updates to both entry points. Never turn a skipped or unsupported test into a
+qualified result, remove a check, or broaden a trusted profile to pass a lane.
+No new platform registry, generic pipeline DSL or execution backend is introduced.

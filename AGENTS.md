@@ -129,6 +129,14 @@ ignored real-host coverage when moving files. Domain tests stay with examples;
 quality-tool tests stay in their independent workspace. Generated output and
 private acceptance data never become source fixtures.
 
+## Platform claims
+
+Maintain tooling/handoff coverage in [the platform matrix](docs/platforms.md) and
+link to an-agent's authoritative runtime matrix. Keep OS-specific host contracts
+in adapters and acceptance prerequisites in test entry points. Existing profile
+IDs, historical evidence and unsupported-platform refusals remain compatible.
+Do not add a runtime dependency, fallback or weaker gate to make a target pass.
+
 ## Test language and host coordination
 
 Follow [the test map and execution rules](tests/README.md). Retain Rust for

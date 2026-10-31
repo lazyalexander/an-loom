@@ -87,7 +87,8 @@ metadata is rejected. Existing v1 deployment JSON and CLI names are unchanged.
 The provisional v1 candidate-check plan/evidence must be regenerated as v2:
 accepting it as equivalent would preserve the original defect.
 
-The execution adapter currently supports macOS host workspace v2 with explicit
+The execution adapter uses the qualified host workspace v2
+([platform matrix](platforms.md)) with explicit
 `input_layout`, at most 15 selected project files plus one runner, a 30-second
 wall limit, no extra runtime read roots and no network. Broader package formats
 remain supported independently. This route is for reviewed local tools without

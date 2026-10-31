@@ -56,7 +56,8 @@ results require inspection before a new task is authorized.
 
 ## Qualification
 
-The supported route remains the reviewed macOS shell profile, no network or GPU,
+The supported route remains the reviewed shell profile
+([platform matrix](platforms.md)), no network or GPU,
 15 project input files plus one runner and a 30-second check deadline. Dependencies
 are not installed. Unsupported declarations may be packaged but fail local host
 admission, with intermediate results retained. A syntax-only project acceptance

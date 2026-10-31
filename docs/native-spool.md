@@ -1,7 +1,8 @@
 # Native spool packaging and host handoff
 
-This qualified adapter exports reviewed macOS shell spools and explicit v3 Python
-requests with binary products. It does not implement
+This qualified adapter exports reviewed shell spools and explicit v3 Python
+requests with binary products. See the [platform matrix](platforms.md) for current
+export and real-host coverage. It does not implement
 runtime authorization, supervision, cleanup or a domain pipeline engine. The
 legacy file-kit deployment adapter and its wire names are unchanged.
 
@@ -205,7 +206,7 @@ revoked, duplicate, foreign or protected-path proposals are refused. Starting a 
 requires a separate approval after application. The slot launches no model and
 keeps model/context behavior outside Loom.
 
-The real macOS acceptance now exercises this sequence using the actual release
+The real native acceptance now exercises this sequence using the actual release
 exported from `examples/native-spool`, without a fake execution backend:
 
 1. Load two independent instances of one release (two silks and one kit).
