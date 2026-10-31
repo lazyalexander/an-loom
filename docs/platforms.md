@@ -11,6 +11,12 @@ Existing Linux implementations and CI remain intact, with no Linux compatibility
 expansion in this phase. Linux deployment remains a possible future profile,
 not a default that converts today's native releases or grants broader access.
 
+OpenShell remains an optional replaceable host backend; expansion is paused while
+the native headless lifecycle is completed. Retain its existing qualified scope
+and failure checks. Headless does not mean trusted or safely contained. If the
+selected backend cannot enforce a spool's requirements, the host must refuse;
+Loom must not rewrite declarations or select weaker isolation to obtain success.
+
 ## Loom and handoff matrix
 
 | Surface | macOS | Linux | Other platforms | Evidence and limits |

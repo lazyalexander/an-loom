@@ -98,6 +98,15 @@ def main():
     for instance, name in [(a, "produce"), (b, run)]:
         approved("spool-reclaim", instance, name)
         approved("spool-reclaim-snapshots", instance, name)
+    released = approved("spool-input-release", b, run, "--delivery", workspace, "reports")
+    assert released["status"] == "succeeded" and released["payloads_deleted"] is False
+    repeated = call(host, "spool-input-release", b, run, "--delivery", workspace, "reports")
+    assert repeated["already_released"] is True and repeated["executed"] is False
+    references = call(host, "spool-input-references", b, run)
+    assert len(references["claims"]) == 1
+    assert references["claims"][0]["release"]["approval_sha256"] == released["approval_sha256"]
+    assert call(host, "spool-artifacts", b, run) == outputs
+    assert saved.read_text() == "Report\nREPORT\nHELLO\n"
     duplicate = call(host, "spool-event-deliver", workspace, event["id"], "reports")
     assert duplicate["executed"] is False and duplicate["disposition"] == "already-consumed"
     assert len(list((b / "runs" / run / "job/attempts").iterdir())) == 1
@@ -106,7 +115,8 @@ def main():
                "loom_sha256": hashlib.sha256(loom.read_bytes()).hexdigest(), "platform": platform.platform(),
                "release": exported["release"], "event": event["id"], "result_revision": report,
                "model_invoked": False, "execution_retried": False, "background_dispatch": False,
-               "host_delivery_inventory_qualified": True}
+               "host_delivery_inventory_qualified": True,
+               "successful_stateless_input_release_qualified": True}
     (root / "acceptance.json").write_text(json.dumps(summary, indent=2))
     print(json.dumps(summary))
 

@@ -9,7 +9,10 @@ an-agent owns runtime authority, model/context services, state and artifact
 custody. A spool execution attempt is the isolation and lifecycle unit. Internal **silks**
 provide stable core steps; editable **kit** working copies provide bounded glue
 within the same granted environment. OpenShell is an optional,
-replaceable backend; shuttles connect applications through host authorization.
+replaceable backend with expansion paused; shuttles connect applications through
+host authorization. Current runtime work prioritizes reviewed local headless spools.
+Headless execution is not a trust classification: unsupported isolation requirements
+must refuse, never silently fall back to a weaker native environment.
 See [the boundary, implementation audit and migration](docs/spool-boundary.md).
 
 The first slice migrates identified packaging and validation code from an-waver
