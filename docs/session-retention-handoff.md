@@ -62,6 +62,26 @@ successful peer input-pin release remain unqualified. The host owns the failure
 matrix; Loom checks one real exported release round trip and unchanged workspace
 facts. A peer result is formal only after the ordinary host acceptance step.
 
+## Foreground owner loss
+
+The host's real two-worker qualification shows that SIGKILL of the launching
+CLI leaves workers running beyond its deadline. Handled SIGTERM retains the
+original supervisor, which confirms whole-group termination. After SIGKILL,
+late files and externally observed process exit remain insufficient evidence
+for acceptance or collection. Removing stale locks from the disposable test
+fixture still leaves those operations refused.
+
+Development tools must preserve the original attempt identity and report an
+unknown result when that supervisor evidence is missing. They must not rerun a
+command, accept a late file, delete scratch materials or remove operation locks
+to turn an interrupted interaction into success. Inspection can remain available.
+
+The host's next step is an attempt-scoped supervisor independent of the client
+CLI, reusing existing execution and receipt contracts. Loom supplies package and
+request identity and receives the verified outcome. Supervisor startup, process
+ownership, cancellation and recovery belong to the host. A new package field,
+Loom daemon or model integration is unnecessary for this qualification.
+
 ## Phased compatibility work
 
 1. The packaged log case now checks host-owned data/state claims against exact
