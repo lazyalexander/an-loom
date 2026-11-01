@@ -180,7 +180,7 @@ jobs:
 
   native-spool:
     env:
-      NATIVE_HOST_REVISION: 6b013c17902199644d8d473fd4628a076a85abcc
+      NATIVE_HOST_REVISION: 173cb0e95d84fc11a87f3eeece64aa6b36543144
     runs-on: macos-latest
     timeout-minutes: 15
     steps:
