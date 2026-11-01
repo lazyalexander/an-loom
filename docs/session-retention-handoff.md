@@ -115,6 +115,11 @@ own client/supervisor loss and the reservation-to-worker mutation window.
    opaque dependencies and legacy/unmanaged readers remain conservatively retained.
    Host tests own interruption, races and corruption; Loom does not infer deletion
    authority from a reference observation.
+   For retired outputs the host can cross-check source markers against explicitly
+   selected consumer receipts with `spool-artifacts ... --review-retirement`.
+   Missing or foreign completions remain uncertain, and checkpoint pins stay held.
+   Existing catalogs have unmanaged readers, so even zero claims grant no deletion.
+   Loom uses the host contract and owns no reader inventory or collection policy.
 2. After the host qualifies formal collection, verify that a declared retained
    dependency blocks it and an explicitly released version becomes unavailable
    without changing unrelated products or package bytes. Missing content must
