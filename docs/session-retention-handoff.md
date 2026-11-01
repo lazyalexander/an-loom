@@ -123,10 +123,12 @@ own client/supervisor loss and the reservation-to-worker mutation window.
    that inspection; missing sibling metadata still does. Whole-run custody remains
    strict. Existing catalogs have unmanaged readers, so zero claims grant no deletion.
    Loom uses the host contract and owns no reader inventory or collection policy.
-2. After the host qualifies formal collection, verify that a declared retained
-   dependency blocks it and an explicitly released version becomes unavailable
-   without changing unrelated products or package bytes. Missing content must
-   not silently select another version or rerun a command.
+2. At first acceptance the operator may select the host's registered-copy profile.
+   It binds a fresh version, content and closed reader registry from publication.
+   The host owns copy reservations, checkpoint pins, closure, release, explicit
+   deletion and receipts. Loom packages the same spool. The host real CLI suite
+   qualifies a blocked checkpoint, released copy reader, sibling survival and
+   interrupted receipt publication. Existing per-run catalogs stay retained.
 3. The packaged event case now uses `session-create`, digest-approved `session-run`,
    `session-show` and `session-control ... closed`, then accepts and hands off its
    products normally. Its legacy thread record binds one finite dispatch; fixed state
