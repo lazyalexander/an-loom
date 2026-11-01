@@ -136,8 +136,7 @@ collection. Existing release formats and standalone execution remain unchanged.
 Pins survive HEAD advancement, cancelled-attempt reference release and private
 collection. Missing registration completion blocks use of that checkpoint rather
 than retrying. Undeclared state is not dependency-free; successor checkpoints do
-not implicitly inherit declarations. There is no native payload deletion or
-checkpoint-pin release in this slice. See the authoritative
+not implicitly inherit declarations. A registered-copy version remains held for the lifetime of its checkpoint pin. See the authoritative
 [host contract](https://github.com/lazyalexander/an-agent/blob/dev-advance/doc/native-state.md#explicit-checkpoint-artifact-dependencies).
 Host real headless tests own the interruption/protection matrix; Loom's existing
 package-to-host qualification pins the corresponding host revision.
@@ -582,7 +581,7 @@ independent pins, original acknowledgement and private collection. For batch A
 and parent state B, a checkpoint pin on A survives release of both temporary
 claims. Opaque domain semantics belong to the author. The host owns verification,
 release evidence and uncertain-result refusal. See the [host custody contract](https://github.com/lazyalexander/an-agent/blob/dev-advance/doc/native-storage.md).
-Formal native payload collection remains unsupported. The packaged event smoke
+Legacy catalogs remain retained. The host can explicitly collect new registered-copy outputs under its [storage contract](https://github.com/lazyalexander/an-agent/blob/dev-advance/doc/native-storage.md#registered-copies-and-explicit-payload-deletion). The packaged event smoke
 closes its host session before product acceptance. Unknown outcomes are not retried.
 
 ### Observation and control concurrency
