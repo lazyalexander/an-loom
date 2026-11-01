@@ -118,7 +118,10 @@ own client/supervisor loss and the reservation-to-worker mutation window.
    For retired outputs the host can cross-check source markers against explicitly
    selected consumer receipts with `spool-artifacts ... --review-retirement`.
    Missing or foreign completions remain uncertain, and checkpoint pins stay held.
-   Existing catalogs have unmanaged readers, so even zero claims grant no deletion.
+   Selected-output inspection (`spool-artifacts ... --output OUTPUT`) verifies the
+   original inventory and one payload. A missing sibling payload does not invalidate
+   that inspection; missing sibling metadata still does. Whole-run custody remains
+   strict. Existing catalogs have unmanaged readers, so zero claims grant no deletion.
    Loom uses the host contract and owns no reader inventory or collection policy.
 2. After the host qualifies formal collection, verify that a declared retained
    dependency blocks it and an explicitly released version becomes unavailable
