@@ -27,15 +27,23 @@ than expecting the host to infer them from text. Do not add speculative manifest
 fields before the host contract exists. A human-edited product is a new revision;
 a summary is a derived context view, not authoritative business state.
 
-A target runtime session represents one spool-instance activation generation and
-its resource ownership. OS threads are execution machinery, not model-context
-identities. The existing host `session-*` CLI instead groups finite dispatches;
-its legacy `THREAD` parameter must not be reinterpreted as an OS thread or a
-continuable conversation. No package schema changes follow from this terminology.
+A spool activation uses instance identity and round generation for addressing.
+The existing host `session-*` CLI groups finite dispatches. Its legacy `THREAD`
+parameter selects one dispatch. Neither field selects a model conversation.
 Existing coding agents retain their own sessions, compaction and
 tape. Weaver/harness adapters exchange explicitly selected material and candidate
 changes; they must not scrape private histories or silently share conversations.
 Native harness IDs stay private and cannot grant access to a workspace.
+
+For a bounded peer request, author a small declared UTF-8 output containing
+`an-context-v1` with the intended receiving spool's instance UUID. Select that
+output using `an-native-peer-context-request-v1`. The host checks the 4096-byte
+wire limit and both endpoint generations and requires separate execution approval.
+A native dispatch group (`SESSION`) and its one-shot dispatch (`THREAD`) control
+work. A core agent's private tape, a harness conversation and an OS worker each
+have their own identity. Authors must not derive an audience from those names.
+The packaged log fixture delivers only the selected first line after sender
+scratch collection. Its full output and the workspace fact log remain separate.
 
 Workspace stores versioned materials and facts, not peer conversations. Projects
 must use explicit authorized protocol delivery, even when payloads travel as
