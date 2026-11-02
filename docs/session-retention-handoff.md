@@ -1,7 +1,7 @@
 # Session and retention development handoff
 
 Status: native input-reference handoff qualified; the remaining retention/session
-work is a coordinated plan. A first host-owned foreground session/finite-thread
+work is a coordinated plan. A host-owned finite session/thread
 adapter is now paired with the packaged event case. No manifest, runtime grant or package format changes
 are required for the initial handoff. GUI and TUI are deferred. Local headless
 execution remains the qualification target.
@@ -57,14 +57,14 @@ old endpoint. No package schema or new runtime authority is implied.
 Loom supplies entrypoints and declared outputs; the trusted host authorizes
 request, reply and execution separately. Do not generate direct host CLI access,
 shared-directory polling or a private workspace mailbox. Live IPC, global waiter
-scheduling, harness/model-context delivery, caller-independent supervision and
+scheduling, harness/model-context delivery and
 successful peer input-pin release remain unqualified. The host owns the failure
 matrix; Loom checks one real exported release round trip and unchanged workspace
 facts. A peer result is formal only after the ordinary host acceptance step.
 
-## Foreground owner loss
+## Caller-owned and independently supervised execution
 
-The host's real two-worker qualification shows that SIGKILL of the launching
+The host's legacy foreground `spool-start` qualification shows that SIGKILL of the launching
 CLI leaves workers running beyond its deadline. Handled SIGTERM retains the
 original supervisor, which confirms whole-group termination. After SIGKILL,
 late files and externally observed process exit remain insufficient evidence
@@ -88,9 +88,13 @@ The packaged event acceptance also runs the unmodified release through that
 supervised start, checks original termination evidence, accepts its exact output,
 and verifies preservation after private collection. Host CI owns client SIGKILL,
 continuing deadline/cancellation, supervisor death and uncertain-result refusal.
-Existing foreground, event/session dispatch and peer execution retains its qualified
-scope. A package declaration cannot opt itself into supervisor authority or
-rewrite an unknown receipt.
+The native CLI now submits both peer phases and event deliveries to the same
+attempt supervisor. A finite host controller owns each approved batch or session
+thread. The three-round packaged log case kills the event client, cancels its
+original attempt from another CLI, and verifies whole-group settlement. It
+separately kills the actual attempt owner and verifies retention with zero
+replays. Loom packages ordinary entrypoints and checks host evidence. The
+host owns cancellation, deadlines and the decision to admit the next entry.
 
 Explicit checkpoint runs can use `spool-supervisor start-state` with an exact
 revision. Loom's native-state acceptance runs exported v1/v2 releases through
@@ -129,7 +133,7 @@ own client/supervisor loss and the reservation-to-worker mutation window.
    checkpoint. The host owns admission, confirmed releases and deletion receipts.
    In the paired three-round log example a checkpoint keeps the first batch,
    confirmed cancellation allows collection of a different output, and losing
-   the event client leaves its version held. The sample then explicitly retires
+   the actual attempt owner leaves its version held. The sample then explicitly retires
    the first enrolled checkpoint and releases its pin by receipt. A stale event
    approval fails and the current checkpoint remains selectable. Legacy catalogs
    stay retained.

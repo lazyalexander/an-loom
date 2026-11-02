@@ -89,5 +89,5 @@ reports. Host suites own concurrent admission/cancellation and record-fault case
 `registered_fanout.py` takes the same arguments as `native_data_state.py`. It
 packages a producer, a log accumulator and an audit consumer. Its three rounds
 cover a shared fixed event, finite dispatch with explicit state, confirmed
-cancellation, a lost client and collection. The portable summary records binary
+cancellation after client exit, actual supervisor loss and collection. The portable summary records binary
 identities, observed attempt counts and disk use. The host owns all reader records.
