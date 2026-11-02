@@ -78,18 +78,18 @@ def main():
     assert inventory["execution_granted"] is False
     assert inventory["deliveries"][0]["phase"] == "awaiting-authorization"
     assert list((b / "runs").iterdir()) == []
-    call(host, "session-create", workspace, "packaged-report")
+    call(host, "cohort", "create", workspace, "packaged-report")
     request = root / "session-request.json"
     request.write_text(json.dumps({"schema": "an-native-event-dispatch-request-v1", "name": "report",
         "entries": [{"event": event["id"], "subscription": "reports"}]}))
-    owned = approved("session-run", workspace, "packaged-report", "report", request)
+    owned = approved("cohort", "run", workspace, "packaged-report", "report", request)
     assert owned["status"] == "succeeded"
-    observed = call(host, "session-show", workspace, "packaged-report")
+    observed = call(host, "cohort", "show", workspace, "packaged-report")
     assert observed["threads"][0]["settled"] is True
-    controller = call(host, "spool-supervisor", "thread", workspace, "packaged-report", "report", "show")
+    controller = call(host, "spool-supervisor", "dispatch", workspace, "packaged-report", "report", "show")
     assert controller["result"]["status"] == "succeeded" and not controller["collection_authorized"]
     attempt = observed["threads"][0]["attempts"][0]
-    approved("session-control", workspace, "packaged-report", "closed")
+    approved("cohort", "control", workspace, "packaged-report", "closed")
     assert attempt["termination_confirmed"] is True
     assert owned["result"]["consumed"] is False
     run = attempt["run"]
