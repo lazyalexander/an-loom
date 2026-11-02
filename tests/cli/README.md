@@ -84,3 +84,10 @@ The data/state smoke also closes one old accepted producer version through the
 host, refuses new revision checkout/input selection, and retains original
 accepted-output inventory, consumption confirmation, checkpoints and saved
 reports. Host suites own concurrent admission/cancellation and record-fault cases.
+
+
+`registered_fanout.py` takes the same arguments as `native_data_state.py`. It
+packages a producer, a log accumulator and an audit consumer. Its three rounds
+cover a shared fixed event, finite dispatch with explicit state, confirmed
+cancellation, a lost client and collection. The portable summary records binary
+identities, observed attempt counts and disk use. The host owns all reader records.

@@ -180,7 +180,7 @@ jobs:
 
   native-spool:
     env:
-      NATIVE_HOST_REVISION: 958db00393849a27a88e6cc29097039b059d35ab
+      NATIVE_HOST_REVISION: 7d765441f9414758489ed313ad142d1a2d910df3
     runs-on: macos-latest
     timeout-minutes: 15
     steps:
@@ -246,6 +246,8 @@ jobs:
         run: |
           python3 -B -m unittest discover -s examples/log-accumulator/tests -v
           python3 -B tests/cli/native_data_state.py --loom target/debug/an-loom --host .native-host/target/debug/an-agent-host --host-revision "$NATIVE_HOST_REVISION" --output .local/native-data-state
+      - name: Qualify three registered event rounds with two packaged consumers
+        run: python3 -B tests/cli/registered_fanout.py --loom target/debug/an-loom --host .native-host/target/debug/an-agent-host --host-revision "$NATIVE_HOST_REVISION" --output .local/registered-fanout
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -256,6 +258,7 @@ jobs:
             .local/native-events/acceptance.json
             .local/native-documents/acceptance.json
             .local/native-data-state/acceptance.json
+            .local/registered-fanout/acceptance.json
             .local/log-summary/acceptance.json
             .local/native-spool.json
             .local/native-spool.v2.json
