@@ -82,6 +82,14 @@ load to another directory restores the kit baseline while retaining prior produc
 Reclaim affects work scratch; release, input evidence and formal products are not
 implicitly deleted. Outputs remain in the per-run host artifact catalog.
 
+For an independently supervised start, a prelaunch cancellation is terminal only
+when the host verifies the original worker's request-bound no-launch completion
+and absence of execution/input-claim records. It then permits round closure or
+unload, but not artifact acceptance, collection or replay. Missing or contradictory
+evidence stays unknown. Loom neither infers termination from a cancelled client
+nor repairs host records; the host owns this fault matrix and its real worker CLI
+qualification. No release-format or packaging change is required.
+
 Kit edits are allowed between runs. Runtime code snapshots are read-only. Domain
 scripts use `AN_SPOOL_SILK_DIR`, `AN_SPOOL_KIT_DIR` and `AN_SPOOL_INPUT`; their current
 directory is writable scratch. This is not live agent self-modification or strong
@@ -114,6 +122,28 @@ reference and verifies both export formats through two state-bound host runs,
 reclaim-before-commit and post-unload inspection. Host tests own the full failure
 matrix. This is protocol evidence, not a new domain workflow or generic Loom
 state-management capability.
+
+### Optional checkpoint dependency declarations
+
+A domain author can supply a host-reviewed list of accepted artifacts referenced
+by one exact checkpoint using `spool-state-dependencies INSTANCE REVISION REQUEST`.
+The request schema is `an-native-checkpoint-dependencies-v1`; its `artifacts`
+entries identify producer `instance`, `run`, `output` and exact `revision`.
+The host verifies source custody and owns immutable registration/source pins.
+Loom does not parse state to infer dependencies, grant file access or authorize
+collection. Existing release formats and standalone execution remain unchanged.
+
+Pins survive HEAD advancement, cancelled-attempt reference release and private
+collection. Missing registration completion blocks use of that checkpoint rather
+than retrying. Undeclared state is not dependency-free; successor checkpoints do
+not implicitly inherit declarations. A host operator can choose `--registered`
+on state initialization or a new committed version. A registered successor
+inherits the reader policy. The host can close that exact checkpoint, then
+separately release its declared pins when it can prove all readers are finished.
+Historical state with an incomplete reader census retains its pins. See the
+[host contract](https://github.com/lazyalexander/an-agent/blob/dev-advance/doc/native-state.md#explicit-checkpoint-retirement).
+Host real headless tests own the interruption/protection matrix; Loom's existing
+package-to-host qualification pins the corresponding host revision.
 
 ### Round-boundary host control
 
@@ -286,8 +316,7 @@ loop or global state is added to Loom. Domain workflows stay in silk/kit.
 The paired `tests/cli/native_events.py` packages the existing two-silk reference,
 loads two actual v3 instances, publishes one accepted artifact event, approves one
 delivery, accepts and confirms its result, and verifies fixed products plus
-duplicate confirmation after scratch/snapshot collection. This is explicit
-foreground dispatch, not a background event bus or model integration. Host tests
+duplicate confirmation after scratch/snapshot collection. The host runs the approved delivery under its independent attempt supervisor. Host tests
 own cancellation, revocation and missing-evidence cases. See
 [the host event contract](https://github.com/lazyalexander/an-agent/blob/dev-advance/doc/native-events.md).
 
@@ -541,17 +570,22 @@ confirmed cancelled-owner contract after work and snapshot collection. The added
 supports successful stateless event consumers after accepted outputs, original
 consumption acknowledgement and private collection. The paired event case checks
 explicit release, unchanged formal products and duplicate confirmation without
-execution. Successful stateful owners and incomplete registrations stay retained;
-opaque state dependencies are not inferred from content. Host CI owns cancellation,
-partial registration and lost-confirmation qualification. Source claims are not a
-complete census of old/unmanaged readers or opaque checkpoint dependencies. The
-operation deletes no payload and cannot authorize collection by itself.
+execution. Incomplete registration stays retained. Host CI owns interruption and
+release faults. Source observations do not authorize payload collection.
 
 The remaining [retention/session handoff](session-retention-handoff.md) is a plan.
-Stateful-success release and formal payload collection remain unsupported. The
-packaged event smoke now runs in an explicit host session/finite thread and closes
-the session before ordinary product acceptance; it introduces no release fields. Unknown outcomes are not retried. Loom
-adds no release policy, package fields or runtime store for this host capability.
+A successful combined data/state event may release its two attempt claims using
+`--delivery WORKSPACE SUBSCRIPTION --coverage FILE` with separate host approval.
+The spool emits a declared `checkpoint-input-policy.json` alongside the state
+output, classifying each of the two managed roles as `checkpoint-pin` or
+`not-required`. The operator approves matching exact versions. The host reads
+the accepted policy from the original delivery and checks the commit, input slots,
+independent pins, original acknowledgement and private collection. For batch A
+and parent state B, a checkpoint pin on A survives release of both temporary
+claims. Opaque domain semantics belong to the author. The host owns verification,
+release evidence and uncertain-result refusal. See the [host custody contract](https://github.com/lazyalexander/an-agent/blob/dev-advance/doc/native-storage.md).
+Legacy catalogs remain retained. The host can explicitly collect new registered-copy outputs under its [storage contract](https://github.com/lazyalexander/an-agent/blob/dev-advance/doc/native-storage.md#registered-copies-and-explicit-payload-deletion). The packaged event smoke
+closes its host session before product acceptance. Unknown outcomes are not retried.
 
 ### Observation and control concurrency
 
