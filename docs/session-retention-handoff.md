@@ -1,14 +1,14 @@
 # Session and retention development handoff
 
 Status: native input-reference handoff qualified; the remaining retention/session
-work is a coordinated plan. A host-owned finite session/thread
+work is a coordinated plan. A host-owned finite cohort/dispatch
 adapter is now paired with the packaged event case. No manifest, runtime grant or package format changes
 are required for the initial handoff. GUI and TUI are deferred. Local headless
 execution remains the qualification target.
 
 The host's [session and retention plan](https://github.com/lazyalexander/an-agent/blob/dev-advance/doc/session-and-retention.md)
 is authoritative for runtime scope. Formal artifact reference release/collection
-remains separate from session/thread coordination; closing a session releases no
+remains separate from cohort coordination; closing a cohort releases no
 artifact references.
 Existing [native spool](native-spool.md) contracts remain the implemented surface.
 
@@ -28,8 +28,12 @@ fields before the host contract exists. A human-edited product is a new revision
 a summary is a derived context view, not authoritative business state.
 
 A spool activation uses instance identity and round generation for addressing.
-The existing host `session-*` CLI groups finite dispatches. Its legacy `THREAD`
-parameter selects one dispatch. Neither field selects a model conversation.
+Use `cohort create|run|show|control` for a group of finite dispatches, and
+`spool-supervisor dispatch WORKSPACE COHORT DISPATCH show` for a member.
+The legacy commands and JSON field names remain compatible. Neither cohort nor
+dispatch selects a model conversation. A session carries private interaction
+history, a thread identifies execution or conversation in its own system,
+context is selected material, and the workspace holds versions and facts.
 Existing coding agents retain their own sessions, compaction and
 tape. Weaver/harness adapters exchange explicitly selected material and candidate
 changes; they must not scrape private histories or silently share conversations.
@@ -39,7 +43,7 @@ For a bounded peer request, author a small declared UTF-8 output containing
 `an-context-v1` with the intended receiving spool's instance UUID. Select that
 output using `an-native-peer-context-request-v1`. The host checks the 4096-byte
 wire limit and both endpoint generations and requires separate execution approval.
-A native dispatch group (`SESSION`) and its one-shot dispatch (`THREAD`) control
+A cohort and its one-shot dispatch control
 work. A core agent's private tape, a harness conversation and an OS worker each
 have their own identity. Authors must not derive an audience from those names.
 The packaged log fixture delivers only the selected first line after sender
@@ -97,8 +101,7 @@ supervised start, checks original termination evidence, accepts its exact output
 and verifies preservation after private collection. Host CI owns client SIGKILL,
 continuing deadline/cancellation, supervisor death and uncertain-result refusal.
 The native CLI now submits both peer phases and event deliveries to the same
-attempt supervisor. A finite host controller owns each approved batch or session
-thread. The three-round packaged log case kills the event client, cancels its
+attempt supervisor. A finite host controller owns each approved batch or cohort dispatch. The three-round packaged log case kills the event client, cancels its
 original attempt from another CLI, and verifies whole-group settlement. It
 separately kills the actual attempt owner and verifies retention with zero
 replays. Loom packages ordinary entrypoints and checks host evidence. The
@@ -145,11 +148,11 @@ own client/supervisor loss and the reservation-to-worker mutation window.
    the first enrolled checkpoint and releases its pin by receipt. A stale event
    approval fails and the current checkpoint remains selectable. Legacy catalogs
    stay retained.
-3. The packaged event case now uses `session-create`, digest-approved `session-run`,
-   `session-show` and `session-control ... closed`, then accepts and hands off its
+3. The packaged event case now uses `cohort create`, digest-approved `cohort run`,
+   `cohort show` and `cohort control ... closed`, then accepts and hands off its
    products normally. Its legacy thread record binds one finite dispatch; fixed state
    selections remain in the existing dispatch request. Host CI owns overlapping
-   session cancellation, stale generations and missing evidence. Simultaneous
+   cohort cancellation, stale generations and missing evidence. Simultaneous
    same-workspace admission remains fail-fast; there is no automatic retry,
    background scheduler or Loom-side lifecycle policy. No package fields change.
 4. Reuse explicit context packets and bounded receipt-linked export. Verify the

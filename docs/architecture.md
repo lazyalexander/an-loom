@@ -330,12 +330,12 @@ Content identity, check request identity and host execution attempt are distinct
 Neither a model assertion nor a standalone operator success record substitutes
 for the qualified execution evidence. See [the contract](candidate-checks.md).
 
-## Planned session and retention coordination
+## Cohort and retention coordination
 
-See [the development handoff](session-retention-handoff.md) for the next bounded
-work: host-owned artifact references and collection, then a headless session/thread
-skeleton and explicit context selection. These are proposed extensions, not
-additional Loom runtime responsibilities. GUI and TUI remain deferred.
+The host governs artifact retention, finite dispatch cohorts and bounded peer
+context. Loom qualifies packaged programs against those interfaces. See
+[the development handoff](session-retention-handoff.md) for the current
+contracts and their limits.
 
 ## Context and work handoff principles
 
