@@ -124,11 +124,12 @@ own client/supervisor loss and the reservation-to-worker mutation window.
    strict. Existing catalogs have unmanaged readers, so zero claims grant no deletion.
    Loom uses the host contract and owns no reader inventory or collection policy.
 2. At first acceptance the operator may select the host's registered-copy profile.
-   It binds a fresh version, content and closed reader registry from publication.
-   The host owns copy reservations, checkpoint pins, closure, release, explicit
-   deletion and receipts. Loom packages the same spool. The host real CLI suite
-   qualifies a blocked checkpoint, released copy reader, sibling survival and
-   interrupted receipt publication. Existing per-run catalogs stay retained.
+   It registers readers from publication. A native event can deliver that exact
+   version into a private attempt snapshot alongside an explicitly selected
+   checkpoint. The host owns admission, confirmed releases and deletion receipts.
+   In the paired three-round log example a checkpoint keeps the first batch,
+   confirmed cancellation allows collection of a different output, and losing
+   the event client leaves its version held. Legacy catalogs stay retained.
 3. The packaged event case now uses `session-create`, digest-approved `session-run`,
    `session-show` and `session-control ... closed`, then accepts and hands off its
    products normally. Its legacy thread record binds one finite dispatch; fixed state
