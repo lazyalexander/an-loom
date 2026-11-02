@@ -38,6 +38,9 @@ Existing coding agents retain their own sessions, compaction and
 tape. Weaver/harness adapters exchange explicitly selected material and candidate
 changes; they must not scrape private histories or silently share conversations.
 Native harness IDs stay private and cannot grant access to a workspace.
+For the host model CLI, the packet audience identifies the receiving agent. For
+a native peer request it identifies the receiving spool instance. A cohort or
+dispatch name cannot substitute for either UUID.
 
 For a bounded peer request, author a small declared UTF-8 output containing
 `an-context-v1` with the intended receiving spool's instance UUID. Select that
