@@ -136,8 +136,12 @@ collection. Existing release formats and standalone execution remain unchanged.
 Pins survive HEAD advancement, cancelled-attempt reference release and private
 collection. Missing registration completion blocks use of that checkpoint rather
 than retrying. Undeclared state is not dependency-free; successor checkpoints do
-not implicitly inherit declarations. A registered-copy version remains held for the lifetime of its checkpoint pin. See the authoritative
-[host contract](https://github.com/lazyalexander/an-agent/blob/dev-advance/doc/native-state.md#explicit-checkpoint-artifact-dependencies).
+not implicitly inherit declarations. A host operator can choose `--registered`
+on state initialization or a new committed version. A registered successor
+inherits the reader policy. The host can close that exact checkpoint, then
+separately release its declared pins when it can prove all readers are finished.
+Historical state with an incomplete reader census retains its pins. See the
+[host contract](https://github.com/lazyalexander/an-agent/blob/dev-advance/doc/native-state.md#explicit-checkpoint-retirement).
 Host real headless tests own the interruption/protection matrix; Loom's existing
 package-to-host qualification pins the corresponding host revision.
 

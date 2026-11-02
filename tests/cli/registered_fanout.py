@@ -100,7 +100,7 @@ def main():
     counter, acc = export(project, "counter")
     ws = root / "events"
     call(host, "spool-events-init", ws)
-    parent = approve("spool-state-init", counter, "state.txt", project / "initial-state.txt")["state"]["revision"]
+    parent = approve("spool-state-init", counter, "state.txt", project / "initial-state.txt", "--registered")["state"]["revision"]
     for name, target, output in (("count", counter, "brief.log"), ("observe", audit, "brief.log"),
                                  ("raw", audit, "report.txt")):
         route = write(root / (name + ".json"), {"schema": "an-native-artifact-route-v1",
@@ -173,7 +173,7 @@ def main():
     second = produce("second", bulk)
     # Both consumers must still get the first version after a newer batch exists.
     old = first["brief.log"]
-    parent = count("first", old, parent)
+    parent = first_checkpoint = count("first", old, parent)
     observer = approve("spool-event-deliver", ws, old["id"], "observe")["context"]["delivery"]
     approve("spool-accept", audit, observer)
     accepted = call(host, "spool-artifacts", audit, observer)
@@ -234,16 +234,35 @@ def main():
     assert (audit / "runs" / run / "job/work").is_dir()
     state = call(host, "spool-state-show", counter, parent)
     final = root / "final-state.txt"
-    call(host, "artifact-checkout", state["selected"]["catalog"], parent, final)
+    # The accepted state output and the enrolled checkpoint bind the same bytes.
+    committed = state["selected"]["binding"]
+    assert committed["reader_profile"] == "registered-copy-v1"
+    source = committed["source"]
+    accepted = call(host, "spool-artifacts", counter, source["run"], "--output", "state.txt")
+    assert accepted["output"]["binding"]["revision"] == source["artifact"]["revision"]
+    call(host, "artifact-checkout", accepted["catalog"], source["artifact"]["revision"], final)
+    assert hashlib.sha256(final.read_bytes()).hexdigest() == committed["content_sha256"]
     assert final.read_text() == "total=3\nINFO=1\nWARN=1\nERROR=1\n"
     assert call(host, *managed("show", old))["phase"] == "closed"
+    approve("spool-event-subscribe", ws, "retiring", root / "count.json")
+    stale = ["spool-event-deliver", ws, third["brief.log"]["id"], "retiring", "--state", first_checkpoint]
+    earlier = call(host, *stale)
+    approve("spool-state-retire", counter, first_checkpoint)
+    call(host, *stale, "--approve", earlier["approval_sha256"], ok=False, error="admission is closed")
+    assert not (ws / "deliveries" / earlier["plan"]["context"]["delivery"]).exists()
+    proof = approve("spool-state-release", counter, first_checkpoint)["receipt"]
+    assert len(proof["released_references"]) == 1
+    assert call(host, "spool-state-show", counter, first_checkpoint)["dependencies"]["receipt"] == proof
+    assert call(host, *managed("delete", old))["executed"] is False
+    assert call(host, *managed("show", old))["phase"] == "closed"
+    assert call(host, "spool-state-show", counter)["head"] == parent
     sizes["three_rounds"] = footprint([producer, counter, audit, ws])
     summary = {"passed": True, "host_revision": args.host_revision, "host_sha256": hashlib.sha256(host.read_bytes()).hexdigest(),
                "loom_sha256": hashlib.sha256(loom.read_bytes()).hexdigest(), "releases": [src, acc, aud],
                "producer_rounds": 3, "consumers": 2, "final_state": final.read_text().splitlines(),
                "first_revision": old["event"]["artifact"]["binding"]["revision"], "deleted_revision": receipt["revision"],
                "logical_bytes_removed": receipt["logical_bytes"], "database_bytes": [before, after], "footprint": sizes,
-               "confirmed_cancellation": True, "missing_consumer_receipt_blocked": True,
+               "checkpoint_release": proof["approval_sha256"], "confirmed_cancellation": True, "missing_consumer_receipt_blocked": True,
                "lost_cli_attempts": 1, "unknown_disposition": observed["disposition"], "automatic_retries": 0}
     write(root / "acceptance.json", summary)
     print(json.dumps(summary))
