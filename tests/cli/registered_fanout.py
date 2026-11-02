@@ -226,6 +226,28 @@ def main():
     assert call(host, "spool-artifacts", producer, "second", "--output", "brief.log")["payload_verified"]
     sizes["after_collection"] = footprint([producer, counter, audit, ws])
 
+    # An author selects one declared output. The larger sibling stays with the producer.
+    audience = call(host, "spool-show", audit)["instance"]
+    selected = "one approved observation"
+    packet = json.dumps({"schema": "an-context-v1", "source": "domain:brief", "audience": audience,
+                         "text": selected, "sha256": hashlib.sha256(selected.encode()).hexdigest()}) + "\n"
+    private_input = root / "context-source.txt"
+    private_input.write_text(packet + "unrelated private note\n")
+    approve("spool-start", producer, "context", private_input, 15)
+    approve("spool-accept", producer, "context")
+    approve("spool-reclaim", producer, "context")
+    offer = write(root / "context-peer.json", {"schema": "an-native-peer-context-request-v1",
+        "source_run": "context", "source_output": "brief.log", "target": str(audit),
+        "reply_output": "report.txt", "wall_seconds": 15})
+    facts = (ws / "facts/log.jsonl").read_bytes()
+    approve("spool-peer", "request", producer, "brief", offer)
+    received = approve("spool-peer", "run", producer, "brief", "request")
+    approve("spool-accept", audit, received["run"])
+    result = call(host, "spool-artifacts", audit, received["run"])
+    copy = root / "received-context.txt"
+    call(host, "artifact-checkout", result["catalog"], result["outputs"][0]["binding"]["revision"], copy)
+    assert copy.read_bytes() == packet.encode() and (ws / "facts/log.jsonl").read_bytes() == facts
+
     third = produce("third", "ERROR interrupt\n")
     raw = third["report.txt"]
     argv, run, proc = started(raw)
@@ -278,6 +300,11 @@ def main():
                "checkpoint_release": proof["approval_sha256"], "confirmed_cancellation": True, "missing_consumer_receipt_blocked": True,
                "cancel_after_client_loss": True, "lost_supervisor_attempts": 1, "lost_cli_attempts": 2,
                "unknown_disposition": observed["disposition"], "automatic_retries": 0}
+    # A fresh context request cannot take over the still-held receiver.
+    call(host, "spool-peer", "request", producer, "after-interruption", offer, ok=False)
+    assert not (producer / "peers/after-interruption").exists()
+    assert len(list((audit / "runs" / run / "job/attempts").iterdir())) == 1
+    summary["bounded_peer_packet_bytes"] = len(packet.encode())
     write(root / "acceptance.json", summary)
     print(json.dumps(summary))
 
