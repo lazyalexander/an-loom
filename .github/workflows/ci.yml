@@ -49,6 +49,32 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Select CAD reference changes
+        id: cad
+        if: runner.os == 'Linux'
+        env:
+          BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          if git cat-file -e "$BASE^{commit}" 2>/dev/null && git diff --quiet "$BASE" HEAD -- examples/cad-paint .github/workflows/ci.yml; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/setup-node@v4
+        if: steps.cad.outputs.changed == 'true'
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: examples/cad-paint/package-lock.json
+      - name: Verify the pinned CAD client against the Loom release
+        if: steps.cad.outputs.changed == 'true'
+        run: |
+          cd examples/cad-paint
+          npm ci --ignore-scripts --no-audit --no-fund
+          python pack-client.py --loom ../../target/debug/an-loom --tsc node_modules/.bin/tsc --output releases --check
+          tar -xOzf releases/an-loom-cad-paint-spool-0.1.0.tgz package/dist/requirements.txt > "$RUNNER_TEMP/cad-paint-requirements.txt"
+          python -m pip install -r "$RUNNER_TEMP/cad-paint-requirements.txt"
+          python -B -m unittest discover -s tests -v
       - name: Validate Weaver review and dispatch preconditions
         run: python -B -m unittest discover -s examples/weaver-log/tests -v
       - name: Qualify zero-mount Weaver fixture (no model or host)
