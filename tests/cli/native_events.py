@@ -86,6 +86,8 @@ def main():
     assert owned["status"] == "succeeded"
     observed = call(host, "session-show", workspace, "packaged-report")
     assert observed["threads"][0]["settled"] is True
+    controller = call(host, "spool-supervisor", "thread", workspace, "packaged-report", "report", "show")
+    assert controller["result"]["status"] == "succeeded" and not controller["collection_authorized"]
     attempt = observed["threads"][0]["attempts"][0]
     approved("session-control", workspace, "packaged-report", "closed")
     assert attempt["termination_confirmed"] is True
@@ -160,6 +162,7 @@ def main():
                "loom_sha256": hashlib.sha256(loom.read_bytes()).hexdigest(), "platform": platform.platform(),
                "release": exported["release"], "event": event["id"], "result_revision": report,
                "model_invoked": False, "execution_retried": False, "background_dispatch": False,
+               "finite_dispatch_supervised": True,
                "host_delivery_inventory_qualified": True,
                "successful_stateless_input_release_qualified": True,
                "host_session_owned_execution_qualified": True}

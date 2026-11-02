@@ -316,8 +316,7 @@ loop or global state is added to Loom. Domain workflows stay in silk/kit.
 The paired `tests/cli/native_events.py` packages the existing two-silk reference,
 loads two actual v3 instances, publishes one accepted artifact event, approves one
 delivery, accepts and confirms its result, and verifies fixed products plus
-duplicate confirmation after scratch/snapshot collection. This is explicit
-foreground dispatch, not a background event bus or model integration. Host tests
+duplicate confirmation after scratch/snapshot collection. The host runs the approved delivery under its independent attempt supervisor. Host tests
 own cancellation, revocation and missing-evidence cases. See
 [the host event contract](https://github.com/lazyalexander/an-agent/blob/dev-advance/doc/native-events.md).
 

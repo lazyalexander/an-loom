@@ -23,7 +23,7 @@ Loom must not rewrite declarations or select weaker isolation to obtain success.
 | --- | --- | --- | --- | --- |
 | Rust authoring, checking, deterministic packaging and quality tools | CI | CI | Unqualified | [CI jobs](../.github/workflows/ci.yml); this is package tooling, not execution isolation |
 | Native spool manifest/export adapter | Contract tests and real host handoff | Offline contract tests | Unqualified | Existing shell/Python target identifiers remain unchanged; producing a package does not enable its target runtime |
-| Controlled build/development and native spool execution acceptance | Qualified host lane | No new execution lane | Unqualified | Exact host revisions in CI; [acceptance map](acceptance.md) and [CLI cases](../tests/cli/README.md) |
+| Controlled build/development and native spool execution acceptance | Qualified host lane | No new execution lane | Unqualified | Pinned host revisions qualify client-independent event, session and peer execution; [acceptance map](acceptance.md) and [CLI cases](../tests/cli/README.md) |
 | Domain programs used independently | Example-specific tests | Example-specific tests where configured | Example-specific | Ordinary CLI success has no managed host-execution guarantee |
 | Application shuttles and GPU workflows | Separately qualified | Separately qualified | Separately qualified | Application APIs, GUI sessions, drivers and external services are outside Loom's package runtime |
 

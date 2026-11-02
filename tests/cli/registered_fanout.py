@@ -3,6 +3,7 @@
 import argparse
 import hashlib
 import json
+import os
 from pathlib import Path
 import shutil
 import signal
@@ -86,7 +87,7 @@ def main():
                              'head -n 1 "$AN_SPOOL_INPUT" > brief.log\n', [], True)
     audit, aud = scaffold("audit", 'read -r level mode < "$AN_SPOOL_INPUT"\n'
                           'if [ "$mode" = hold ] || [ "$mode" = interrupt ]; then\n'
-                          '  printf ready > ready.marker\n  if [ "$mode" = hold ]; then sleep 60; else sleep 2; fi\nfi\n'
+                          '  printf ready > ready.marker\n  if [ "$mode" = hold ]; then sleep 60; else n=0; while [ ! -f exit.marker ] && [ "$n" -lt 200 ]; do sleep .05; n=$((n+1)); done; fi\nfi\n'
                           'cat "$AN_SPOOL_INPUT" > report.txt\n', ["artifact.accepted"])
     project = root / "accumulator-project"
     shutil.copytree(ACCUMULATOR, project, ignore=shutil.ignore_patterns("dist", "__pycache__"))
@@ -190,15 +191,21 @@ def main():
 
     raw = second["report.txt"]
     argv, run, proc = started(raw)
+    proc.kill()
+    finish(proc, ok=False)
     try:
         approve(*managed("close", raw))
         call(host, *managed("delete", raw), ok=False, error="release is unconfirmed")
         parent = count("second", second["brief.log"], parent)
     finally:
-        if proc.poll() is None:
-            proc.send_signal(signal.SIGINT)
-    cancelled = finish(proc, ok=False)
-    assert cancelled["status"] == "cancelled" and cancelled["result"]["workspace"]["termination_confirmed"] is True
+        approve("spool-supervisor", "cancel", audit, run)
+    deadline = time.monotonic() + 15
+    while not (audit / "runs" / run / "supervisor/completion.json").exists():
+        if time.monotonic() > deadline:
+            raise RuntimeError("No supervisor completion; retain original attempt")
+        time.sleep(.025)
+    cancelled = call(host, "spool-status", audit, run)
+    assert cancelled["execution_status"] == "cancelled" and cancelled["termination_confirmed"] is True
     reclaim(audit, run)
     approve("spool-input-release", audit, run)
     token = call(host, *managed("delete", raw))["approval_sha256"]
@@ -222,8 +229,14 @@ def main():
     third = produce("third", "ERROR interrupt\n")
     raw = third["report.txt"]
     argv, run, proc = started(raw)
-    proc.kill()  # Only the submitting test CLI. Its reviewed child exits on its own finite deadline.
+    owner_dir = audit / "runs" / run / "supervisor"
+    owner = json.loads((owner_dir / "owner.json").read_text())
+    assert owner["request"] == json.loads((owner_dir / "request.json").read_text())["approval_sha256"]
+    proc.kill()
     finish(proc, ok=False)
+    os.kill(owner["pid"], signal.SIGKILL)  # Only the verified owner of this disposable attempt.
+    (audit / "runs" / run / "job/work/exit.marker").touch(exist_ok=False)
+    assert not call(host, "spool-status", audit, run)["termination_confirmed"]
     parent = count("third", third["brief.log"], parent)
     approve(*managed("close", raw))
     call(host, *managed("delete", raw), ok=False, error="release is unconfirmed")
@@ -263,7 +276,8 @@ def main():
                "first_revision": old["event"]["artifact"]["binding"]["revision"], "deleted_revision": receipt["revision"],
                "logical_bytes_removed": receipt["logical_bytes"], "database_bytes": [before, after], "footprint": sizes,
                "checkpoint_release": proof["approval_sha256"], "confirmed_cancellation": True, "missing_consumer_receipt_blocked": True,
-               "lost_cli_attempts": 1, "unknown_disposition": observed["disposition"], "automatic_retries": 0}
+               "cancel_after_client_loss": True, "lost_supervisor_attempts": 1, "lost_cli_attempts": 2,
+               "unknown_disposition": observed["disposition"], "automatic_retries": 0}
     write(root / "acceptance.json", summary)
     print(json.dumps(summary))
 
