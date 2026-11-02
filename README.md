@@ -167,6 +167,10 @@ kit baselines for an-agent's qualified headless instance lifecycle. The included
 [lightweight text spool](examples/native-spool/README.md) needs no model or install
 hook. Packaging remains independent from host authorization and execution.
 
+The [CAD painting reference spool](examples/cad-paint/DISTRIBUTION.md) ships the
+appearance planner, editable kit and fixed rendering silks together. A CAD
+client pins the distribution while the host accepts the layered painting.
+
 The [log-report native handoff](examples/log-report/README.md#native-spool-event-handoff)
 uses the same packaging path for two CPU/headless Python spools. An independently
 selected host environment produces editable XLSX/PPTX and passes fixed binary
