@@ -180,12 +180,18 @@ it needs a separately qualified finite-tool profile or stronger outer isolation.
 See [Grok sandbox semantics](https://docs.x.ai/build/features/sandbox). Neither
 provider's prompt or permission label substitutes for host-enforced kit limits.
 
-## Tool-free native proposal route
+## Direct native proposal route
 
-The [Kimi native operator adapter](../examples/kimi-native/README.md) obtains one
-actual K3 code proposal, receives a reviewed digest through the existing native
-task gate and uses develop-native for checking/delivery/admission. The model gets
-no host CLI or native tools. Official-client trust, unknown-outcome fencing and
-remote cancellation limits are explicit. Its portable summary is separate from
-private stdout/stderr and native tape. This does not expand Loom into an agent
-loop or qualify arbitrary tool-enabled client execution.
+Use the [Weaver example](../examples/weaver-log/README.md) to prepare spool-owned
+domain materials and receive a candidate file from an existing native harness.
+Model selection, authentication, generation, cancellation and native output
+handling stay with that harness and its operator. Loom binds reviewed bytes and
+uses the existing task/check/delivery contracts; it does not need a provider
+completion record to validate a candidate. The real Codex acceptance covers this
+route without qualifying arbitrary client tools or remote termination.
+
+The [historical Kimi native qualification](../examples/kimi-native/README.md)
+retains its evidence and fixed source link. Its duplicate launcher and rendering
+parser are retired. Existing directories use the original adapter; a fresh task
+uses the current route. This does not retire the separate finite-tool MCP
+qualification or change any host execution/custody gate.

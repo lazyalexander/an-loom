@@ -29,7 +29,7 @@ operator observations into Loom's generic implementation to share test code.
 | `tests/cli/native_data_state.py` | Actual fixed data/checkpoint packaging and host handoff; the host owns cancellation/fault coverage |
 | `examples/log-accumulator/tests/` | Standalone cumulative-log business validation, outside host and Loom implementations |
 | `examples/log-report/desktop/tests/` | Observation qualification checks; not real GUI acceptance |
-| `examples/kimi-native/tests/` | Credential-free proposal envelope and generation no-retry tests; paid acceptance is separate |
+| `examples/weaver-log/tests/` and `qualify_fixture.py` | Native-harness review, exact candidate reception and protected-path checks; no provider launcher or model required |
 | `tools/quality/tests/` and its test modules | Independently locked quality-tool checks |
 
 `cargo test --locked` runs always-on Rust checks. It lists but does not execute
@@ -48,6 +48,11 @@ Generated builds, private profiles and machine transcripts belong in ignored
 local directories. Portable historical acceptance reports remain under the
 corresponding example's `acceptance/` directory: they are evidence, not tests or
 fixtures, and must not be rewritten just to match a new test layout.
+
+The retired Kimi native launcher's parser and submission tests were specific to
+code that no longer exists. Its [retirement map](../examples/kimi-native/README.md#evidence-and-coverage)
+identifies the retained candidate, stale/revoked task and host-custody coverage.
+No required CI job or native cancellation/cleanup suite is removed.
 
 ## Language and cross-repository ownership
 
