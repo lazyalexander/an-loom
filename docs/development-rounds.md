@@ -66,6 +66,12 @@ v2 route has credential-free coverage and a real Codex CLI proposal accepted
 through independent checks and the current native host. It reuses existing
 task/check contracts and separates independent execution from host custody.
 
+The same host's finite MCP service is now exercised by
+[native Codex configuration](../examples/kimi-kit/codex.md): selected-source read,
+granted kit execution, ungranted-handle refusal, an inert code proposal and actual
+local cancellation. Existing fixture preparation and host enforcement are reused;
+no second provider launcher or agent loop was added.
+
 
 ## Local spool delivery milestones
 

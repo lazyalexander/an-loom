@@ -30,6 +30,7 @@ operator observations into Loom's generic implementation to share test code.
 | `examples/log-accumulator/tests/` | Standalone cumulative-log business validation, outside host and Loom implementations |
 | `examples/log-report/desktop/tests/` | Observation qualification checks; not real GUI acceptance |
 | `examples/weaver-log/tests/` and `qualify_fixture.py` | Native-harness review, exact candidate reception and protected-path checks; no provider launcher or model required |
+| `examples/kimi-kit/tests/` | Shared finite-MCP result checks: publication, exact denial, candidate identity and refusing an unselected client; no model required |
 | `tools/quality/tests/` and its test modules | Independently locked quality-tool checks |
 
 `cargo test --locked` runs always-on Rust checks. It lists but does not execute
