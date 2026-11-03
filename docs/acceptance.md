@@ -53,10 +53,16 @@ not counted as successful native qualification.
 
 ## Finite coding-tool acceptance
 
-The [Kimi development fixture](../examples/kimi-kit/README.md) uses a tool-only
+The historical [Kimi development fixture](../examples/kimi-kit/README.md) used a tool-only
 custom agent and the host MCP bridge. Its [portable record](acceptance/kimi-development.json)
 separates real K3 source/kit work, independently reviewed development and K3-256k
 active-kit cancellation. Native client tape and machine profiles remain private.
 The fixture does not qualify an untrusted native client sandbox, Linux development
 or remote model cancellation. Credential-free MCP permission/cancellation/EOF
 regressions run in the coordinated host's Linux/macOS CI.
+
+New work uses the [shared finite-MCP fixture](../examples/finite-mcp/README.md)
+and native client configuration. Its separate [Codex record](acceptance/codex-mcp.json)
+qualifies actual development and local cancellation. Provider launch/wait/signal
+code is retired; the current fixture retains preparation, durable host-result
+checks and separately reviewed acceptance. Historical records are unchanged.

@@ -36,6 +36,7 @@ records the direct native-harness route and its managed artifact acceptance.
 | Keep proposals within the editable kit and reject stale/revoked tasks | `tests/task_handoff.rs`, `tests/candidate_snapshot.rs` and the current Weaver fixture retain these checks |
 | Check and deliver through host custody | Existing real `host-handoff` and `native-spool` CI jobs remain required |
 
-The separate [Kimi finite-tool qualification](../kimi-kit/README.md) remains
-active. It exercises host-authorized MCP capabilities and cancellation, a
-different contract from this retired tool-free proposal launcher.
+The separate [Kimi finite-tool qualification](../kimi-kit/README.md) also retains
+historical evidence for host-authorized MCP capabilities and cancellation.
+New finite-tool work uses the [shared native MCP route](../finite-mcp/README.md);
+both provider launchers are retired without removing the host capability boundary.

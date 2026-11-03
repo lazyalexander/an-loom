@@ -30,9 +30,13 @@ class HostResults(unittest.TestCase):
         candidate.write_text('inert candidate')
         self.record('edit-1', dict(executed=False, accepted=False, sha256=q.digest(candidate)))
         self.args = SimpleNamespace(output=self.root)
-        p = patch.object(q, 'selected', return_value={})
-        p.start()
-        self.addCleanup(p.stop)
+        settings = {}
+        for name in ['loom', 'host', 'bridge', 'toolchain']:
+            path = self.root / name
+            path.write_text('selected fixture ' + name)
+            settings[name] = str(path)
+        settings['sha256'] = {name: q.digest(path) for name, path in settings.items()}
+        (self.root / 'settings.local.json').write_text(json.dumps(settings))
 
     def record(self, name, value):
         path = self.calls / name / 'result.json'
@@ -63,11 +67,16 @@ class HostResults(unittest.TestCase):
                 q.accept(self.args)
             build.assert_not_called()
 
-    def test_external_client_directory_cannot_launch_kimi(self):
-        with patch.object(q.subprocess, 'Popen') as start:
-            with self.assertRaisesRegex(RuntimeError, 'No Kimi client selected'):
-                q.launch(self.args, 'development', 'unused', 'unused')
-            start.assert_not_called()
+    def test_legacy_client_fixture_cannot_be_reinterpreted(self):
+        path = self.root / 'settings.local.json'
+        settings = json.loads(path.read_text())
+        settings['kimi'] = '/historical/client'
+        settings['sha256']['instructions'] = 'historical-profile-digest'
+        path.write_text(json.dumps(settings))
+        with patch.object(q, 'build') as build:
+            with self.assertRaisesRegex(RuntimeError, 'legacy client-bound'):
+                q.accept(self.args)
+            build.assert_not_called()
 
 
 if __name__ == '__main__':

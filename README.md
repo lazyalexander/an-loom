@@ -144,7 +144,7 @@ Its [example package](examples/nextflow/README.md) leaves runtime authority with
 the host; Loom only packages its selected sources. Other roadmap slices remain
 planned, and the existing file-kit deployment adapter is unchanged.
 
-A [qualified Kimi example](examples/kimi-kit/README.md) demonstrates finite host
+A [shared native MCP example](examples/finite-mcp/README.md) demonstrates finite host
 kit calls, source proposals, separate reviewed builds and cancellation without
 replacing the coding tool's native session. [Platform boundaries](docs/platforms.md)
 distinguish control-host distribution, application shuttles and CPU Linux workflows.

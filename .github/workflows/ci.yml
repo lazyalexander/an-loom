@@ -80,7 +80,7 @@ jobs:
       - name: Qualify zero-mount Weaver fixture (no model or host)
         run: python -B examples/weaver-log/qualify_fixture.py --loom target/debug/an-loom --output .local/weaver-fixture
       - name: Validate shared finite MCP results (no model)
-        run: python -B -m unittest discover -s examples/kimi-kit/tests -v
+        run: python -B -m unittest discover -s examples/finite-mcp/tests -v
       - run: python -m pip install -r examples/log-report/requirements.txt
       - run: python -B -m unittest discover -s examples/log-report/tests -v
       - run: python -m pip install -r examples/log-report/desktop/requirements.txt
