@@ -189,9 +189,11 @@ For a prepared native candidate, [develop-native](docs/develop-native.md) runs
 the approved check-to-delivery path and loads the resulting spool through the
 selected host. It reuses existing contracts and refuses automatic resubmission.
 
-A [real Kimi native handoff](examples/kimi-native/README.md) demonstrates a
-reviewed model proposal becoming a checked, loaded and independently executed
-spool. Model calls are opt-in operator acceptance, outside Loom's runtime.
+Use the [native-harness example](examples/weaver-log/README.md) to prepare domain
+materials and receive a reviewed proposal from an existing coding tool. Actual
+Codex acceptance covers independent checks and managed artifact custody. The
+[historical Kimi handoff](examples/kimi-native/README.md) retains its evidence
+and pinned reproduction source; its duplicate launcher is retired.
 
 Weaver task preparation and independent versus managed spool operation are
 described in [the Weaver contract](docs/weaver.md).

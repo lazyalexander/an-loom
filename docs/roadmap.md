@@ -98,7 +98,11 @@ unknown-outcome handling are in [code-agents.md](code-agents.md).
 
 ## 4. Qualify existing coding tools
 
-Use one task contract and provider-specific instruction/policy adapters.
+Use one task contract and the [direct native-harness route](../examples/weaver-log/README.md)
+for reviewed proposals. Do not add a launcher, reply parser or provider catalog
+when an existing client can produce a candidate file. Add a qualified adapter
+only for an observed host-capability or policy boundary that the direct route
+cannot express; the finite-tool MCP qualification is such a separate case.
 [The survey and acceptance](code-agents.md) cover Codex, Claude Code, Kimi Code,
 Grok Build and Gemini CLI. Start with one installed tool and a lightweight kit.
 Require actual refusal and cancellation evidence before claiming controlled
