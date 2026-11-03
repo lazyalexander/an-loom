@@ -1,4 +1,4 @@
-# Use the existing finite MCP service from Codex
+# Use the existing finite MCP service from a native client
 
 Codex connects directly to `an-agent-tools` over its native stdio MCP support.
 The official `rmcp` SDK already supplies the server transport. No Codex SDK,
@@ -11,10 +11,12 @@ owns granted kit execution, termination and formal artifact publication.
 Use native macOS, the built Loom/host/tools binaries and the selected Rust
 toolchain profile described in [development](../../docs/development.md).
 The existing preparation builds only the public sort kit and cancellation
-variant. Omit `--kimi`; no model client is selected or invoked by this step.
+variant. No model client is selected or invoked by this step. The fixture exposes
+only `prepare`, `check` and `accept`; it never starts, waits for or signals a
+coding client. This leaves no per-provider launch command to maintain.
 
 ```sh
-python3 -B examples/kimi-kit/qualify.py prepare --output /new/mcp-fixture \
+python3 -B examples/finite-mcp/qualify.py prepare --output /new/mcp-fixture \
   --loom /selected/an-loom --host /selected/an-agent-host \
   --bridge /selected/an-agent-tools --toolchain /selected/toolchain.local.json
 ```
@@ -30,6 +32,8 @@ concurrent edits. Keep native authentication in its original client store.
 The qualified command uses Codex 0.166.0. These are native configuration flags,
 not a Loom provider API. For a different client/version, inspect its actual
 configuration and requalify rather than assuming matching flag semantics.
+The [historical Kimi route](../kimi-kit/README.md) retains its fixed adapter and
+evidence; its client-bound directories are not migrated by this fixture.
 
 ```sh
 mkdir "$REVIEW/development-client" || exit 1
@@ -53,16 +57,16 @@ codex exec --ignore-user-config --strict-config --sandbox read-only \
   -c 'mcp_servers.host.tools.run_kit.approval_mode="approve"' \
   -c 'mcp_servers.host.tools.propose_source.approval_mode="approve"' \
   --output-last-message "$REVIEW/development-last.txt" - \
-  < examples/kimi-kit/development-prompt.txt \
+  < examples/finite-mcp/development-prompt.txt \
   > "$REVIEW/development-events.jsonl" 2> "$REVIEW/development-stderr.txt" || exit 1
-python3 -B examples/kimi-kit/qualify.py check --output "$REVIEW"
+python3 -B examples/finite-mcp/qualify.py check --output "$REVIEW"
 ```
 
 Inspect the complete `development-session/calls/edit-1/candidate.rs` and its
 digest before adopting it:
 
 ```sh
-python3 -B examples/kimi-kit/qualify.py accept --output "$REVIEW" \
+python3 -B examples/finite-mcp/qualify.py accept --output "$REVIEW" \
   --source-sha256 REVIEWED_CANDIDATE_DIGEST
 ```
 
@@ -76,11 +80,14 @@ invoked clients; selecting a native client does not attest candidate authorship.
 
 ## Evidence and limits
 
-The [portable acceptance](../../docs/acceptance/codex-mcp.json) records actual
+The unchanged [portable acceptance](../../docs/acceptance/codex-mcp.json) records actual
 Codex calls through the existing host, an ungranted-handle refusal, independently
 built candidate output and fixed-version checkout. A second native turn was
 interrupted after observed kit activity; the host confirmed cancellation and
 reaping without publication. The earlier accepted artifact remained readable.
+Its verifier digest identifies the [qualified script](https://github.com/lazyalexander/an-loom/blob/5068ef8442795b42d99573052ec1476c79cef0ac/examples/kimi-kit/qualify.py)
+before the shared fixture moved here; retirement does not rewrite that historical
+record or claim another model invocation.
 
 This is interoperability with a trusted native client, not containment of that
 client. Feature flags narrow incidental tools; read-only shell policy and an MCP
