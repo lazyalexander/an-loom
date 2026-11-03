@@ -64,12 +64,14 @@ def snapshot(work):
     return rows
 
 
-def make_profile(nextflow, java, workflow, outputs, trace=None, delay=None, resume=False):
+def make_profile(nextflow, java, workflow, outputs, trace=None, delay=None, resume=False, pause_after_first=False):
     args = [str(nextflow), 'run', str(workflow), '-ansi-log', 'false']
     if trace:
         args += ['-with-trace', trace]
     if delay is not None:
         args += ['--delay', str(delay)]
+    if pause_after_first:
+        args += ['--pause_after_first', 'true']
     if resume:
         args += ['-resume']
     inputs = [str(nextflow), str(workflow)]
@@ -148,7 +150,7 @@ def execute(options):
     job, profile = case / 'job', case / 'profile.json'
     save(profile, make_profile(nextflow, java, HERE / 'files.nf',
                               ['results/alpha.result.txt', 'results/beta.result.txt'],
-                              'trace-interrupted.tsv', 4))
+                              'trace-interrupted.tsv', 1, pause_after_first=True))
     preview, _ = host_call(host, 'workspace-run', profile, job)
     command = [str(host), 'workspace-run', str(profile), str(job), '--approve', preview['approval_sha256']]
     child = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
@@ -159,10 +161,7 @@ def execute(options):
             if child.poll() is not None:
                 raise RuntimeError('Workflow exited before the intended interruption')
             completed = list((job / 'work/results').glob('*.result.txt'))
-            active = [p for p in (job / 'work/work').glob('*/*/.command.sh')
-                      if 'sleep 4' in p.read_text() and (p.parent / '.command.begin').exists()
-                      and not (p.parent / '.exitcode').exists()]
-            if len(completed) == 1 and active:
+            if len(completed) == 1 and (job / 'work/cancel-ready').is_dir():
                 during = snapshot(job / 'work')
                 attempt = next((job / 'attempts').iterdir()).name
                 _, refused = host_call(host, 'workspace-reclaim', job, attempt, allowed_failure=True)
@@ -179,7 +178,8 @@ def execute(options):
     (case / 'interrupt.stdout').write_text(stdout)
     (case / 'interrupt.stderr').write_text(stderr)
     stopped = json.loads(stdout)
-    assert child.returncode and stopped['status'] == 'cancelled' and stopped['termination_confirmed']
+    assert child.returncode and stopped['status'] == 'cancelled' and stopped['termination_confirmed'], (
+        child.returncode, stopped.get('status'), stopped.get('termination_confirmed'))
     _, refused = host_call(host, 'workspace-accept', job, stopped['attempt'], allowed_failure=True)
     assert refused.returncode and not (job / 'artifacts').exists()
     interrupted = snapshot(job / 'work')
@@ -190,7 +190,7 @@ def execute(options):
     resumed_profile = case / 'resume.json'
     save(resumed_profile, make_profile(nextflow, java, HERE / 'files.nf',
                                       ['results/alpha.result.txt', 'results/beta.result.txt'],
-                                      'trace-resumed.tsv', 4, resume=True))
+                                      'trace-resumed.tsv', 1, resume=True, pause_after_first=True))
     resumed = approved(host, 'workspace-resume', resumed_profile, job, stopped['attempt'])
     assert resumed['status'] == 'succeeded' and resumed['termination_confirmed']
     trace = trace_statuses(job / 'work/trace-resumed.tsv')

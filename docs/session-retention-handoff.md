@@ -52,6 +52,16 @@ have their own identity. Authors must not derive an audience from those names.
 The packaged log fixture delivers only the selected first line after sender
 scratch collection. Its full output and the workspace fact log remain separate.
 
+A receiver may include `silk/agents.json` in its existing immutable silk list.
+The headless handoff supports a JSON array of one to eight tool-free v1 core
+agent cards with distinct UUIDs. The host rechecks release membership and the
+settled peer input when the operator previews and approves
+`spool-peer deliver-agent SOURCE REQUEST AGENT_UUID`. The selected card gets
+a fresh local harness session. A separate host model approval can disclose
+the resulting packet to a particular endpoint. Packaging the roster or selecting
+a card grants no model access. Loom uses its normal archive and native export;
+the paired qualification checks a sibling cannot use the selected approval.
+
 Workspace stores versioned materials and facts, not peer conversations. Projects
 must use explicit authorized protocol delivery, even when payloads travel as
 files. Private notes must not become implicit commands or system instructions.

@@ -49,10 +49,12 @@ Runtime roots are read-only, the environment is cleared and execution is offline
 
 The harness runs the unchanged upstream hello workflow and the local file fixture,
 then observes a second file-fixture run while one result is complete and another
-finish task is active. It verifies active reclamation refusal and sends SIGINT to
-the real host CLI. A confirmed cancellation preserves the native work/cache;
-partial output is refused. An explicit successor uses Nextflow `-resume` and
-checks three `CACHED` tasks and one `COMPLETED` task from the real trace.
+finish task is active. In the interruption case, that task creates a readiness
+marker and waits beyond the host deadline. The observer can inventory files and
+verify active reclamation refusal without racing normal completion. It sends
+SIGINT to the real host CLI and checks for confirmed termination and refusal of
+partial output. The explicit successor retains the readiness marker and uses
+Nextflow `-resume`. Its trace must show three `CACHED` tasks and one `COMPLETED` task.
 
 Declared outputs are received through the existing artifact revision catalog.
 The harness checks out each pinned version, explicitly abandons recovery and

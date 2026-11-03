@@ -71,12 +71,17 @@ def main():
         assert call(host, "spool-load", release, target)["release"] == digest
         return target, digest
 
-    def scaffold(name, script, consumes, extra_output=False):
+    def scaffold(name, script, consumes, extra_output=False, cards=()):
         project = root / (name + "-project")
         call(loom, "init-native", project)
         (project / "silk/main.sh").write_text("set -eu\n" + script)
         descriptor = project / "native-spool.toml"
         body = descriptor.read_text()
+        if cards:
+            write(project / "silk/agents.json", [{"v": 1, "id": agent, "model": {
+                "base_url": "https://model.invalid/v1", "model": "offline"}, "prompt": "",
+                "tools": [], "topology": {"type": "leaf"}, "kernel": "0.1.0"} for agent in cards])
+            body = body.replace('silk = [', 'silk = ["silk/agents.json", ', 1)
         if extra_output:
             body = body.replace('outputs = ["report.txt"]', 'outputs = ["report.txt", "brief.log"]')
         descriptor.write_text(body + '\n[events]\nconsumes=' + json.dumps(consumes) +
@@ -85,10 +90,11 @@ def main():
 
     producer, src = scaffold("source", 'cat "$AN_SPOOL_INPUT" > report.txt\n'
                              'head -n 1 "$AN_SPOOL_INPUT" > brief.log\n', [], True)
+    reader, sibling = ("00000000-0000-0000-0000-000000000001", "00000000-0000-0000-0000-000000000002")
     audit, aud = scaffold("audit", 'read -r level mode < "$AN_SPOOL_INPUT"\n'
                           'if [ "$mode" = hold ] || [ "$mode" = interrupt ]; then\n'
                           '  printf ready > ready.marker\n  if [ "$mode" = hold ]; then sleep 60; else n=0; while [ ! -f exit.marker ] && [ "$n" -lt 200 ]; do sleep .05; n=$((n+1)); done; fi\nfi\n'
-                          'cat "$AN_SPOOL_INPUT" > report.txt\n', ["artifact.accepted"])
+                          'cat "$AN_SPOOL_INPUT" > report.txt\n', ["artifact.accepted"], cards=(reader, sibling))
     project = root / "accumulator-project"
     shutil.copytree(ACCUMULATOR, project, ignore=shutil.ignore_patterns("dist", "__pycache__"))
     descriptor = project / "native-spool.toml"
@@ -248,6 +254,16 @@ def main():
     call(host, "artifact-checkout", result["catalog"], result["outputs"][0]["binding"]["revision"], copy)
     assert copy.read_bytes() == packet.encode() and (ws / "facts/log.jsonl").read_bytes() == facts
 
+    delivery = ["spool-peer", "deliver-agent", producer, "brief"]
+    grant = call(host, *delivery, reader)["approval_sha256"]
+    call(host, *delivery, sibling, "--approve", grant, ok=False, error="approval mismatch")
+    handed = call(host, *delivery, reader, "--approve", grant)
+    routed = json.loads(Path(handed["packet"]).read_bytes())
+    assert routed["text"] == selected and routed["audience"] == reader
+    assert "unrelated private note" not in Path(handed["packet"]).read_text()
+    assert not (Path(handed["session"]).parents[1] / sibling).exists()
+    assert (ws / "facts/log.jsonl").read_bytes() == facts
+
     third = produce("third", "ERROR interrupt\n")
     raw = third["report.txt"]
     argv, run, proc = started(raw)
@@ -305,6 +321,7 @@ def main():
     assert not (producer / "peers/after-interruption").exists()
     assert len(list((audit / "runs" / run / "job/attempts").iterdir())) == 1
     summary["bounded_peer_packet_bytes"] = len(packet.encode())
+    summary["selected_agent"] = handed["agent"]
     write(root / "acceptance.json", summary)
     print(json.dumps(summary))
 
