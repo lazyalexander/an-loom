@@ -1,7 +1,8 @@
 # Weaver: reviewed domain knowledge to spool development
 
-Weaver is an optional task-preparation and candidate-review role. A plugin may
-reuse an existing harness; Loom does not implement its model loop. Domain source
+Weaver is an optional task-preparation and candidate-review role. Use an existing
+native harness directly; Loom does not launch a second agent loop, own its
+conversation, or maintain provider-specific generation supervisors. Domain source
 selection, rules and tests belong to the project, not the framework.
 
 The first example uses public log materials: select exact sources, draft a

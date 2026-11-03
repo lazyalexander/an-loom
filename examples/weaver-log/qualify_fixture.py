@@ -1,6 +1,5 @@
-"""Credential-free standalone acceptance; simulated review/generator, no model."""
+"""Credential-free standalone acceptance with externally supplied candidate bytes."""
 import argparse
-import json
 from pathlib import Path
 import shutil
 import subprocess
@@ -15,22 +14,12 @@ def main():
     args = parser.parse_args()
     root = args.output.resolve()
     root.parent.mkdir(parents=True, exist_ok=True)
-    root.mkdir()
-    for name in ('materials.md', 'acceptance.sh'):
-        shutil.copyfile(w.HERE/name, root/name)
+    w.prepare(SimpleNamespace(output=root, loom=args.loom))
     (root/'DOMAIN.md').write_text('Synthetic test specification: follow materials.md.\n')
-    fake = root/'fake-client'
-    fake.write_text('Fixture only: no agent or model invocation')
-    settings = dict(loom=str(args.loom.resolve(strict=True)), kimi=str(fake), model='fixture-no-model')
-    settings['sha256'] = dict(loom=w.digest(settings['loom']), kimi=w.digest(fake),
-                              profile=w.digest(w.NATIVE/'kimi-profile.md'))
-    w.write(root/'settings.local.json', settings)
+    settings = w.settings(root)
     w.review(SimpleNamespace(output=root))
     w.approve(SimpleNamespace(output=root, approve=w.digest(root/'review-plan.json')))
-    code = (w.HERE/'reviewed-example/kit/transform.sh').read_text()
-    w.write(root/'response.txt', dict(schema='an-loom-kit-candidate-v1', path='kit/transform.sh', content=code))
-    (root/'candidate.sh').write_text(code)
-    w.write(root/'generation-result.json', dict(status='completed', model_invoked=False))
+    shutil.copyfile(w.HERE/'reviewed-example/kit/transform.sh', root/'candidate.sh')
     for forbidden in ('DOMAIN.md', 'acceptance.sh', 'silk/report.sh'):
         result = subprocess.run([settings['loom'], 'receive-task', str(root/'task'),
             forbidden, str(root/'candidate.sh')], capture_output=True, timeout=10)
@@ -42,7 +31,7 @@ def main():
         str(root/'not-a-host-release')], capture_output=True, timeout=10)
     if result.returncode == 0 or (root/'not-a-host-release').exists():
         raise RuntimeError('Standalone success was accepted as host evidence')
-    print('Standalone acceptance passed: synthetic review/generator; no host, model or credentials')
+    print('Standalone acceptance passed: synthetic review and external bytes; no host, model or credentials')
 
 
 if __name__ == '__main__':
