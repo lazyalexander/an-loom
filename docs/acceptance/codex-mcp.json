@@ -1,0 +1,68 @@
+{
+  "schema": "an-loom-finite-mcp-acceptance-v1",
+  "date": "2026-11-03",
+  "client": "codex-cli 0.166.0",
+  "model": "gpt-6-astra",
+  "platform": "macos-aarch64",
+  "loom_base_revision": "7e0e460e11c8c48e44444383bce5893da313f80c",
+  "host_revision": "69f66023c12a27e97b8a4804194272fc13c4b1f0",
+  "binaries_sha256": {
+    "loom": "b49276f0acc41801dafdd06517ff3d5046db05c2ca315c266ce33ed166e8f56b",
+    "host": "24140dd1f949c8509ca230773575a03e68e7665292fb1f7b56626b1814e2b4e2",
+    "bridge": "fce92645376e14f7b2d3f7b5e4621ae0eab74396c08e2c317bd68fe3e7bf7f01"
+  },
+  "domain_prompt_sha256": "a83da7a3462ef24e90ee21453e50a2014181c4abedce2783a70fa1b2c0f0b87a",
+  "transport": "native Codex stdio MCP to the existing rmcp host server",
+  "new_runtime_dependencies": 0,
+  "new_provider_launchers": 0,
+  "review": "assistant reviewed fixed public fixture grants and candidate bytes; no new human approval claim",
+  "development": {
+    "client_exit": 0,
+    "completed_mcp_calls": [
+      "read_source",
+      "run_kit",
+      "run_kit (expected denial)",
+      "propose_source"
+    ],
+    "other_native_tool_calls_observed": 0,
+    "ungranted_handle_error": "kit capability is not granted",
+    "proposal_executed_by_model": false,
+    "proposal_accepted_by_model": false,
+    "proposal_sha256": "3612db526dd77ca1139db3627350cb5925b5cf192f197b192155c66d23c1d8c3",
+    "source_unchanged": true,
+    "build_and_domain_tests": "passed",
+    "reviewed_candidate_release": "c2aaae63fb85362276c6069e30949f629f11cc364f982f857fc23e6137d0d865",
+    "sample_artifact_revision": "6f4bcec5b60b0597968b1dde10e2ed2cb6f2b3221a54c88218aa23d322800a1f",
+    "candidate_artifact_revision": "a7cac7692b6f2d0ed20ede6f32c5b84f68a73909e6687a25c9f0fa74f8016435",
+    "output_sha256": "e49c81e2d2f84e259d40e2fb8192f3bcd198b355184845d76d8f58807d0d78ee",
+    "fixed_sample_readable_after_cancellation": true,
+    "usage": {
+      "input_tokens": 61999,
+      "cached_input_tokens": 47104,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 785,
+      "reasoning_output_tokens": 0
+    }
+  },
+  "cancellation": {
+    "client_exit": 1,
+    "active_marker_observed": true,
+    "tool_status": "cancelled",
+    "native_status": "cancelled",
+    "reaped": true,
+    "artifact_exists": false,
+    "publication": {
+      "status": "not-attempted"
+    },
+    "automatic_retries": 0,
+    "remote_model_termination_confirmed": false,
+    "usage": null
+  },
+  "limits": [
+    "Trusted native client; not hostile-client containment or proof that every non-MCP native tool is absent",
+    "Cancellation verified from durable host evidence; native client emitted no completed cancellation tool response",
+    "Host owns native kit termination and accepted products; no remote model cancellation or provider exactly-once claim",
+    "Raw client output, operator configuration, source candidates and machine paths remain local"
+  ],
+  "result_verifier_sha256": "858a9fef151cdf4849415c8288416cf1809f93f5d5d665acdc34fd32fd5611e3"
+}

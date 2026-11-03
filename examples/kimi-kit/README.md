@@ -1,5 +1,10 @@
 # Kimi calls a kit through finite host capabilities
 
+The preparation, host-ledger checks and reviewed candidate build are also usable
+without Kimi. The [direct Codex MCP route](codex.md) uses the same fixture and
+existing host service with native client configuration, not another launcher.
+The directory name and optional Kimi run/cancel commands remain compatible.
+
 This operator acceptance uses Kimi Code 2.3.1 and its existing authenticated
 model connection. It qualifies one tool profile, not arbitrary Kimi plugins,
 hooks, user agents or a sandbox for a malicious native coding-client executable.

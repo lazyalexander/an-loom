@@ -2,8 +2,9 @@
 
 Status: research and proposed integration contract, 2026-10-24. The current
 implementation prepares `generation.md` and a controlled host build plan. The
-[finite Kimi route](../examples/kimi-kit/README.md) now has scoped native acceptance;
-this does not qualify arbitrary native shells, plugins or client configurations.
+[finite Kimi route](../examples/kimi-kit/README.md) and
+[direct Codex MCP route](../examples/kimi-kit/codex.md) have separately scoped
+native acceptance; this does not qualify arbitrary native shells, plugins or client configurations.
 Other provider features below remain documentation findings, not compatibility
 claims for installed CLI versions.
 
@@ -195,3 +196,18 @@ retains its evidence and fixed source link. Its duplicate launcher and rendering
 parser are retired. Existing directories use the original adapter; a fresh task
 uses the current route. This does not retire the separate finite-tool MCP
 qualification or change any host execution/custody gate.
+
+## Reuse the finite MCP service
+
+The [direct Codex MCP qualification](../examples/kimi-kit/codex.md) uses native
+client configuration with the existing `an-agent-tools` service. Shared operator
+fixtures prepare grants and validate durable results; they add no Codex launcher,
+SDK, model loop or reply parser. The actual client read the selected source,
+called a granted kit, received an ungranted-handle refusal and submitted an inert
+proposal. Separate reviewed compilation and execution produced a fixed artifact.
+
+A second native invocation was interrupted after observed kit activity. The host
+confirmed cancellation/reaping and no artifact publication; prior accepted bytes
+remained readable. This is trusted-client MCP interoperability and local kit
+lifecycle evidence, not proof of complete native-tool exclusion or remote model
+termination. The original Kimi finite-tool profile retains its separate evidence.
