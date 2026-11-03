@@ -80,8 +80,9 @@ local; only separately reviewed portable summaries belong in the repository.
 The former `draft`, `generate` and `--kimi` commands are removed. Use `prepare`
 and invoke your chosen native harness directly. New review records use v2;
 old directories are refused rather than reinterpreted. Finish an old directory
-with its original pinned adapter, or prepare a fresh one. The independent
-[kimi-native qualification](../kimi-native/README.md) remains available.
+with its original pinned adapter, or prepare a fresh one. The separate old
+[kimi-native launcher](../kimi-native/README.md) is also retired; its historical
+evidence and fixed reproduction source remain available.
 
 The [historical Kimi summary](acceptance/macos.json) and [reviewed source](reviewed-example/DOMAIN.md)
 remain unchanged. They describe the former adapter, not a Codex or v2 acceptance.
