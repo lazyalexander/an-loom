@@ -56,11 +56,13 @@ real host runs with retained fixed versions after input edits, reclaim and unloa
 It does not claim a second live coding-agent integration.
 
 
-The optional [Weaver log adapter](../examples/weaver-log/README.md) qualifies
-selected public materials, an actual harness draft, explicit developer review,
-a real code proposal and independent CLI execution before separately authorized
-host activation. It reuses existing task/candidate contracts and does not turn
-Weaver into a mandatory Loom or runtime dependency.
+The optional [Weaver log adapter](../examples/weaver-log/README.md) prepares
+selected public materials and receives reviewed candidates from an existing
+native harness. It owns no model launcher, provider version or conversation.
+The historical Kimi qualification retains its original evidence. The current
+v2 route has credential-free coverage and a real Codex CLI proposal accepted
+through independent checks and the current native host. It reuses existing
+task/check contracts and separates independent execution from host custody.
 
 
 ## Local spool delivery milestones
