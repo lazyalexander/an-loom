@@ -16,19 +16,21 @@ class ReviewGate(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
-        self.root = Path(self.temp.name)
+        self.root = Path(self.temp.name).resolve()
         for name in ('DOMAIN.md', 'materials.md', 'acceptance.sh'):
             (self.root/name).write_text('selected '+name)
-        self.settings = dict(sha256={'loom': 'fixture', 'kimi': 'fixture'}, model='fixture-no-model')
-        self.plan = dict(inputs=w.review_inputs(self.root), tools=self.settings['sha256'])
+        self.settings = dict(loom='not-invoked', loom_sha256='fixture')
+        self.plan = dict(schema='weaver-log-review-v2', inputs=w.review_inputs(self.root),
+                         loom_sha256=self.settings['loom_sha256'])
         (self.root/'review-plan.json').write_text(json.dumps(self.plan))
-        for name in ('prompt.txt', 'generation-plan.json'):
+        (self.root/'task/authority').mkdir(parents=True)
+        for name in ('prompt.txt', 'task/authority/task.json', 'candidate.sh'):
             (self.root/name).write_text('bound '+name)
         self.stored = dict(sha256=w.digest(self.root/'review-plan.json'),
             prompt_sha256=w.digest(self.root/'prompt.txt'),
-            generation_plan_sha256=w.digest(self.root/'generation-plan.json'))
+            task_sha256=w.digest(self.root/'task/authority/task.json'))
         (self.root/'reviewed.json').write_text(json.dumps(self.stored))
-        self.patcher = patch.object(w.native, 'settings', return_value=self.settings)
+        self.patcher = patch.object(w, 'settings', return_value=self.settings)
         self.patcher.start()
         self.addCleanup(self.patcher.stop)
 
@@ -42,26 +44,29 @@ class ReviewGate(unittest.TestCase):
                 w.checked(self.root, approved=True)
             path.write_bytes(before)
 
-    def test_changed_prompt_or_plan_never_dispatches_harness(self):
-        for name in ('prompt.txt', 'generation-plan.json'):
+    def receive(self):
+        w.receive(SimpleNamespace(output=self.root, source_sha256=w.digest(self.root/'candidate.sh')))
+
+    def test_changed_prompt_or_task_cannot_receive_candidate(self):
+        for name in ('prompt.txt', 'task/authority/task.json'):
             path = self.root/name
             before = path.read_bytes()
             path.write_bytes(before+b' changed')
-            with patch.object(w.native, 'generate') as generate:
+            with patch.object(w, 'call') as call:
                 with self.assertRaises(RuntimeError):
-                    w.generate(SimpleNamespace(output=self.root))
-                generate.assert_not_called()
+                    self.receive()
+                call.assert_not_called()
             path.write_bytes(before)
 
-    def test_missing_approval_never_dispatches(self):
+    def test_missing_approval_cannot_receive_candidate(self):
         (self.root/'reviewed.json').unlink()
-        with patch.object(w.native, 'generate') as generate:
+        with patch.object(w, 'call') as call:
             with self.assertRaises(FileNotFoundError):
-                w.generate(SimpleNamespace(output=self.root))
-            generate.assert_not_called()
+                self.receive()
+            call.assert_not_called()
 
     def test_wrong_approval_cannot_prepare_task(self):
-        with patch.object(w.native, 'call') as call:
+        with patch.object(w, 'call') as call:
             with self.assertRaises(RuntimeError):
                 w.approve(SimpleNamespace(output=self.root, approve='wrong'))
             call.assert_not_called()
@@ -73,9 +78,28 @@ class ReviewGate(unittest.TestCase):
             w.review(SimpleNamespace(output=self.root))
 
     def test_changed_tool_identity_is_not_reused(self):
-        self.settings['sha256'] = {'loom': 'different', 'kimi': 'fixture'}
+        self.settings['loom_sha256'] = 'different'
         with self.assertRaises(RuntimeError):
             w.checked(self.root, approved=True)
+
+    def test_unreviewed_candidate_never_reaches_loom(self):
+        with patch.object(w, 'call') as call:
+            with self.assertRaises(RuntimeError):
+                w.receive(SimpleNamespace(output=self.root, source_sha256='wrong'))
+            call.assert_not_called()
+
+    def test_external_bytes_need_no_provider_success_record(self):
+        with patch.object(w, 'call') as call:
+            self.receive()
+            call.assert_called_once_with('not-invoked', 'receive-task', self.root/'task',
+                                         'kit/transform.sh', self.root/'candidate.sh')
+        self.assertFalse((self.root/'generation-result.json').exists())
+
+    def test_legacy_review_is_not_silently_reinterpreted(self):
+        self.plan['schema'] = 'weaver-log-review-v1'
+        (self.root/'review-plan.json').write_text(json.dumps(self.plan))
+        with self.assertRaises(RuntimeError):
+            w.checked(self.root)
 
 
 if __name__ == '__main__':
