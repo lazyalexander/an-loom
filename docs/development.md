@@ -64,7 +64,11 @@ records. They do not spawn the commands or download the labels. See
 
 Keep operator configuration outside PROJECT. A local directory such as `.local/`
 is ignored by Git and rejected as a package input. Use an existing directory for
-the job's parent, and a new name for the job itself.
+the job's parent, and a new name for the job itself. A symlink at the job name,
+including a dangling symlink, is refused. Before approved submission Loom writes
+an exclusive, synced `.JOB.loom-submitted.json` sibling fence outside the project.
+Failure, a lost response or a missing job does not remove that fence. Inspect and
+reconcile retained evidence; a repeated command never resubmits that job.
 
 The host toolchain profile is JSON with concrete absolute `rustc`, `sdk` and
 `linker` paths. Discover them locally with `rustc --print sysroot`,
@@ -157,3 +161,12 @@ The host accepts the output and retains its receipt/audit. The file-list example
 trims, deduplicates and sorts lines; the host does not implement that behavior.
 The original input remains unchanged. No external application effect, rollback,
 VM snapshot, general state migration or automatic garbage collection is claimed.
+
+## Archive verification boundary
+
+Archives contain regular payload entries and `bundle.json` inside exactly one
+gzip member. Verification bounds the entire decompressed stream, including tar
+headers and padding, and rejects PAX/GNU long-name extensions before their bodies
+are interpreted or allocated. A second gzip member is refused even if it expands
+only to zero padding. First-member CRC, payload limits, inventory and hashes still
+apply. This intentionally rejects extension-based archives outside Loom's format.

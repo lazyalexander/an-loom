@@ -197,7 +197,7 @@ fn execute(
     )
 }
 
-fn fresh_path(path: &Path) -> Result<PathBuf> {
+pub(super) fn fresh_path(path: &Path) -> Result<PathBuf> {
     let full = if path.is_absolute() {
         path.to_path_buf()
     } else {

@@ -171,6 +171,12 @@ fn collect(root: &Path, directory: &Path, found: &mut Vec<String>, depth: usize)
     if depth > 16 || found.len() > 1 {
         return Err(fail("candidate inventory exceeds task limit"));
     }
+    let meta = fs::symlink_metadata(directory)?;
+    if !meta.is_dir() || meta.is_symlink() {
+        return Err(fail(
+            "candidate root and parents must be regular directories",
+        ));
+    }
     for entry in fs::read_dir(directory)? {
         let entry = entry?;
         let meta = fs::symlink_metadata(entry.path())?;

@@ -252,6 +252,18 @@ pub(crate) fn contains_secret(data: &[u8]) -> bool {
     {
         return true;
     }
+    // Preserve hyphens for provider key prefixes; require a token boundary so
+    // ordinary words such as "ask-..." do not become secret matches.
+    if text
+        .split(|c: char| !(c.is_ascii_alphanumeric() || c == '_' || c == '-'))
+        .any(|token| {
+            token
+                .strip_prefix("sk-")
+                .is_some_and(|suffix| suffix.len() >= 24)
+        })
+    {
+        return true;
+    }
     text.split(|character: char| !(character.is_ascii_alphanumeric() || character == '_'))
         .any(|token| {
             ["ghp_", "gho_", "ghu_", "ghs_", "github_pat_"]
@@ -267,9 +279,6 @@ pub(crate) fn contains_secret(data: &[u8]) -> bool {
                             .chars()
                             .all(|ch| ch.is_ascii_uppercase() || ch.is_ascii_digit())
                 })
-                || token
-                    .strip_prefix("sk-")
-                    .is_some_and(|suffix| suffix.len() >= 24)
         })
 }
 

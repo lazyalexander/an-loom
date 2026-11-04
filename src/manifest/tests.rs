@@ -44,3 +44,15 @@ fn bundle_digest_is_stable_and_metadata_bound() {
     let bundle = BundleManifest::new(package, vec![file]);
     assert!(bundle.as_ref().is_ok_and(|value| value.validate().is_ok()));
 }
+
+#[test]
+fn provider_key_detection_preserves_hyphens_and_requires_token_boundaries() {
+    assert!(contains_secret(
+        b"token=sk-abcdefghijklmnopqrstuvwxyz123456"
+    ));
+    assert!(contains_secret(
+        b"\"sk-proj-abcdefghijklmnopqrstuvwxyz-123456\""
+    ));
+    assert!(!contains_secret(b"ask-abcdefghijklmnopqrstuvwxyz123456"));
+    assert!(!contains_secret(b"sk-short-example"));
+}
