@@ -151,7 +151,7 @@ termination and artifact handoff receipts; it need not ingest every model/tool
 event. Direct model API envelopes are an optional integration choice. Filesystem
 backup does not establish external effects or billing. See the proposed
 [coding-tool contract](code-agents.md) and the scoped
-[Kimi qualification](../examples/kimi-kit/README.md). The native CLI is trusted
+[native MCP qualification](../examples/finite-mcp/README.md). The native CLI is trusted
 operator software; its model requests receive only finite host capabilities.
 
 Adapters declare whether a tool's model session is managed by the tool or

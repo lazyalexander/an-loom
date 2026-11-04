@@ -2,8 +2,8 @@
 
 Status: research and proposed integration contract, 2026-10-24. The current
 implementation prepares `generation.md` and a controlled host build plan. The
-[finite Kimi route](../examples/kimi-kit/README.md) and
-[direct Codex MCP route](../examples/kimi-kit/codex.md) have separately scoped
+[historical finite Kimi route](../examples/kimi-kit/README.md) and
+[direct Codex MCP route](../examples/finite-mcp/README.md) have separately scoped
 native acceptance; this does not qualify arbitrary native shells, plugins or client configurations.
 Other provider features below remain documentation findings, not compatibility
 claims for installed CLI versions.
@@ -173,6 +173,8 @@ The host offers selected source, inert proposals and pinned kit handles, not a
 command tool. Real K3 development and K3-256k cancellation are recorded separately.
 A code proposal crosses another review/build boundary before packaging. This
 route deliberately trusts the native client and its original authentication.
+Its provider launcher/profile are now retired; the linked historical entry gives
+the fixed source and evidence. Current work uses native client configuration.
 
 Grok Build was inspected but not selected for this macOS boundary: its documented
 child network restriction is a no-op on macOS, and in-process model/web access is
@@ -199,7 +201,7 @@ qualification or change any host execution/custody gate.
 
 ## Reuse the finite MCP service
 
-The [direct Codex MCP qualification](../examples/kimi-kit/codex.md) uses native
+The [direct Codex MCP qualification](../examples/finite-mcp/README.md) uses native
 client configuration with the existing `an-agent-tools` service. Shared operator
 fixtures prepare grants and validate durable results; they add no Codex launcher,
 SDK, model loop or reply parser. The actual client read the selected source,
@@ -210,4 +212,7 @@ A second native invocation was interrupted after observed kit activity. The host
 confirmed cancellation/reaping and no artifact publication; prior accepted bytes
 remained readable. This is trusted-client MCP interoperability and local kit
 lifecycle evidence, not proof of complete native-tool exclusion or remote model
-termination. The original Kimi finite-tool profile retains its separate evidence.
+termination. The retired Kimi finite-tool profile retains its separate evidence
+and fixed source. Shared preparation/check/acceptance now live in
+`examples/finite-mcp`; Loom no longer maintains its provider launch, wait or signal
+handling. The host's capability/cancellation regressions remain in place.
