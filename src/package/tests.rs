@@ -140,3 +140,40 @@ fn refuses_current_home_paths_in_binary_payloads() -> Result<()> {
     fs::remove_dir_all(root)?;
     Ok(())
 }
+
+#[test]
+fn raw_extension_headers_are_refused_before_reading_their_declared_body() -> Result<()> {
+    use flate2::{Compression, write::GzEncoder};
+    for entry_type in *b"xgLK" {
+        let mut header = tar::Header::new_gnu();
+        header.set_path("metadata")?;
+        header.set_size(4 * 1024 * 1024 * 1024);
+        header.as_mut_bytes()[156] = entry_type;
+        header.set_cksum();
+        let mut gzip = GzEncoder::new(Vec::new(), Compression::default());
+        gzip.write_all(header.as_bytes())?;
+        let error = read_archive_bytes(&gzip.finish()?)
+            .err()
+            .ok_or_else(|| fail("extension unexpectedly accepted"))?;
+        assert!(
+            error.to_string().contains("unsupported archive entry type"),
+            "{error}"
+        );
+    }
+    Ok(())
+}
+
+#[test]
+fn second_gzip_member_is_refused_even_when_it_only_contains_zeroes() -> Result<()> {
+    use flate2::{Compression, write::GzEncoder};
+    let root = temp_dir("gzip-members")?;
+    fixture(&root)?;
+    let path = pack_project(&root)?;
+    let mut archive = fs::read(&path)?;
+    let mut member = GzEncoder::new(Vec::new(), Compression::default());
+    member.write_all(&[0; 1024])?;
+    archive.extend(member.finish()?);
+    assert!(read_archive_bytes(&archive).is_err());
+    fs::remove_dir_all(root)?;
+    Ok(())
+}

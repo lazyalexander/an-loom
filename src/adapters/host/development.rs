@@ -43,16 +43,18 @@ pub fn develop(
     let host_digest = sha256_hex(&read(&host, 100 * 1024 * 1024)?);
     let toolchain = toolchain.canonicalize()?;
     let tools = read(&toolchain, 16384)?;
-    let job = if job.is_absolute() {
-        job.to_path_buf()
-    } else {
-        std::env::current_dir()?.join(job)
-    };
-    let job = job
-        .parent()
-        .ok_or_else(|| fail("job needs an existing parent"))?
-        .canonicalize()?
-        .join(job.file_name().ok_or_else(|| fail("job needs a name"))?);
+    let job = super::native_development::fresh_path(job)?;
+    let fence = job.with_file_name(format!(
+        ".{}.loom-submitted.json",
+        job.file_name()
+            .and_then(|n| n.to_str())
+            .ok_or_else(|| fail("job name must be UTF-8"))?
+    ));
+    if std::fs::symlink_metadata(&fence).is_ok() {
+        return Err(fail(
+            "development was already submitted; inspect retained evidence, do not rerun",
+        ));
+    }
     if job.starts_with(&root) {
         return Err(fail("host job must stay outside the distributable project"));
     }
@@ -85,6 +87,9 @@ pub fn develop(
         return Ok(json!({"plan":plan,"approval_sha256":plan.digest()?,"executed":false}));
     };
     plan.authorize(approval)?;
+    // Persist before the first approved host mutation. Failure and unknown outcomes
+    // retain this exclusive fence; removing a job never permits an implicit retry.
+    crate::package::write_new(&fence, &serde_json::to_vec_pretty(&plan)?)?;
     let result = call(&plan.submission, &plan.host_sha256)?;
     if result["status"] != "succeeded" {
         return Err(fail(
@@ -100,3 +105,7 @@ pub fn develop(
         "executed":true,"automatic_retries":0,"host_job":job}),
     )
 }
+
+#[cfg(all(test, unix))]
+#[path = "development_tests.rs"]
+mod tests;
