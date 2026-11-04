@@ -165,7 +165,8 @@ fn real_development_release_registration_and_controlled_file_execution() -> Resu
     fs::write(
         root.join("acceptance.json"),
         serde_json::to_vec_pretty(&json!({
-        "schema":"an-loom-acceptance-v1","host_revision":HOST_REVISION,
+        "schema":"an-loom-acceptance-v1",
+        "host_revision":std::env::var("AN_AGENT_HOST_REVISION").unwrap_or_else(|_| HOST_REVISION.into()),
         "os":std::env::consts::OS,"architecture":std::env::consts::ARCH,
         "build_backend":"macos-rust-build-v1","runtime_backend":receipt["backend"],
         "release":release,"deployment_digest":deployment_digest,
@@ -210,6 +211,13 @@ fn failed_domain_checks_never_become_a_release() -> Result {
     let failure: Value = serde_json::from_slice(&fs::read(job.join("receipt.json"))?)?;
     assert_eq!(failure["status"], "failed");
     assert_eq!(failure["result"]["stage"], "tests");
+    assert!(root.join(".failed-job.loom-submitted.json").is_file());
+    fs::rename(&job, root.join("retained-failed-job"))?;
+    assert!(call(loom, &args).is_err());
+    assert!(
+        !job.exists(),
+        "missing job must not permit failed submission replay"
+    );
     assert!(!project.join("kit/program").exists());
     assert!(!project.join("kit/spool.yaml").exists());
     assert!(

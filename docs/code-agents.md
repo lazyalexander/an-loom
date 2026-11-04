@@ -130,7 +130,12 @@ retained bytes; it does not replace effect receipts or termination confirmation.
 `an-loom task`, `receive-task` and `revoke-task` prepare one kit assignment for
 the native text project. The assignment directory is outside the project. Loom
 checks the editable path, the project baseline and revocation before copying a
-candidate into that directory. It does not update the project, a release, or an
+candidate into that directory. Candidate roots and parents must be regular
+directories, never symlinks; reception creates parents one component at a time.
+Freezing checks the candidate root itself, and loading frozen evidence rechecks
+candidate ancestors. These checks require task directories protected from concurrent
+untrusted filesystem mutation; they do not establish a hostile-writer sandbox.
+It does not update the project, a release, or an
 accepted artifact. It does not spawn the acceptance records, download dependency
 labels, invoke a model, read a native session store, or pass through a host CLI.
 

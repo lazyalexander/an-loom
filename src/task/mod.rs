@@ -10,7 +10,7 @@ use crate::{
     package,
 };
 use serde_json::{Value, json};
-use std::{collections::BTreeMap, fs, io::Read, path::Path};
+use std::{collections::BTreeMap, fs, path::Path};
 
 pub(super) const CANDIDATE_LIMIT: usize = 64 * 1024;
 
@@ -79,9 +79,10 @@ pub fn receive(task: &Path, editable: &str, candidate: &Path) -> Result<Value> {
     if slot.starts_with(&project) {
         return Err(fail("candidate must stay outside the project"));
     }
-    if let Some(parent) = slot.parent() {
-        fs::create_dir_all(parent)?;
-    }
+    candidate_parent(
+        &task,
+        slot.parent().ok_or_else(|| fail("candidate parent"))?,
+    )?;
     package::write_new(&slot, &bytes)?;
     Ok(json!({
         "schema": "an-loom-task-candidate-v1",
@@ -223,26 +224,30 @@ pub(super) fn paths(document: &Value, key: &str) -> Result<Vec<String>> {
 }
 
 pub(super) fn read_candidate(path: &Path) -> Result<Vec<u8>> {
-    let metadata =
-        fs::symlink_metadata(path).map_err(|_| fail("candidate must be a regular file"))?;
-    if !metadata.is_file() || metadata.file_type().is_symlink() {
-        return Err(fail("candidate must be a regular file"));
-    }
-    #[cfg(unix)]
-    {
-        use std::os::unix::fs::MetadataExt;
-        if metadata.nlink() != 1 {
-            return Err(fail("candidate must be a regular file"));
+    crate::files::read(path, CANDIDATE_LIMIT)
+}
+
+fn candidate_parent(task: &Path, parent: &Path) -> Result<()> {
+    let relative = parent
+        .strip_prefix(task)
+        .map_err(|_| fail("candidate escaped task"))?;
+    let mut current = task.to_path_buf();
+    for component in relative.components() {
+        if !matches!(component, std::path::Component::Normal(_)) {
+            return Err(fail("invalid candidate path"));
+        }
+        current.push(component);
+        match fs::symlink_metadata(&current) {
+            Err(e) if e.kind() == std::io::ErrorKind::NotFound => fs::create_dir(&current)?,
+            Err(e) => return Err(e.into()),
+            Ok(meta) if meta.is_dir() && !meta.is_symlink() => {}
+            Ok(_) => return Err(fail("candidate parent must be a regular directory")),
+        }
+        if !current.canonicalize()?.starts_with(task) {
+            return Err(fail("candidate escaped task"));
         }
     }
-    let mut bytes = Vec::new();
-    fs::File::open(path)?
-        .take(CANDIDATE_LIMIT as u64 + 1)
-        .read_to_end(&mut bytes)?;
-    if bytes.len() > CANDIDATE_LIMIT {
-        return Err(fail("candidate exceeds the task limit"));
-    }
-    Ok(bytes)
+    Ok(())
 }
 
 pub(super) fn revoked(task: &Path) -> Result<bool> {

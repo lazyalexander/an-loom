@@ -1,6 +1,6 @@
 use super::*;
 use flate2::Compression;
-use std::io::Cursor;
+use std::io::{BufReader, Cursor};
 use tar::{Archive, Builder, EntryType, Header};
 pub fn pack_project(project_path: &Path) -> Result<PathBuf> {
     let build = build_project(project_path)?;
@@ -117,11 +117,17 @@ pub(crate) fn read_archive_bytes(bytes: &[u8]) -> Result<VerifiedArchive> {
 }
 
 fn read_archive_from(reader: impl Read) -> Result<VerifiedArchive> {
-    let decoder = flate2::read::MultiGzDecoder::new(reader);
-    let mut archive = Archive::new(decoder);
+    // One gzip member only. Keep the buffered compressed reader so bytes after
+    // that member cannot be consumed as innocent tar padding.
+    let mut decoder = flate2::bufread::GzDecoder::new(BufReader::new(reader));
+    let wire_limit =
+        MAX_PACKAGE_BYTES + MAX_BUNDLE_BYTES + (MAX_PACKAGE_FILES + 1) * 1024 + MAX_BUNDLE_BYTES;
+    let mut archive = Archive::new((&mut decoder).take(wire_limit as u64 + 1));
     let mut contents = BTreeMap::<String, Vec<u8>>::new();
     let mut expanded_bytes = 0usize;
-    for entry in archive.entries()? {
+    // Raw mode exposes extension headers before tar allocates long names or PAX
+    // bodies. This format emits only regular entries and rejects all extensions.
+    for entry in archive.entries()?.raw(true) {
         let mut entry = entry?;
         let raw_path = entry.path_bytes();
         let name = std::str::from_utf8(&raw_path)
@@ -171,12 +177,23 @@ fn read_archive_from(reader: impl Read) -> Result<VerifiedArchive> {
     // tar stops at its end marker; gzip integrity is only checked when drained.
     // Bound trailing padding and reject hidden concatenated archive payloads.
     let mut remainder = Vec::new();
-    archive
-        .into_inner()
+    let mut bounded = archive.into_inner();
+    (&mut bounded)
         .take(MAX_BUNDLE_BYTES as u64 + 1)
         .read_to_end(&mut remainder)?;
-    if remainder.len() > MAX_BUNDLE_BYTES || remainder.iter().any(|byte| *byte != 0) {
-        return Err(fail("unexpected data after the tar end marker"));
+    if remainder.len() > MAX_BUNDLE_BYTES
+        || remainder.iter().any(|byte| *byte != 0)
+        || bounded.limit() == 0
+    {
+        return Err(fail(
+            "unexpected or excessive data after the tar end marker",
+        ));
+    }
+    let mut compressed = decoder.into_inner();
+    if compressed.read(&mut [0u8; 1])? != 0 {
+        return Err(fail(
+            "additional gzip members or trailing compressed data refused",
+        ));
     }
     let bundle_bytes = contents
         .remove(BUNDLE_FILE)

@@ -243,3 +243,51 @@ fn scaffold_instructions_are_packaged_protected_and_bound_to_the_task() -> Resul
     assert!(an_loom::task::receive(&assignment, "kit/transform.sh", &candidate).is_err());
     Ok(())
 }
+
+#[test]
+#[cfg(unix)]
+fn candidate_symlink_roots_and_parents_never_redirect_reception_or_freezing() -> Result {
+    use std::os::unix::fs::symlink;
+    for nested in [false, true] {
+        let tmp = tempfile::tempdir()?;
+        let base = tmp.path().canonicalize()?;
+        let root = project(&base)?;
+        let assignment = task(&base, &root)?;
+        let outside = base.join("outside");
+        fs::create_dir(&outside)?;
+        let link = if nested {
+            fs::create_dir(assignment.join("candidate"))?;
+            assignment.join("candidate/kit")
+        } else {
+            assignment.join("candidate")
+        };
+        symlink(&outside, &link)?;
+        let replacement = base.join("replacement.sh");
+        fs::write(&replacement, b"printf 'replacement\\n'\n")?;
+        assert!(
+            an_loom::run(
+                [
+                    "receive-task",
+                    assignment.to_str().ok_or("task path")?,
+                    "kit/transform.sh",
+                    replacement.to_str().ok_or("replacement path")?
+                ]
+                .map(str::to_owned)
+            )
+            .is_err()
+        );
+        assert!(!outside.join("transform.sh").exists());
+        assert!(!outside.join("kit").exists());
+        // Also refuse a root that already contains a plausible candidate.
+        fs::create_dir_all(outside.join("kit"))?;
+        fs::copy(&replacement, outside.join("kit/transform.sh"))?;
+        assert!(
+            an_loom::run(
+                ["check-task", assignment.to_str().ok_or("task path")?].map(str::to_owned)
+            )
+            .is_err()
+        );
+        assert!(!assignment.join("authority/candidate.tar.gz").exists());
+    }
+    Ok(())
+}
