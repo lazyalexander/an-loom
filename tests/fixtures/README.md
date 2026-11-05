@@ -1,5 +1,7 @@
 # Historical native release
 
+English · [简体中文](../../docs/zh-CN/tests/fixtures/README.md)
+
 `native-spool-85c832a.tar.gz` was produced by the unmodified Loom implementation
 at commit `85c832a` using its `examples/native-spool` project and `pack` command.
 It retains the six-field native v1 contract. Tests verify and export these actual

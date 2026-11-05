@@ -1,5 +1,7 @@
 # Historical Kimi native proposal qualification
 
+English · [简体中文](../../docs/zh-CN/examples/kimi-native/README.md)
+
 The provider-specific launcher is retired. New work uses the
 [native-harness Weaver example](../weaver-log/README.md), or the existing
 `task`, `receive-task` and `develop-native` commands directly. Loom receives

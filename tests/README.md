@@ -1,5 +1,7 @@
 # Test layout
 
+English · [简体中文](../docs/zh-CN/tests/README.md)
+
 Keep tests beside the contract they verify. Do not move domain algorithms or
 operator observations into Loom's generic implementation to share test code.
 

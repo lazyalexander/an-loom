@@ -1,5 +1,7 @@
 # Real LibreOffice save roundtrip
 
+English · [简体中文](../../../../docs/zh-CN/examples/log-report/acceptance/native-office/README.md)
+
 Observed on macOS ARM64 with the official LibreOffice 26.8.1 desktop application.
 This is a manual native-UI acceptance, not a CI GUI simulation. The operator used
 native accessibility controls and keyboard input to edit `Report!E8` and `F8`,
