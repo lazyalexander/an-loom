@@ -35,6 +35,14 @@ fn kit_candidate_stays_outside_the_project_and_release() -> Result {
     let base = tmp.path().canonicalize()?;
     let root = project(&base)?;
     let assignment = task(&base, &root)?;
+    let contract: serde_json::Value =
+        serde_json::from_slice(&fs::read(assignment.join("authority/task.json"))?)?;
+    assert_eq!(
+        contract["content_labels"]["baseline"]["kit/transform.sh"],
+        "silk"
+    );
+    assert_eq!(contract["content_labels"]["baseline"]["AGENTS.md"], "silk");
+    assert_eq!(contract["content_labels"]["new_work_default"], "kit");
     let original = fs::read(root.join("kit/transform.sh"))?;
     let replacement = base.join("replacement.sh");
     fs::write(&replacement, b"printf 'edited\\n'\n")?;

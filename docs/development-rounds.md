@@ -21,11 +21,12 @@ selected file invalidates the development baseline. Instructions are guidance;
 these reception checks do not confine an agent process or grant execution.
 Existing projects need not add AGENTS.md to remain readable or packable.
 
-Silk/kit roles describe responsibility and permitted change, not language or
-quality rank. Keep authoritative rules and acceptance logic stable during kit
-repairs. Explicit development tasks may evolve silk into a new validated release.
-State, artifacts, configuration and documentation need their own roles; neither
-silk nor kit is a catch-all classification for every selected file.
+Silk/kit are content labels: every published baseline file is silk; mutable
+working copies and new work are kit. File kind, instruction protection and edit
+permission are independent. Programs and configuration can have authorized kit
+copies, but selected instructions cannot be edited during an attempt. State and
+accepted artifacts have separate custody and retention. Promotion requires a new
+reviewed release. Legacy profile paths still constrain current executable edits.
 
 ## Next handoff
 

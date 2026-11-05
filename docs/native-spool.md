@@ -1,5 +1,12 @@
 # Native spool packaging and host handoff
 
+Content labels follow [the revision-2 contract](spool-code.md): every release
+file is silk, including files under historical `kit/` paths. Mutable derivatives
+and new work are kit. The path bindings below describe the qualified legacy
+profile, not the definition of those labels. Instruction resources remain protected;
+labels do not authorize new files, configuration changes or execution.
+
+
 This qualified adapter exports reviewed shell spools and explicit v3 Python
 requests with binary products. See the [platform matrix](platforms.md) for current
 export and real-host coverage. It does not implement
