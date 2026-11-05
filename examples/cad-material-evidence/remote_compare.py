@@ -68,6 +68,7 @@ def run_once(sessions, plan, approval):
     start = time.monotonic()
     session_id = turn_id = sent_call = None
     answer = None
+    action_at = submitted_at = None
     with sessions.create(**plan["request"], stream=True) as events:
         for raw in events:
             if time.monotonic() - start > TIME_LIMIT:
@@ -95,12 +96,14 @@ def run_once(sessions, plan, approval):
                         or action["turn_id"] != turn_id or not action["call_id"]
                         or action["arguments"] != {"fixture": plan["tool_output"]["fixture"]}):
                     raise RuntimeError("Requested action exceeds the approved fixture scope")
+                action_at = time.monotonic()
                 sent_call = action["call_id"]
                 receipt(directory, "disclosure-intent.json", {"session_id": session_id, "turn_id": turn_id,
                     "call_id": sent_call, "output_sha256": digest(plan["tool_output"])})
                 sessions.events.create(session_id, idempotency_key=approval, events=[{
                     "type": "agent.session.input.tool_result", "turn_id": turn_id, "call_id": sent_call,
                     "success": True, "output": encoded(plan["tool_output"]).decode("ascii")}])
+                submitted_at = time.monotonic()
             elif kind == "agent.session.turn.output_text.done" and sent_call:
                 if event.get("turn_id") != turn_id or answer is not None or len(event["text"]) > 2048:
                     raise RuntimeError("Unexpected proof output")
@@ -114,6 +117,7 @@ def run_once(sessions, plan, approval):
                         or any(type(answer["material"][key]) not in (int, float)
                                for key in ("metallic", "roughness"))):
                     raise RuntimeError("Remote result does not match the local fixture proof")
+                completed_at = time.monotonic()
                 result = {"matched": True, "session_id": session_id, "turn_id": turn_id,
                           "call_id": sent_call, "elapsed_ms": round((time.monotonic() - start) * 1000),
                           "usage": event.get("usage"), "evidence": answer}

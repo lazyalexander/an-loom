@@ -51,6 +51,14 @@ record once. The output directory holds the intent, session and turn IDs,
 disclosure intent, and verified result with elapsed time and available usage.
 A lost stream leaves evidence for inspection. Each output directory can be
 used once. The tool-result budget is local to the probe. Usage is measured
-from the provider's completion event.
+from the provider's completion event. A missing usage value is recorded as null.
+The report separates request-to-action from tool-submission-to-completion
+latency. These intervals use the host's clock, including stream delivery.
+
+The native qualification writes `local-measurement.json` alongside the verified
+proof. It measures from the first host admission request through proof checkout
+and validation, excluding fixture creation and spool loading. This measurement
+and the remote report cover the same public fixture and neither includes CAD
+rendering.
 
 [OpenAI Agents API function tools](https://developers.openai.com/api/docs/guides/agents-api/tools/functions)

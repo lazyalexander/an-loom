@@ -284,6 +284,7 @@ jobs:
         with:
           name: native-spool-acceptance
           path: |
+            .local/cad-material-read/local-measurement.json
             .local/native-state/acceptance.json
             .local/native-release/acceptance.json
             .local/native-events/acceptance.json
