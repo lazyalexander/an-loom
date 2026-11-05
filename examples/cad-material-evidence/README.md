@@ -24,3 +24,31 @@ finish.
 accepted result on the native host. The test uses an accepted synthetic CAD
 metadata fixture. The CLI can independently inspect prior accepted paintings
 with the managed CAD metadata format.
+
+## Compare with a hosted harness
+
+`remote_compare.py` is an opt-in experiment for `public-grip.json`. Its local
+input is `verified.json` from the native qualification. It compares the grip
+material and drawing revision from that proof with the public fixture, then
+projects a common citation from the public fixture bytes. Host instance IDs,
+runtime paths, ORA bytes and local artifact revision hashes stay local.
+
+Run the script once to preview the exact request and permitted tool result.
+
+```sh
+python3 -B examples/cad-material-evidence/remote_compare.py \
+  --local-proof .local/cad-material-read/verified.json \
+  --model gpt-6-astra --output .local/cad-remote-read
+```
+
+For a live run, use an OpenAI Python SDK with `beta.agents.sessions` support,
+an Agents API key in the environment, and pass the preview's SHA-256 as
+`--approve` to the same command. The live run opens one turn with
+`environment.type = none`. Its only function can return the fixed public
+record once. The output directory holds the intent, session and turn IDs,
+disclosure intent, and verified result with elapsed time and available usage.
+A lost stream leaves evidence for inspection. Each output directory can be
+used once. The tool-result budget is local to the probe. Usage is measured
+from the provider's completion event.
+
+[OpenAI Agents API function tools](https://developers.openai.com/api/docs/guides/agents-api/tools/functions)

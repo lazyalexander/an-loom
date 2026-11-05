@@ -1,0 +1,12 @@
+{
+  "fixture": "public-handwheel-grip-v1",
+  "document": "handwheel",
+  "part": "grip",
+  "revision": 7,
+  "material": {
+    "finish": "walnut",
+    "color": "#4a2c23",
+    "metallic": 0.0,
+    "roughness": 0.8
+  }
+}
