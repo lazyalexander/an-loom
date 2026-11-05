@@ -6,6 +6,7 @@ from hashlib import sha256
 import importlib.util
 import json
 from pathlib import Path
+import time
 from zipfile import ZipFile
 
 from host_qualification import require_native_workspace
@@ -99,6 +100,7 @@ def qualify(loom, host, root):
         "source_output": "material.txt", "target": str(target), "reply_output": "proof.json", "wall_seconds": 15,
         "read": {"task": "verify-grip-finish", "material_revision": accepted["output"]["binding"]["revision"]}}))
     args = ["spool-peer", "request", sender, "grip", spec]
+    started = time.monotonic_ns()
     pending = call(host, *args)
     assert pending["decision"] == "needs_authorization" and not (sender / "peers/grip").exists()
     assert call(host, *args, "--approve", pending["approval_sha256"])["decision"] == "admitted"
@@ -110,9 +112,12 @@ def qualify(loom, host, root):
     checked = root / "verified.json"
     call(host, "artifact-checkout", receipt["catalog"], receipt["output"]["binding"]["revision"], checked)
     assert json.loads(checked.read_text()) == evidence
-    print(json.dumps({"document": "handwheel", "part": "grip", "drawing_revision": 7,
+    measurement = {"document": "handwheel", "part": "grip", "drawing_revision": 7,
+                   "elapsed_ms": round((time.monotonic_ns() - started) / 1_000_000), "model_calls": 0}
+    (root / "local-measurement.json").write_text(json.dumps(measurement) + "\n")
+    print(json.dumps({**measurement,
                       "ora_revision": revision, "worker_release": worker_release,
-                      "proof_revision": receipt["output"]["binding"]["revision"], "model_calls": 0}))
+                      "proof_revision": receipt["output"]["binding"]["revision"]}))
 
 
 if __name__ == "__main__":
