@@ -265,6 +265,7 @@ jobs:
         run: |
           PYTHONPATH=examples/cad-material-evidence python3 -B -m unittest discover -s examples/cad-material-evidence/tests -v
           python3 -B tests/cli/cad_material_read.py --loom target/debug/an-loom --host .native-host/target/debug/an-agent-host --output .local/cad-material-read
+          python3 -B examples/cad-material-evidence/remote_compare.py --local-proof .local/cad-material-read/verified.json --model gpt-6-astra --output .local/cad-remote-read > .local/cad-remote-preview.json
       - name: Install the explicit document example environment
         run: |
           python3 -m venv .local/report-env

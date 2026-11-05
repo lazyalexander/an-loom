@@ -58,8 +58,10 @@ def produce(host, instance, run, data, output):
 def qualify(loom, host, root):
     # Build a small fixture matching the current CAD scene contract. The native
     # host runs and accepts it as binary output before the exact-read adapter sees it.
-    source = {"application": "web-cad", "document": "handwheel", "epoch": "fixture-epoch", "revision": 7}
-    material = {"finish": "walnut", "color": "#4a2c23", "metallic": 0.0, "roughness": 0.8}
+    fixture = json.loads((EXAMPLE / "public-grip.json").read_text())
+    source = {"application": "web-cad", "document": fixture["document"], "epoch": "fixture-epoch",
+              "revision": fixture["revision"]}
+    material = fixture["material"]
     ora = root / "fixture.ora"
     with ZipFile(ora, "w") as archive:
         archive.writestr("data/scene.json", json.dumps({"source": source, "drawing": "handwheel",
