@@ -9,14 +9,11 @@ promise is introduced. Loom remains a Rust developer/packaging tool.
   skills, configuration, dependency bindings, state formats and domain checks.
 - **Spool instance:** a release-bound business identity and committed state.
 - **Spool attempt:** the host-owned execution isolation and lifecycle unit.
-- **Silk:** release-bound core code and pipeline skeleton, read-only during an
-  attempt. Development changes require validation and a new release.
-- **Kit:** internal glue; agents may adapt explicitly editable working copies.
-  Packaged baselines remain immutable, temporary copies are scratch by default.
-  See [the code contract](spool-code.md). Neither class gets its own VM/grant.
-- **Shuttle:** a bridge for separately authorized external application access.
-- **Backend:** implementation of the host's execution boundary. OpenShell is
-  optional and replaceable; it is not a package dependency or semantic engine.
+- **Silk:** every immutable release baseline file, including programs,
+  configuration, skills and agent instructions.
+- **Kit:** authorized mutable derivatives and newly generated work, regardless
+  of directory or file type. Instruction protection, editing permission and
+  artifact/state retention remain separate from the content label.
 
 Development can reuse silk source independently. Managed execution must bind the
 selected implementation to its owning spool release and attempt. A silk cannot
@@ -38,7 +35,7 @@ flowchart TB
     Backend --> Spool[One spool execution boundary]
     Spool --> A[Silk A: existing CLI]
     Spool --> B[Silk B: agent or computation]
-    A --> K[Kit working copy: bounded glue]
+    A --> K[Kit: mutable derivative / new work]
     K --> B
     Spool --> Candidates[Candidate state and outputs]
     Candidates --> Custody[Host settlement and artifact custody]
@@ -69,7 +66,7 @@ A silk exit is not evidence that the whole spool attempt has terminated.
 ## Existing authoring compatibility
 
 New generated `loom.toml` files emit `[silk]`. The parser accepts either `[silk]`
-or the old `[kit]`, never both; this alias does not declare editable glue; duplicate declarations are rejected even when
+or the old `[kit]`, never both; this alias does not grant edit permission; duplicate declarations are rejected even when
 identical. Both forms undergo the same path containment, allowlist and fixed
 profile validation. This is naming compatibility, not a new host deployment ABI.
 

@@ -5,13 +5,15 @@ development; the explicit assignment and host grant determine allowed actions.
 
 ## Responsibilities
 
-Silk and kit are change-policy roles, not quality scores or language choices.
-The two scripts under silk/ own stable sequencing and report structure. The kit
-transform.sh is replaceable glue. A general development task may change silk,
-but must validate and publish a new release. A bounded kit-edit task may change
-only its explicitly listed working copy. Published baselines remain immutable.
-Acceptance rules, instructions and capability declarations cannot be changed to
-make an assigned kit edit pass. Ask the operator when the task needs a wider scope.
+Silk and kit label content provenance and lifetime, not code responsibilities.
+Every file in the published baseline is silk, including historical kit/transform.sh.
+Only the explicitly assigned working copies may be adapted; those copies are kit.
+New work is kit by default. Selected skills and agent instructions remain protected.
+The current example keeps main.sh and report.sh outside its editable allowlist;
+that is a task/profile restriction, not a definition of silk. A development task
+may revise the baseline only through checks and a new release. Configuration
+changes cannot widen host grants or change the acceptance rules to pass an edit.
+Accepted products and committed state have separate custody and are not kit scratch.
 
 ## Interfaces and effects
 
