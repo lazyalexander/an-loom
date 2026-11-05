@@ -206,7 +206,7 @@ jobs:
 
   native-spool:
     env:
-      NATIVE_HOST_REVISION: f96699625dddd2fb360819c5ba59a4d3e806d3d1
+      NATIVE_HOST_REVISION: 2064258b69ddb9aa1ac8a2b0c52f25b8852e1134
     runs-on: macos-latest
     timeout-minutes: 15
     steps:
@@ -261,6 +261,10 @@ jobs:
         run: python3 -B tests/cli/native_release.py --loom target/debug/an-loom --host .native-host/target/debug/an-agent-host --host-revision "$NATIVE_HOST_REVISION" --output .local/native-release
       - name: Qualify native v3 workspace events and private peer replies
         run: python3 -B tests/cli/native_events.py --loom target/debug/an-loom --host .native-host/target/debug/an-agent-host --host-revision "$NATIVE_HOST_REVISION" --output .local/native-events
+      - name: Verify exact CAD material and its bounded local worker
+        run: |
+          PYTHONPATH=examples/cad-material-evidence python3 -B -m unittest discover -s examples/cad-material-evidence/tests -v
+          python3 -B tests/cli/cad_material_read.py --loom target/debug/an-loom --host .native-host/target/debug/an-agent-host --output .local/cad-material-read
       - name: Install the explicit document example environment
         run: |
           python3 -m venv .local/report-env
