@@ -10,6 +10,7 @@ import time
 
 ENDPOINT = "https://api.openai.com/v1"
 TIME_LIMIT = 45
+SPEND_LIMIT_CENTS = 5
 TOOL = "read_approved_grip"
 FIXTURE = Path(__file__).with_name("public-grip.json")
 INSTRUCTIONS = (
@@ -42,6 +43,7 @@ def plan_for(proof, model, directory):
                            "required": ["fixture"], "additionalProperties": False}}
     request = {"agent": {"model": model, "instructions": INSTRUCTIONS, "tools": [tool]},
                "environment": {"type": "none"},
+               "spend_control": {"limit": SPEND_LIMIT_CENTS},
                "input": [{"role": "user", "content": [{"type": "input_text",
                           "text": f"Verify the grip material in fixture {fixture['fixture']}."}]}]}
     return {"schema": "cad-remote-fixture-plan-v1", "endpoint": ENDPOINT,

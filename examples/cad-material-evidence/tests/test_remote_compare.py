@@ -54,6 +54,7 @@ class RemoteProbe(unittest.TestCase):
             result = probe.run_once(sessions, plan, probe.digest(plan))
             self.assertEqual(result["usage"]["output_tokens"], 50)
             self.assertEqual(sessions.created[0]["environment"], {"type": "none"})
+            self.assertEqual(sessions.created[0]["spend_control"], {"limit": 5})
             self.assertEqual(len(sessions.sent), 1)
             request = sessions.sent[0][1]["events"][0]
             self.assertEqual(json.loads(request["output"]), plan["tool_output"])

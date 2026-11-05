@@ -41,10 +41,12 @@ python3 -B examples/cad-material-evidence/remote_compare.py \
   --model gpt-6-astra --output .local/cad-remote-read
 ```
 
-For a live run, use an OpenAI Python SDK with `beta.agents.sessions` support,
+For a live run, install the reviewed OpenAI Python SDK interface with
+`python3 -m pip install openai==3.46.0`. Use
 an Agents API key in the environment, and pass the preview's SHA-256 as
 `--approve` to the same command. The live run opens one turn with
-`environment.type = none`. Its only function can return the fixed public
+`environment.type = none`. The preview includes a five-cent
+provider session spending limit. Its only function can return the fixed public
 record once. The output directory holds the intent, session and turn IDs,
 disclosure intent, and verified result with elapsed time and available usage.
 A lost stream leaves evidence for inspection. Each output directory can be
