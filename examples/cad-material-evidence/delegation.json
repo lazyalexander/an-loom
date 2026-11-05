@@ -1,0 +1,11 @@
+{
+  "schema": "cad-material-delegation-v1",
+  "action": "read_approved_material",
+  "access": "read",
+  "disclosure": "local-only",
+  "run": "paint",
+  "parts": {
+    "handwheel": "grip",
+    "vise": "movingJaw"
+  }
+}

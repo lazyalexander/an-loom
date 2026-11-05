@@ -61,6 +61,22 @@ def host_call(host, *args):
     return json.loads(subprocess.check_output([str(host), *map(str, args)], timeout=30))
 
 
+def check_delegation(run, document, part):
+    declaration = json.loads(Path(__file__).with_name("delegation.json").read_text())
+    if (
+        not isinstance(declaration, dict)
+        or set(declaration) != {"schema", "action", "access", "disclosure", "run", "parts"}
+        or declaration["schema"] != "cad-material-delegation-v1"
+        or declaration["action"] != "read_approved_material"
+        or declaration["access"] != "read"
+        or declaration["disclosure"] != "local-only"
+        or declaration["run"] != run
+        or not isinstance(declaration["parts"], dict)
+        or declaration["parts"].get(document) != part
+    ):
+        raise ValueError("Material lookup exceeds the operator's read declaration")
+
+
 def read_accepted(host, instance, run, paint_release, artifact_revision, document, epoch, revision, part):
     if not identifier(document) or not identifier(part) or not digest(paint_release) or not digest(artifact_revision) or revision < 1:
         raise ValueError("Expected a drawing, part, positive revision and exact artifact digest")
@@ -99,8 +115,11 @@ def main():
     parser.add_argument("--epoch", required=True)
     parser.add_argument("--revision", type=int, required=True)
     parser.add_argument("--part", required=True)
+    parser.add_argument("--delegated", action="store_true")
     args = parser.parse_args()
     try:
+        if args.delegated:
+            check_delegation(args.run, args.document, args.part)
         print(json.dumps(read_accepted(args.host.resolve(strict=True), args.instance.resolve(strict=True),
                                       args.run, args.paint_release, args.artifact_revision, args.document, args.epoch,
                                       args.revision, args.part), ensure_ascii=False, separators=(",", ":")))
