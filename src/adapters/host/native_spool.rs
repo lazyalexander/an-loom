@@ -288,6 +288,15 @@ fn editable(config: &Native) -> Result<()> {
     let mut seen = BTreeSet::new();
     for path in &config.editable {
         validate_payload_path(path)?;
+        let name = path.rsplit('/').next().unwrap_or_default();
+        if ["AGENTS.md", "agent.md", "SKILL.md"]
+            .iter()
+            .any(|n| name.eq_ignore_ascii_case(n))
+        {
+            return Err(fail(
+                "release instructions cannot be editable working copies",
+            ));
+        }
         if !seen.insert(path.as_str()) {
             return Err(fail("native role conflict"));
         }
@@ -420,4 +429,20 @@ fn export_version(archive: &Path, destination: &Path, version: u8) -> Result<Val
         json!({"schema":"an-loom-native-export-v1","release":sha256_hex(&bytes),
         "source_bundle":verified.manifest.release_digest,"execution_granted":false}),
     )
+}
+
+#[cfg(test)]
+mod instruction_tests {
+    use super::*;
+    #[test]
+    fn instruction_resources_cannot_be_declared_editable_programs() -> Result<()> {
+        for name in ["AGENTS.md", "agents.MD", "agent.md", "SKILL.md"] {
+            let path = format!("kit/{name}");
+            let config: Native = toml::from_str(&format!(
+                "schema = 'an-native-spool-v2'\nentry = 'silk/main.sh'\nsilk = ['silk/main.sh']\nkit = ['{path}']\neditable = ['{path}']\noutputs = ['result.txt']\n"
+            ))?;
+            assert!(editable(&config).is_err());
+        }
+        Ok(())
+    }
 }

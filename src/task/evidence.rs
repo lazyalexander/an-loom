@@ -82,6 +82,6 @@ pub fn pack_candidate(task: &Path, destination: &Path) -> Result<Value> {
     package::write_new(&output, &bytes)?;
     Ok(json!({"archive":output,"archive_sha256":sha256_hex(&bytes),
         "release_digest":archive.manifest.release_digest,"attempt":plan["attempt"],
-        "candidate_sha256":plan["candidate"]["sha256"],"model_invoked":false,
+        "candidate_sha256":plan["candidate"]["sha256"],"content_label":"silk","model_invoked":false,
         "host_invoked_by_loom":false,"applied_to_source_project":false}))
 }

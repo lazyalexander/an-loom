@@ -6,9 +6,8 @@ Loom helps developers turn domain knowledge, existing CLI programs, skills and
 application integrations into inspectable releases. It owns authoring, assembly,
 validation orchestration and packaging. Domain behavior belongs to spool projects;
 an-agent owns runtime authority, model/context services, state and artifact
-custody. A spool execution attempt is the isolation and lifecycle unit. Internal **silks**
-provide stable core steps; editable **kit** working copies provide bounded glue
-within the same granted environment. OpenShell is an optional,
+custody. A spool execution attempt is the isolation and lifecycle unit. All release files carry the **silk** baseline label; mutable derivatives and new
+work carry **kit** labels within the same granted environment. OpenShell is an optional,
 replaceable backend with expansion paused; shuttles connect applications through
 host authorization. Current runtime work prioritizes reviewed local headless spools.
 Headless execution is not a trust classification: unsupported isolation requirements
@@ -27,10 +26,11 @@ build profile. See the [platform support and qualification matrix](docs/platform
 runtime profile requires a separately qualified adapter and host support.
 This is not yet a general multi-stage workflow executor or a code-generation agent.
 
-The [spool code contract](docs/spool-code.md) distinguishes **silks**, the stable pipeline
-skeleton and core domain code, from **kits**, adaptable internal glue. Published
-packages remain immutable; agent edits apply only to authorized working copies.
-This vocabulary does not add runtime enforcement or change legacy CLI/API tokens.
+The [spool content contract](docs/spool-code.md) labels every published baseline
+file **silk**, and authorized working copies or newly generated work **kit**.
+Instructions remain protected; programs and configuration may have approved kit
+copies. Labels describe provenance and lifetime, never execution authority.
+Legacy directory/API names and qualified profile restrictions remain compatible.
 
 ## Quick start
 

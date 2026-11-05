@@ -8,8 +8,8 @@ research objective is not an execution guarantee. Preserve existing checks.
 ## Terminology
 
 Use **workflow** for the domain process, including branches, agents and human
-decisions. Use the [code contract](spool-code.md): **silk** is stable core code, **kit** is
-adaptable glue, and **spool** is the deployable
+decisions. Use the [code contract](spool-code.md): **silk** labels every immutable release baseline file, **kit** labels
+mutable derivatives and new work, and **spool** is the deployable
 domain carrier. No additional machine abstraction or execution engine is needed
 to adopt an existing workflow. A workflow need not be a static DAG.
 

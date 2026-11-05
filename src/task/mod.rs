@@ -86,6 +86,8 @@ pub fn receive(task: &Path, editable: &str, candidate: &Path) -> Result<Value> {
     package::write_new(&slot, &bytes)?;
     Ok(json!({
         "schema": "an-loom-task-candidate-v1",
+        "content_label": "kit",
+        "origin": {"path":editable,"baseline_sha256":stored["baseline"][editable]},
         "path": editable,
         "sha256": sha256_hex(&bytes),
         "model_invoked": false,
@@ -150,6 +152,8 @@ pub(super) fn document(project: &Path) -> Result<Value> {
         "capabilities": authoring.capabilities,
         "dependencies": authoring.dependencies,
         "acceptance": authoring.acceptance,
+        "content_labels": {"baseline":baseline.keys().map(|path| (path.clone(), "silk")).collect::<BTreeMap<_, _>>(),
+            "new_work_default":"kit","instructions":"protected-release-only"},
         "baseline": baseline,
         "baseline_modes": baseline_modes,
         "limits": {"candidate_bytes": CANDIDATE_LIMIT, "files": 1},
@@ -167,8 +171,8 @@ pub(super) fn document(project: &Path) -> Result<Value> {
 fn brief(document: &Value) -> String {
     format!(
         "Edit only the listed kit working copies.\n\
-         Protected silk, policy and check files are not editable.\n\
-         A silk change needs a separately authorized task and a new release.\n\
+         The selected release baseline, instructions and protected checks are not editable.\n\
+         Edit listed working copies only; baseline promotion requires review and a new release.\n\
          Acceptance commands and dependency labels are records. Do not run or download them.\n\
          Capability names are not grants. This brief does not include a host CLI.\n\
          Write the replacement outside the project and submit it with receive-task.\n\
