@@ -1,5 +1,7 @@
 # CAD material evidence
 
+English · [简体中文](../../docs/zh-CN/examples/cad-material-evidence/README.md)
+
 Use the local adapter when the operator supplies an exact accepted painting
 reference. It selects one part from `data/scene.json` in the host's accepted ORA,
 checks the artifact digest and drawing identity, and prints the material with

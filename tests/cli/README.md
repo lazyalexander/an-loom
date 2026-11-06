@@ -1,5 +1,7 @@
 # CLI handoff acceptance
 
+English · [简体中文](../../docs/zh-CN/tests/cli/README.md)
+
 `native_state.py` qualifies unchanged v1/v2 exports from the existing native text
 reference against an explicitly selected real host. It requires Python 3 standard
 library, the qualified native workspace backend and two already built binaries. It never builds
