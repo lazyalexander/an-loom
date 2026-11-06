@@ -252,3 +252,9 @@ Spool 会发出一个声明的 `checkpoint-input-policy.json`，与状态输出�
 ### 观察与控制并发
 
 合格的宿主待处理/显示/观看路径读取一个有界的固定日志，而无需获取其工作区变异锁或修复工作区投影。其附加的`observation`元数据标识日志，并报告在结束时是否发生了变化；外部证据仍非原子性。Loom 不得将观察到的阶段转换为执行、取消确认或收集权限。变异宿主命令仍在其原始锁下重新验证。格式错误的捕获证据将失败并关闭；未知的工作内容永远不会重试。宿主 CI 拥有并发观察者/撤销矩阵；Loom 保留其狭窄的封装交付/状态烟雾测试。
+
+## 有界的同级工作进程读取
+
+请求方可以在发布版本的 `silk` 清单和源文件包含清单中加入 `silk/peer-read.json`。原生适配器验证该声明，并将其作为不可变的发布内容导出。请使用显式的 v2 或 v3 元数据。
+
+`an-native-peer-read-v1` 对象指定一个 `task`、工作进程发布版本的确切 SHA-256（`worker_release`）、已声明的文本产物 `material_output`，以及期望工作进程返回的 `reply_output`。将 `max_text_bytes` 设为 1–4096，将 `max_wall_seconds` 设为 1–300。查询 CAD 历史时，可使用 `verify-grip-finish` 等任务，并选择包含部件、确切获批图纸修订及来源的文本证据产物。向模型披露信息和写入检查点均超出此本地读取配置的范围。声明本身不授予访问权限。宿主将准入绑定到确切的材料修订和当前的两个端点。参见[宿主契约](https://github.com/lazyalexander/an-agent/blob/dev-advance/doc/session-and-retention.md#release-ceilings-for-a-local-read)。
