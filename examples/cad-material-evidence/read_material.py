@@ -61,15 +61,22 @@ def host_call(host, *args):
     return json.loads(subprocess.check_output([str(host), *map(str, args)], timeout=30))
 
 
-def check_delegation(run, document, part):
+def check_delegation(run, document, part, disclosure="local-only"):
     declaration = json.loads(Path(__file__).with_name("delegation.json").read_text())
+    if not isinstance(declaration, dict):
+        raise ValueError("Material lookup exceeds the operator's read declaration")
+    legacy = declaration.get("schema") == "cad-material-delegation-v1"
+    modes = ["local-only"] if legacy and declaration.get("disclosure") == "local-only" else declaration.get("disclosure")
     if (
         not isinstance(declaration, dict)
         or set(declaration) != {"schema", "action", "access", "disclosure", "run", "parts"}
-        or declaration["schema"] != "cad-material-delegation-v1"
+        or declaration["schema"] not in {"cad-material-delegation-v1", "cad-material-delegation-v2"}
         or declaration["action"] != "read_approved_material"
         or declaration["access"] != "read"
-        or declaration["disclosure"] != "local-only"
+        or disclosure not in {"local-only", "codex-selected-material"}
+        or (legacy and declaration["disclosure"] != "local-only")
+        or not isinstance(modes, list)
+        or disclosure not in modes
         or declaration["run"] != run
         or not isinstance(declaration["parts"], dict)
         or declaration["parts"].get(document) != part
@@ -106,20 +113,29 @@ def read_accepted(host, instance, run, paint_release, artifact_revision, documen
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--host", type=Path, required=True)
-    parser.add_argument("--instance", type=Path, required=True)
+    parser.add_argument("--host", type=Path)
+    parser.add_argument("--instance", type=Path)
     parser.add_argument("--run", default="paint")
-    parser.add_argument("--paint-release", required=True)
-    parser.add_argument("--artifact-revision", required=True)
+    parser.add_argument("--paint-release")
+    parser.add_argument("--artifact-revision")
     parser.add_argument("--document", required=True)
-    parser.add_argument("--epoch", required=True)
-    parser.add_argument("--revision", type=int, required=True)
+    parser.add_argument("--epoch")
+    parser.add_argument("--revision", type=int)
     parser.add_argument("--part", required=True)
     parser.add_argument("--delegated", action="store_true")
+    parser.add_argument("--disclosure", choices=["local-only", "codex-selected-material"], default="local-only")
+    parser.add_argument("--check-delegation", action="store_true")
     args = parser.parse_args()
     try:
-        if args.delegated:
-            check_delegation(args.run, args.document, args.part)
+        if args.check_delegation:
+            check_delegation(args.run, args.document, args.part, args.disclosure)
+            print(json.dumps({"document": args.document, "part": args.part, "disclosure": args.disclosure}))
+            return
+        for name in ("host", "instance", "paint_release", "artifact_revision", "epoch", "revision"):
+            if getattr(args, name) is None:
+                parser.error("required for artifact read: --" + name.replace("_", "-"))
+        if args.delegated or args.disclosure != "local-only":
+            check_delegation(args.run, args.document, args.part, args.disclosure)
         print(json.dumps(read_accepted(args.host.resolve(strict=True), args.instance.resolve(strict=True),
                                       args.run, args.paint_release, args.artifact_revision, args.document, args.epoch,
                                       args.revision, args.part), ensure_ascii=False, separators=(",", ":")))

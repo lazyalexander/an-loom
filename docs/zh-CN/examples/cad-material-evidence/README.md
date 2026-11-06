@@ -42,4 +42,6 @@ python3 -B examples/cad-material-evidence/remote_compare.py \
 
 [OpenAI Agents API 函数工具](https://developers.openai.com/api/docs/guides/agents-api/tools/functions)
 
-对于 CAD 工作台中由宿主调用模型的路径，`--delegated` 会在访问任何产物之前应用操作员已审查的 `delegation.json`。该声明允许读取所选图纸的获批部件一次。读取器仍会核对已验收产物、文档世代（epoch）和确切修订。请将声明放在读取器旁。此操作员侧声明与打包的原生同级读取契约各自独立。
+CAD 工作台通过 `--delegated` 在访问产物前核验 `delegation.json`。第 2 版显式列出披露模式；本地调用仍默认 `local-only`。Codex 调用还须指定 `--disclosure codex-selected-material`，且声明必须允许该模式。旧的第 1 版仅限本地声明仍可读取，但不能授权远程调用。工作台在提交任何 Codex 任务前，通过 `--check-delegation --document handwheel --part grip --disclosure codex-selected-material` 预检披露许可；预检不会读取产物。
+
+Codex 模式允许发送所选图纸、部件、已验收修订、产物修订和材质元数据，以及 Shuttle 生成的本次证据编号。ORA、网格、其他材质、文档世代、发布编号、文件路径和原生记录均留在本地。操作员在工作台选择历史查证时授权这项披露。读取器核验已验收产物、文档世代和确切修订；Shuttle 核验单次读取范围与证据采纳。声明须放在读取器旁，与打包的原生同级读取契约各自独立。Codex 承担 agent 过程；读取器只解析证据。
