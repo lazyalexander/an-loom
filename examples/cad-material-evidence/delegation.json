@@ -1,8 +1,11 @@
 {
-  "schema": "cad-material-delegation-v1",
+  "schema": "cad-material-delegation-v2",
   "action": "read_approved_material",
   "access": "read",
-  "disclosure": "local-only",
+  "disclosure": [
+    "local-only",
+    "codex-selected-material"
+  ],
   "run": "paint",
   "parts": {
     "handwheel": "grip",

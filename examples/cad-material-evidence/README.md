@@ -65,9 +65,21 @@ rendering.
 
 [OpenAI Agents API function tools](https://developers.openai.com/api/docs/guides/agents-api/tools/functions)
 
-For the CAD studio's host-model path, `--delegated` applies the operator's
-reviewed `delegation.json` before any artifact access. It permits one read
-of the approved part for the selected drawing, and the reader still checks the
-accepted artifact, document epoch and exact revision. Keep the declaration next
-to the reader. This operator-side declaration is separate from the packaged
-native peer read contract.
+For the CAD studio, `--delegated` applies the reviewed `delegation.json`
+before artifact access. Version 2 names disclosure modes explicitly. Existing
+local callers default to `local-only`. A Codex caller must also supply
+`--disclosure codex-selected-material`, and the declaration must allow that
+mode. Version 1 local-only declarations remain readable and cannot authorize a
+remote call. `--check-delegation --document handwheel --part grip --disclosure
+codex-selected-material` checks disclosure without reading an artifact; the
+studio performs this preflight before submitting any Codex task.
+
+The Codex mode allows the selected drawing, part, accepted revision, artifact
+revision and material metadata to reach Codex, with an invocation-local evidence
+ID supplied by Shuttle. ORA bytes, meshes, other materials, document epochs,
+release IDs, filesystem paths and native transcripts remain local. The operator
+opts into this disclosure by selecting historical verification in the studio.
+The reader checks the accepted artifact, epoch and exact revision; Shuttle
+checks the one-read grant and evidence adoption. Keep the declaration beside
+the reader. This operator declaration is separate from the packaged native peer
+read contract. Codex owns the agent process; this reader only resolves evidence.
