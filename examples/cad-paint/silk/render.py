@@ -1,5 +1,7 @@
 """CPU path trace the saved CAD solids and record visible part ownership."""
 
+from time import perf_counter
+
 import mitsuba as mi
 import numpy as np
 from PIL import Image
@@ -7,6 +9,8 @@ from PIL import Image
 mi.set_variant("scalar_rgb")
 transform = mi.ScalarTransform4f
 size = (960, 680)
+# A preview keeps the exact part layers and only trades beauty-pass noise for speed.
+SAMPLES = {"preview": 8, "final": 96}
 
 
 def direction(yaw, elevation):
@@ -58,6 +62,14 @@ def rgb(color):
 
 
 def render(folder, job):
+    clock, timings = perf_counter(), {}
+
+    def lap(name):
+        nonlocal clock
+        now = perf_counter()
+        timings[name] = now - clock
+        clock = now
+
     focus = np.array(job.get("focus", [4, 0, 18]))
     eye = direction(**job["camera"])
     sensor = {"type":"orthographic",
@@ -103,7 +115,9 @@ def render(folder, job):
     scene["world"] = {"type":"constant","radiance":{"type":"rgb","value":0.55}}
     scene["integrator"] = {"type":"path","max_depth":6,"hide_emitters":True}
     world = mi.load_dict(scene,optimize=False)
-    beauty = np.array(mi.render(world,spp=96,seed=17))
+    lap("scene")
+    beauty = np.array(mi.render(world,spp=job.get("spp", SAMPLES["final"]),seed=17))
+    lap("beauty")
     alpha = np.clip(beauty[:,:,3:4],0,1)
     linear = beauty[:,:,:3] / np.maximum(alpha,1e-6)
     srgb = np.where(linear<=0.0031308,12.92*linear,1.055*np.maximum(0,linear)**(1/2.4)-0.055)
@@ -133,3 +147,5 @@ def render(folder, job):
     Image.fromarray(ids).save(folder/"ids.png")
     for mesh in folder.glob("mesh-*.ply"):
         mesh.unlink()
+    lap("mask")
+    return timings

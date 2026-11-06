@@ -44,3 +44,16 @@ class PaintingContract(unittest.TestCase):
         with patch("appearance.missing_material") as kit, self.assertRaises(ValueError):
             recipe(self.request)
         kit.assert_not_called()
+
+    def test_quality_selects_beauty_samples_and_defaults_to_final(self):
+        walnut = {"color":"#503022","finish":"walnut","metallic":0,"roughness":0.8}
+        with patch("appearance.missing_material", return_value=walnut):
+            self.assertEqual((recipe(self.request)["quality"], recipe(self.request)["spp"]), ("final", 96))
+            self.request["quality"] = "preview"
+            self.assertEqual((recipe(self.request)["quality"], recipe(self.request)["spp"]), ("preview", 8))
+
+    def test_unknown_quality_refuses_before_calling_the_kit(self):
+        self.request["quality"] = "draft"
+        with patch("appearance.missing_material") as kit, self.assertRaisesRegex(ValueError, "quality"):
+            recipe(self.request)
+        kit.assert_not_called()

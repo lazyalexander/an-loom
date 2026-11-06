@@ -7,13 +7,14 @@ from pathlib import Path
 import re
 from secrets import randbelow
 import sys
+from time import perf_counter
 
 # The native host provides flattened read-only snapshots. In the studio these
 # two directories are the trusted silk and the selected per-attempt kit copy.
 sys.path[:0] = [os.environ["AN_SPOOL_SILK_DIR"], os.environ["AN_SPOOL_KIT_DIR"]]
 import appearance
 from ora import pack
-from render import render
+from render import SAMPLES, render
 
 
 def surface(candidate):
@@ -39,6 +40,9 @@ def recipe(request):
         or len({c.lower() for c in ids.values()}) != len(ids)
         or {s["part"] for s in request["solids"]} != set(ids)):
         raise ValueError("Invalid CAD part inventory")
+    quality = request.get("quality", "final")
+    if quality not in SAMPLES:
+        raise ValueError("Unknown render quality")
     supplied = scene["materials"]
     materials, generated = {}, []
     for part in ids:
@@ -53,7 +57,8 @@ def recipe(request):
                 title=request["title"], focus=request["focus"], width=request["width"], solids=request["solids"],
                 light=scene["light"] if "light" in scene else randbelow(360)-180,
                 camera=scene.get("camera", {"yaw":38,"elevation":28}), materials=materials, ids=ids,
-                generated=generated, model=request.get("agent", {}).get("model"))
+                generated=generated, model=request.get("agent", {}).get("model"),
+                quality=quality, spp=SAMPLES[quality])
 
 
 if __name__ == "__main__":
@@ -63,5 +68,9 @@ if __name__ == "__main__":
     job["kit_sha256"] = sha256(Path(appearance.__file__).read_bytes()).hexdigest()
     folder = Path.cwd()
     (folder/"scene.json").write_text(json.dumps(job, indent=2))
-    render(folder, job)
+    started = perf_counter()
+    timings = render(folder, job)
     pack(folder, job)
+    timings["pack"] = perf_counter() - started - sum(timings.values())
+    # Diagnostics only: stderr is not a product and does not change the accepted files.
+    print(json.dumps({"quality": job["quality"], "seconds": {k: round(v, 3) for k, v in timings.items()}}), file=sys.stderr)
