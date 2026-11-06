@@ -482,3 +482,36 @@ mod native_development;
 fn native_development_delivers_and_admits_checked_spool_once() -> Result {
     native_development::run()
 }
+
+#[test]
+fn native_export_binds_cad_material_read_ceiling_as_release_content() -> Result {
+    let tmp = tempfile::tempdir()?;
+    let base = tmp.path().canonicalize()?;
+    let root = project(&base)?;
+    let path = root.join("native-spool.toml");
+    let contract = fs::read_to_string(&path)?.replace(
+        "\"silk/report.sh\"]",
+        "\"silk/report.sh\", \"silk/peer-read.json\"]",
+    );
+    fs::write(&path, contract)?;
+    let path = root.join("silk/peer-read.json");
+    let mut scope = serde_json::json!({
+        "schema": "an-native-peer-read-v1", "task": "verify-grip-finish",
+        "worker_release": "a".repeat(64), "material_output": "report.txt",
+        "reply_output": "report.txt", "max_text_bytes": 128, "max_wall_seconds": 15
+    });
+    let bytes = serde_json::to_vec(&scope)?;
+    fs::write(&path, &bytes)?;
+    let delivery = base.join("read-delivery");
+    let archive = an_loom::package::pack_project(&root)?;
+    an_loom::run([
+        "export-native-spool-v2".to_owned(),
+        archive.to_string_lossy().into_owned(),
+        delivery.to_string_lossy().into_owned(),
+    ])?;
+    assert_eq!(fs::read(delivery.join("silk/peer-read.json"))?, bytes);
+    scope["disclosure"] = serde_json::json!("remote");
+    fs::write(&path, serde_json::to_vec(&scope)?)?;
+    assert!(check_error(&root)?.contains("unknown field"));
+    Ok(())
+}

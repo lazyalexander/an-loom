@@ -1,7 +1,7 @@
 //! Export a bounded native-spool contract. Authoring records are not executed.
 use crate::{
     Result, fail,
-    manifest::{sha256_hex, validate_payload_path},
+    manifest::{sha256_hex, valid_digest, validate_payload_path},
     package,
     project::Project,
 };
@@ -52,6 +52,39 @@ struct Native {
 struct Events {
     consumes: Vec<String>,
     produces: Vec<String>,
+}
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct PeerRead {
+    schema: String,
+    task: String,
+    worker_release: String,
+    material_output: String,
+    reply_output: String,
+    max_text_bytes: u64,
+    max_wall_seconds: u64,
+}
+
+fn peer_read(config: &Native, bytes: &[u8]) -> Result<()> {
+    if config.legacy || bytes.len() > 4096 {
+        return Err(fail(
+            "peer read needs explicit authoring and at most 4096 bytes",
+        ));
+    }
+    let policy: PeerRead = serde_json::from_slice(bytes)?;
+    if policy.schema != "an-native-peer-read-v1"
+        || !identifier(&policy.task)
+        || !valid_digest(&policy.worker_release)
+        || !identifier(&policy.reply_output)
+        || !config.outputs.contains(&policy.material_output)
+        || config.binary_outputs.contains(&policy.material_output)
+        || !(1..=4096).contains(&policy.max_text_bytes)
+        || !(1..=300).contains(&policy.max_wall_seconds)
+    {
+        return Err(fail("invalid release read declaration"));
+    }
+    Ok(())
 }
 
 /// Read the authoring contract. Callers must not spawn `acceptance` or fetch `dependencies`.
@@ -131,6 +164,9 @@ fn load(files: &BTreeMap<&str, &[u8]>) -> Result<Native> {
 fn interpret(config: &Native, files: &BTreeMap<&str, &[u8]>) -> Result<()> {
     if config.schema != SCHEMA {
         return Err(fail("unsupported native spool contract"));
+    }
+    if let Some(bytes) = files.get("silk/peer-read.json") {
+        peer_read(config, bytes)?;
     }
     if config.legacy {
         if config.events.is_some()
