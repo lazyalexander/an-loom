@@ -1,5 +1,7 @@
 # Use the existing finite MCP service from a native client
 
+English · [简体中文](../../docs/zh-CN/examples/finite-mcp/README.md)
+
 Codex connects directly to `an-agent-tools` over its native stdio MCP support.
 The official `rmcp` SDK already supplies the server transport. No Codex SDK,
 proxy, agent loop, reply parser or new host tool is needed. The existing file-list

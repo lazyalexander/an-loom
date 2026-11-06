@@ -40,7 +40,9 @@ OpenShell belongs behind the host backend adapter, not in Loom or semantic logic
 
 ## Changes and review
 
-- English only for repository documentation, comments and examples.
+- Code comments and example code remain in English. English documentation is
+  authoritative. Simplified Chinese documentation is maintained as a companion
+  translation.
 - `main` is stable; its promotions remain maintainer-reviewed and merged.
   `dev-advance` is the development authority. Branch ordinary work from it and
   target feature PRs there. Agents may merge dev PRs after diff review, applicable

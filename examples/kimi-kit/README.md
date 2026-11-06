@@ -1,5 +1,7 @@
 # Historical Kimi finite-MCP qualification
 
+English · [简体中文](../../docs/zh-CN/examples/kimi-kit/README.md)
+
 The provider-specific `run`/`cancel` driver and custom agent profile are retired.
 New work uses the [shared finite-MCP fixture](../finite-mcp/README.md) with an
 existing native client. Fixture preparation, host-result verification and reviewed
