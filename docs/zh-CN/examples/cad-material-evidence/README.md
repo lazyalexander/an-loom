@@ -41,3 +41,5 @@ python3 -B examples/cad-material-evidence/remote_compare.py \
 原生资格认证会在验证证明旁边写入 `local-measurement.json`。它从第一个宿主准入请求开始计算，经过证明检查和验证，不包括固定装置创建和 spool 加载。此测量与远程报告覆盖相同的公共固定装置，且两者都不包括 CAD 渲染。
 
 [OpenAI Agents API 函数工具](https://developers.openai.com/api/docs/guides/agents-api/tools/functions)
+
+对于 CAD 工作台中由宿主调用模型的路径，`--delegated` 会在访问任何产物之前应用操作员已审查的 `delegation.json`。该声明允许读取所选图纸的获批部件一次。读取器仍会核对已验收产物、文档世代（epoch）和确切修订。请将声明放在读取器旁。此操作员侧声明与打包的原生同级读取契约各自独立。
