@@ -1,5 +1,7 @@
 # Log summary spool
 
+English · [简体中文](../../docs/zh-CN/examples/log-summary/README.md)
+
 A second-domain qualification of the existing native spool route. The editable
 kit counts INFO, WARN and ERROR records using the system awk CLI. Blank lines are
 ignored; unknown levels fail. Stable silks coordinate the kit and add the report

@@ -1,5 +1,7 @@
 # CAD material evidence
 
+English · [简体中文](../../docs/zh-CN/examples/cad-material-evidence/README.md)
+
 Use the local adapter when the operator supplies an exact accepted painting
 reference. It selects one part from `data/scene.json` in the host's accepted ORA,
 checks the artifact digest and drawing identity, and prints the material with
@@ -62,3 +64,10 @@ and the remote report cover the same public fixture and neither includes CAD
 rendering.
 
 [OpenAI Agents API function tools](https://developers.openai.com/api/docs/guides/agents-api/tools/functions)
+
+For the CAD studio's host-model path, `--delegated` applies the operator's
+reviewed `delegation.json` before any artifact access. It permits one read
+of the approved part for the selected drawing, and the reader still checks the
+accepted artifact, document epoch and exact revision. Keep the declaration next
+to the reader. This operator-side declaration is separate from the packaged
+native peer read contract.

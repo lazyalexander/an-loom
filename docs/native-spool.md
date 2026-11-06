@@ -604,3 +604,20 @@ into execution, cancellation confirmation or collection authority. Mutating host
 commands still revalidate under their original locks. Malformed captured evidence
 fails closed; unknown work is never retried. Host CI owns the concurrent observer/
 revocation matrix; Loom retains its narrow packaged delivery/state smoke tests.
+
+## Bounded peer reads
+
+A requester release may include `silk/peer-read.json` in its `silk` list
+and source include inventory. The native adapter validates and exports the
+declaration as immutable release content. Use explicit v2 or v3 metadata.
+
+The `an-native-peer-read-v1` object selects one `task`, the exact
+`worker_release` SHA-256, a declared text `material_output`, and the
+`reply_output` expected from the worker. Set `max_text_bytes` within
+1–4096 and `max_wall_seconds` within 1–300. For a CAD history lookup, use a
+task such as `verify-grip-finish` and select a text evidence output containing
+the part, exact approved drawing revision, and provenance. Model disclosure
+and checkpoint writes are outside this local read profile. The declaration
+does not grant access. The host binds admission to an exact material
+revision and both current endpoints. See the
+[host contract](https://github.com/lazyalexander/an-agent/blob/dev-advance/doc/session-and-retention.md#release-ceilings-for-a-local-read).

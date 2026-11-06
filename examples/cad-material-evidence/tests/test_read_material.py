@@ -15,6 +15,16 @@ class AcceptedMaterial(unittest.TestCase):
     scene = {"source": source, "drawing": "handwheel", "request_sha256": "a" * 64,
              "materials": {"grip": finish, "rail": {"finish": "other"}}, "solids": ["private"]}
 
+    def test_delegated_read_denies_unlisted_scope_before_artifact_access(self):
+        read_material.check_delegation("paint", "handwheel", "grip")
+        args = ["read_material", "--host", ".", "--instance", ".", "--paint-release", "a" * 64,
+                "--artifact-revision", "b" * 64, "--document", "vise", "--epoch", "e",
+                "--revision", "7", "--part", "grip", "--delegated"]
+        with patch("sys.argv", args), patch.object(read_material, "read_accepted") as read, patch("sys.stderr"):
+            with self.assertRaises(SystemExit):
+                read_material.main()
+            read.assert_not_called()
+
     def test_reads_only_the_exact_approved_part_and_checks_the_payload(self):
         with TemporaryDirectory() as tmp:
             fixture = Path(tmp) / "fixture.ora"

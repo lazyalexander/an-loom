@@ -1,5 +1,7 @@
 # Domain preparation with your existing harness
 
+English · [简体中文](../../docs/zh-CN/examples/weaver-log/README.md)
+
 The spool example owns its public materials, domain instructions and acceptance
 rules. `weaver.py` prepares and reviews those bytes, then receives a candidate
 through Loom. Your existing harness owns model selection, authentication,
