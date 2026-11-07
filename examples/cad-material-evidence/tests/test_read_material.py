@@ -25,6 +25,30 @@ class AcceptedMaterial(unittest.TestCase):
                 read_material.main()
             read.assert_not_called()
 
+    def test_remote_disclosure_requires_its_own_declaration(self):
+        read_material.check_delegation("paint", "handwheel", "grip", "codex-selected-material")
+        declaration = json.loads(Path(read_material.__file__).with_name("delegation.json").read_text())
+        declaration["disclosure"] = ["local-only"]
+        with patch.object(Path, "read_text", return_value=json.dumps(declaration)):
+            read_material.check_delegation("paint", "handwheel", "grip")
+            with self.assertRaisesRegex(ValueError, "declaration"):
+                read_material.check_delegation("paint", "handwheel", "grip", "codex-selected-material")
+        declaration["schema"] = "cad-material-delegation-v1"
+        declaration["disclosure"] = "local-only"
+        with patch.object(Path, "read_text", return_value=json.dumps(declaration)):
+            read_material.check_delegation("paint", "handwheel", "grip")
+            with self.assertRaisesRegex(ValueError, "declaration"):
+                read_material.check_delegation("paint", "handwheel", "grip", "codex-selected-material")
+        with self.assertRaisesRegex(ValueError, "declaration"):
+            read_material.check_delegation("paint", "handwheel", "grip", "all-files")
+
+    def test_disclosure_preflight_never_accesses_an_artifact(self):
+        args = ["reader", "--check-delegation", "--document", "handwheel", "--part", "grip",
+                "--disclosure", "codex-selected-material"]
+        with patch("sys.argv", args), patch.object(read_material, "read_accepted") as read, patch("sys.stdout"):
+            read_material.main()
+            read.assert_not_called()
+
     def test_reads_only_the_exact_approved_part_and_checks_the_payload(self):
         with TemporaryDirectory() as tmp:
             fixture = Path(tmp) / "fixture.ora"
