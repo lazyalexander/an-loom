@@ -130,6 +130,13 @@ signals and unknowns. A host grant is a separate decision. Build evidence binds
 source, executable, dependency and configuration identities to the extent actually
 observed; a digest does not prove safety or reproducible compilation.
 
+Source inspection validates Rust syntax and records observed paths. It permits
+network/process references, native interfaces and unsafe syntax through packaging.
+The selected host runtime enforces file, network and process restrictions when
+those operations execute. Existing analysis record fields and fixed file-profile
+declarations retain their formats. Qualified host file-runtime tests exercise
+denied network connections, child processes and out-of-scope filesystem access.
+
 The developer configuration may use TOML, while deployment uses the host's YAML
 contract. Reuse existing schemas and serializers where they are adequate. The
 first workbench should not invent a parallel runtime schema for the same rules.
