@@ -57,3 +57,5 @@ adapter work, an explicit selected host revision, real evidence and coordinated
 updates to both entry points. Never turn a skipped or unsupported test into a
 qualified result, remove a check, or broaden a trusted profile to pass a lane.
 No new platform registry, generic pipeline DSL or execution backend is introduced.
+
+Mechanical teaching releases continue to use generic Loom packaging. Their native envelopes and teaching application belong to an-spool; explicit Metal runtime selection, task permissions and daemon scheduling belong to [the original host service](https://github.com/lazyalexander/an-agent/blob/dev-advance/doc/daemon.md#native-teaching-applications). This does not extend Loom's fixed native exporter or its independently pinned handoff qualification.
