@@ -169,9 +169,9 @@ kit baselines for an-agent's qualified headless instance lifecycle. The included
 [lightweight text spool](examples/native-spool/README.md) needs no model or install
 hook. Packaging remains independent from host authorization and execution.
 
-The [CAD painting reference spool](examples/cad-paint/DISTRIBUTION.md) ships the
-appearance planner, editable kit and fixed rendering silks together. A CAD
-client pins the distribution while the host accepts the layered painting.
+The mature [CAD painting spool](examples/cad-paint/DISTRIBUTION.md) lives in
+an-spool. Loom reproduces its pinned distribution; the domain source, planner
+and rendering silks have one owner, while the host accepts layered paintings.
 
 The [log-report native handoff](examples/log-report/README.md#native-spool-event-handoff)
 uses the same packaging path for two CPU/headless Python spools. An independently
