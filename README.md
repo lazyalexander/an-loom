@@ -24,7 +24,7 @@ grant. See [the native starter](examples/native-spool/README.md),
 [development walkthrough](docs/development.md), [native handoff](docs/develop-native.md)
 and [coding-tool contract](docs/code-agents.md).
 
-Every release baseline file is **silk**; authorized mutable copies and newly
+Every release baseline file is **silk**; agent-modified copies and newly
 created work are **kit**. Instructions remain protected. Runtime authority is
 checked by the host, not inferred from source spellings or these labels.
 [Content contract](docs/spool-code.md) · [Repository boundaries](docs/spool-boundary.md)

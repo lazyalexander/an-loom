@@ -21,7 +21,7 @@ an-loom verify ARCHIVE
 将 `ARCHIVE` 替换为打包返回的路径。打包不授予执行权限。
 见[开发流程](docs/development.md)、[原生交付](docs/develop-native.md)和[编码工具契约](docs/code-agents.md)。
 
-发布基线为 **silk**；获准的可变副本和新增工作为 **kit**。指令仍受保护。
+发布基线为 **silk**；agent 修改过的副本和新增工作为 **kit**。指令仍受保护。
 实际操作由 host 检查，标签和源码名称不构成运行权限。
 见[内容契约](docs/spool-code.md)和[职责边界](docs/spool-boundary.md)。
 

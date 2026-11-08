@@ -13,7 +13,7 @@ workflow engines; do not implement competing editing or model loops.
 
 - **Silk** labels every immutable file in a selected release, including programs,
   configuration, skills and agent instructions. Development changes create a new release.
-- **Kit** labels authorized mutable working copies and newly generated work,
+- **Kit** labels agent-modified working copies and newly generated work,
   regardless of purpose or directory. Instructions remain protected; modifying a
   program or configuration never modifies its release baseline or grants execution.
   Unretained kit is reclaimable only after confirmed settlement. Accepted products
