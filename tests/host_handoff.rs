@@ -88,6 +88,23 @@ fn real_development_release_registration_and_controlled_file_execution() -> Resu
     let kit = contract.kit.as_mut().ok_or("missing kit")?;
     kit.source = "kit/normalize.rs".into();
     fs::rename(project.join("kit/main.rs"), project.join(&kit.source))?;
+    // These source constructs used to be blocked by syntax inspection. Exercise
+    // them inside the unchanged file runtime, with a reachable outside listener.
+    let listener = std::net::TcpListener::bind("127.0.0.1:0")?;
+    let source_path = project.join(&kit.source);
+    let source = fs::read_to_string(&source_path)?;
+    let entry = "fn main() -> io::Result<()> {";
+    assert!(source.contains(entry));
+    let probe = format!(
+        r#"{entry}
+    assert!(std::net::TcpStream::connect("{}").is_err());
+    assert!(std::process::Command::new("/usr/bin/true").status().is_err());
+    unsafe extern "C" {{ fn open(path: *const std::ffi::c_char, flags: i32) -> i32; }}
+    assert_eq!(unsafe {{ open(c"input.txt".as_ptr(), 1) }}, -1);
+"#,
+        listener.local_addr()?
+    );
+    fs::write(&source_path, source.replacen(entry, &probe, 1))?;
     fs::write(project.join("loom.toml"), toml::to_string(&contract)?)?;
     let tools = toolchain(&root)?;
     let job = root.join("host-job");
@@ -174,6 +191,7 @@ fn real_development_release_registration_and_controlled_file_execution() -> Resu
             "host-isolated compilation and domain tests pass","duplicate build submission refused",
             "portable release verifies","private job and home paths absent from package payloads",
             "real host registration and file execution","input unchanged","accepted output matches",
+            "runtime denies network and subprocesses","unsafe native input overwrite refused",
             "process reaped and artifact hash verified"],"model_calls":0}))?,
     )?;
     Ok(())
