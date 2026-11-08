@@ -29,17 +29,6 @@ created work are **kit**. Instructions remain protected. Runtime authority is
 checked by the host, not inferred from source spellings or these labels.
 [Content contract](docs/spool-code.md) · [Repository boundaries](docs/spool-boundary.md)
 
-## Example: CAD → Krita
-
-Loom packages a domain spool that turns saved CAD geometry into a layered painting.
-The mature source is maintained in an-spool; the application integration is in Shuttle.
-
-![CAD painting](https://raw.githubusercontent.com/lazyalexander/an-shuttle/0dfd646/examples/cad-paint/sample/vise.png)
-
-[Package handoff](examples/cad-paint/DISTRIBUTION.md) ·
-[Application setup and acceptance](https://github.com/lazyalexander/an-shuttle) ·
-[Domain source](https://github.com/lazyalexander/an-spool)
-
 ## Contracts and development
 
 Explicit include lists, deterministic inventories and bounded archives preserve
@@ -57,3 +46,33 @@ Other references: [text spool](examples/native-spool/README.md),
 [log → workbook → slides](docs/log-report-workflow.md),
 [finite MCP](examples/finite-mcp/README.md), [Nextflow](docs/nextflow-observation.md).
 These are examples, not business capabilities built into Loom.
+
+## Cases · mechanical animation
+
+### Ink and painted steam-engine comparison
+
+| Ink animation | Painted version · 6 s |
+| --- | --- |
+| ![Ink animation](https://raw.githubusercontent.com/lazyalexander/an-agent/d94f574197d8a7f56d30ca78d9cad8d81039d65d/assets/demos/mechanical-ink.gif) | ![Painted steam engine](https://raw.githubusercontent.com/lazyalexander/an-agent/d94f574197d8a7f56d30ca78d9cad8d81039d65d/assets/demos/painted-steam-engine.gif) |
+
+Loom prepares selected geometry, motion, images and acceptance commands as a reviewed release. Animation spool packaging and host lifecycle qualification remain pending.
+[Teaching workflow and reproduction evidence](https://github.com/lazyalexander/an-agent/blob/d94f574197d8a7f56d30ca78d9cad8d81039d65d/doc/cases.md).
+
+### Supplementary case · inline-four engine
+
+<img src="https://raw.githubusercontent.com/lazyalexander/an-agent/d94f574197d8a7f56d30ca78d9cad8d81039d65d/assets/demos/painted-inline-four.gif" alt="Inline-four engine" width="420">
+
+Forty CAD parts reuse the painted workflow over an eight-second cycle. Both
+painted GIFs loop at 720 × 405 and 12 fps. Media and teaching notes reference a
+fixed an-agent revision.
+
+## Example: CAD → Krita
+
+Loom packages a domain spool that turns saved CAD geometry into a layered painting.
+The mature source is maintained in an-spool; the application integration is in Shuttle.
+
+![CAD painting](https://raw.githubusercontent.com/lazyalexander/an-shuttle/0dfd646/examples/cad-paint/sample/vise.png)
+
+[Package handoff](examples/cad-paint/DISTRIBUTION.md) ·
+[Application setup and acceptance](https://github.com/lazyalexander/an-shuttle) ·
+[Domain source](https://github.com/lazyalexander/an-spool)
