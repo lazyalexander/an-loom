@@ -92,7 +92,7 @@ Loom 不链接 an-agent，也不导入它的实现。CI 固定宿主的源码修
 
 [原生 spool 适配器](docs/native-spool.md)导出只读 silk 代码和 kit 基线，供 an-agent 已通过验收的无界面实例生命周期使用。随附的[轻量文本 spool](examples/native-spool/README.md)无需模型或安装钩子。打包独立于宿主授权和执行。
 
-[CAD 绘画参考 spool](examples/cad-paint/DISTRIBUTION.md)将外观规划器、可编辑 kit 和固定的渲染 silk 一同分发。CAD 客户端固定分发版本，宿主验收分层绘画产物。
+[CAD 绘画成熟 spool](examples/cad-paint/DISTRIBUTION.md)由 an-spool 维护；Loom 负责复验固定分发包，宿主验收分层绘画产物。
 
 [日志报告的原生交接](../../examples/log-report/README.md#native-spool-event-handoff)通过同样的打包方式提供两个无界面 CPU Python spool。独立选择的宿主环境生成可编辑的 XLSX 和 PPTX，并通过工作区事件传递固定版本的二进制产物。业务适配器留在示例内。[日志累加器](examples/log-accumulator/README.md)组合单独选择的业务产物与已提交的检查点。Loom 打包这些角色，宿主负责固定版本、过期状态冲突和取消后的留存。
 
@@ -134,7 +134,6 @@ Loom 不链接 an-agent，也不导入它的实现。CI 固定宿主的源码修
 - [Spool 发布到宿主的交接：首次实现切片](docs/spool-runtime-handoff.md) · `docs/spool-runtime-handoff.md`
 - [Weaver：审查领域知识以进行spool开发](docs/weaver.md) · `docs/weaver.md`
 - [CAD材料证据](examples/cad-material-evidence/README.md) · `examples/cad-material-evidence/README.md`
-- [CAD绘画任务](examples/cad-paint/AGENTS.zh-CN.md) · `examples/cad-paint/AGENTS.md`
 - [CAD绘画发布](examples/cad-paint/DISTRIBUTION.md) · `examples/cad-paint/DISTRIBUTION.md`
 - [CAD绘画spool](examples/cad-paint/README.md) · `examples/cad-paint/README.md`
 - [文件列表 silk](examples/file-list/README.md) · `examples/file-list/README.md`

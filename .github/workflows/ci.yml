@@ -60,18 +60,25 @@ jobs:
           else
             echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
+      - uses: actions/checkout@v4
+        if: steps.cad.outputs.changed == 'true'
+        with:
+          repository: lazyalexander/an-spool
+          ref: a9bffc3f757f7c82c4dcbca78d063f317d38a27d
+          path: .local/an-spool
+          persist-credentials: false
       - uses: actions/setup-node@v4
         if: steps.cad.outputs.changed == 'true'
         with:
           node-version: '22'
           cache: npm
-          cache-dependency-path: examples/cad-paint/package-lock.json
+          cache-dependency-path: .local/an-spool/spools/cad-paint/package-lock.json
       - name: Verify the pinned CAD client against the Loom release
         if: steps.cad.outputs.changed == 'true'
         run: |
-          cd examples/cad-paint
+          cd .local/an-spool/spools/cad-paint
           npm ci --ignore-scripts --no-audit --no-fund
-          python pack-client.py --loom ../../target/debug/an-loom --tsc node_modules/.bin/tsc --output releases --check
+          python pack-client.py --loom ../../../../target/debug/an-loom --tsc node_modules/.bin/tsc --output releases --check
           tar -xOzf releases/an-loom-cad-paint-spool-0.1.0.tgz package/dist/requirements.txt > "$RUNNER_TEMP/cad-paint-requirements.txt"
           python -m pip install -r "$RUNNER_TEMP/cad-paint-requirements.txt"
           python -B -m unittest discover -s tests -v
