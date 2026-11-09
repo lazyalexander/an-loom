@@ -1,0 +1,5 @@
+schema_version = 1
+name = "document-table"
+version = "0.1.0"
+description = "Headless PDF to Markdown and typed Excel tables using existing document libraries"
+include = ["README.md", "acceptance/app-server-local.json", "loom.toml", "requirements.txt", "silk", "tests", "prepare.py", "qualify.py"]

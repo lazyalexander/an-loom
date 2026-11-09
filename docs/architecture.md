@@ -374,3 +374,9 @@ when implementing a matching need. Full-access execution and automatic restart
 reassignment are not inherited guarantees. This is a reference, not a dependency
 or code import. GitHub/Feishu integration is deferred and may later serve as an
 optional capability test, not the primary delivery goal.
+
+The [document-table reference](../examples/document-table/README.md) uses the
+host's pinned Codex app-server profile. Loom packages domain conversion programs;
+the host mediates model-selected tools and delegation under existing grants.
+Fresh parent/child threads have explicitly selected inputs. Neither code-agent
+instructions nor a successful conversation grants artifact acceptance.

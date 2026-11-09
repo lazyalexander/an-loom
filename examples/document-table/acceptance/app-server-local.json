@@ -1,0 +1,38 @@
+{
+  "passed": true,
+  "real_codex_app_server": true,
+  "host_sha256": "3d2afa7fcd680d3bc58459d5019769349a3b4d93c350294680dfe83b8903f00c",
+  "codex_sha256": "39acf979729dd290f9a24ee38b2914e036c91b65952872e28ae2a6b88a7db7c1",
+  "source_pdf_sha256": "edd8d5180a17ee76fb3f34bff32627f5d09532478ea63d2c295214e2c60dcf4d",
+  "markdown_revision": "392db0e299fe9031612483ea9dab7b7b15257e6be522d8f3de6b743635fa47eb",
+  "xlsx_sha256": "97b5dcfc9301ceb374287b77c0c97c7095777c11297cc16bdb546d0446189444",
+  "total": 38.5,
+  "main_attempts": [
+    "d3b14323-a1e1-4a4c-b056-c1f3a42edf95",
+    "28520e7c-9497-4c8d-b1a2-a826af7af3eb"
+  ],
+  "child_attempt": "899fb78a-b13b-4b7a-9b78-c6f1e6056716",
+  "cancelled_attempts": [
+    "77630616-d493-4ea0-a3cf-77a565728872",
+    "a8cbd6d4-bf0c-42e6-b769-280c0760326e"
+  ],
+  "child_source_denied": true,
+  "child_context_isolated": true,
+  "revocation_preserves_products": true,
+  "automatic_retries": 0,
+  "models": [
+    {
+      "model": "gpt-6.1-sol",
+      "duration_ms": 20827
+    },
+    {
+      "model": "gpt-6.1-sol",
+      "duration_ms": 70346
+    },
+    {
+      "model": "gpt-6.1-sol",
+      "duration_ms": 12311
+    }
+  ],
+  "host_source_revision": "4a7ecd82f63ec1b048926155ad3126e250bc4c79"
+}
