@@ -621,3 +621,17 @@ and checkpoint writes are outside this local read profile. The declaration
 does not grant access. The host binds admission to an exact material
 revision and both current endpoints. See the
 [host contract](https://github.com/lazyalexander/an-agent/blob/dev-advance/doc/session-and-retention.md#release-ceilings-for-a-local-read).
+
+
+## Offline runtime delivery
+
+`an-loom pack-runtime SOURCE MANIFEST NEW_ARCHIVE` streams an explicitly selected
+`an-offline-runtime-v1` environment into a deterministic gzip tar. The JSON manifest
+contains name, version, platform (`macos-aarch64`), license payload paths, named
+component payload references, and a `files` map of relative paths to `sha256`,
+`bytes`, and `executable`. Every license/component reference must select a file.
+Paths reject links and parent traversal; the manifest precedes sorted regular
+payload entries. Bounds are 16,384 files and 32 GiB expanded. Source digests are
+checked before assembly. No installer, download, model call or runtime grant is
+performed. The receiving host independently checks all archived bytes; hashes do
+not authenticate publishers. Operators review payload provenance and licenses.

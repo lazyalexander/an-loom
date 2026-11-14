@@ -15,6 +15,7 @@ const HELP: &str = "an-loom - inspectable spool development and delivery
   an-loom declare PROJECT
   an-loom build PROJECT
   an-loom pack PROJECT
+  an-loom pack-runtime SOURCE MANIFEST NEW_ARCHIVE
   an-loom verify ARCHIVE
   an-loom export-spool ARCHIVE NEW_DIRECTORY
   an-loom export-native-spool ARCHIVE NEW_DIRECTORY
@@ -64,6 +65,9 @@ pub(crate) fn run(args: Vec<String>) -> Result<()> {
         ("build", [root]) => {
             let build = crate::package::build_project(Path::new(root))?;
             json!({"bundle":build.manifest,"directory":build.output})
+        }
+        ("pack-runtime", [source, manifest, output]) => {
+            crate::runtime_bundle::pack(Path::new(source), Path::new(manifest), Path::new(output))?
         }
         ("pack", [root]) => json!({"archive":crate::package::pack_project(Path::new(root))?}),
         ("verify", [archive]) => {
