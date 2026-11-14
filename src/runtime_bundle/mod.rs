@@ -1,5 +1,6 @@
 //! Explicit offline runtime delivery. No downloads, installers or host execution.
 mod manifest;
+pub mod stage;
 mod verified;
 use crate::{Result, fail};
 use manifest::Manifest;
@@ -72,14 +73,15 @@ fn append<W: Write>(
     size: u64,
     input: impl Read,
 ) -> Result<()> {
-    let mut header = tar::Header::new_gnu();
+    let mut header = tar::Header::new_ustar();
+    header.set_path(name)?;
     header.set_size(size);
     header.set_mode(0o400);
     header.set_uid(0);
     header.set_gid(0);
     header.set_mtime(0);
     header.set_cksum();
-    archive.append_data(&mut header, name, input)?;
+    archive.append(&header, input)?;
     Ok(())
 }
 

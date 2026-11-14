@@ -635,3 +635,13 @@ payload entries. Bounds are 16,384 files and 32 GiB expanded. Source digests are
 checked before assembly. No installer, download, model call or runtime grant is
 performed. The receiving host independently checks all archived bytes; hashes do
 not authenticate publishers. Operators review payload provenance and licenses.
+
+`an-loom stage-runtime SOURCES_JSON NEW_DIRECTORY` first assembles reviewed local
+sources and writes this manifest while hashing their bytes. The selection contains
+`name`, `version`, `platform`, `licenses`, `components`, and `sources` (destination
+relative path to explicit local file/directory). It never discovers or downloads
+dependencies. Directory links and escapes are refused; internal file aliases become
+regular copies. Failed staging removes only its new destination. Source selection
+and acquisition receipts remain private; licenses and sanitized provenance travel
+in the reviewed payload. Pack uses regular USTAR entries, refusing paths that
+require extension records, and verifies hashes during archive writing as well.
