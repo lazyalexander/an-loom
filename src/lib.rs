@@ -8,6 +8,7 @@ pub mod package;
 pub mod plan;
 pub mod project;
 pub mod release;
+pub mod runtime_bundle;
 pub mod spool;
 pub mod task;
 

@@ -258,3 +258,15 @@ Spool 会发出一个声明的 `checkpoint-input-policy.json`，与状态输出�
 请求方可以在发布版本的 `silk` 清单和源文件包含清单中加入 `silk/peer-read.json`。原生适配器验证该声明，并将其作为不可变的发布内容导出。请使用显式的 v2 或 v3 元数据。
 
 `an-native-peer-read-v1` 对象指定一个 `task`、工作进程发布版本的确切 SHA-256（`worker_release`）、已声明的文本产物 `material_output`，以及期望工作进程返回的 `reply_output`。将 `max_text_bytes` 设为 1–4096，将 `max_wall_seconds` 设为 1–300。查询 CAD 历史时，可使用 `verify-grip-finish` 等任务，并选择包含部件、确切获批图纸修订及来源的文本证据产物。向模型披露信息和写入检查点均超出此本地读取配置的范围。声明本身不授予访问权限。宿主将准入绑定到确切的材料修订和当前的两个端点。参见[宿主契约](https://github.com/lazyalexander/an-agent/blob/dev-advance/doc/session-and-retention.md#release-ceilings-for-a-local-read)。
+
+
+## 离线运行时交付
+
+`an-loom pack-runtime SOURCE MANIFEST NEW_ARCHIVE` 将明确选定的
+`an-offline-runtime-v1` 环境流式组装成可重复 gzip tar。JSON 清单包含名称、版本、
+平台 `macos-aarch64`、许可文件路径、具名组件引用及 `files` 映射；每个文件声明
+`sha256`、`bytes` 和 `executable`。许可与组件必须引用所选文件。
+拒绝链接与父目录越界，归档先写清单，再按名称排序写普通文件。
+上限为 16,384 文件和 32 GiB 展开量，组装前核对源文件摘要。
+该命令不安装、不下载、不调用模型，也不授予运行权限。接收宿主独立核对所有
+归档内容；摘要不认证发布者，操作者须审核来源与许可。
