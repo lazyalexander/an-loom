@@ -1,5 +1,6 @@
 //! Explicit offline runtime delivery. No downloads, installers or host execution.
 mod manifest;
+mod verified;
 use crate::{Result, fail};
 use manifest::Manifest;
 use sha2::{Digest, Sha256};
@@ -51,12 +52,7 @@ pub fn pack(source: &Path, selection: &Path, output: &Path) -> Result<serde_json
         let data = serde_json::to_vec(&manifest)?;
         append(&mut archive, "runtime.json", data.len() as u64, &data[..])?;
         for (name, file) in &manifest.files {
-            append(
-                &mut archive,
-                name,
-                file.bytes,
-                fs::File::open(root.join(name))?,
-            )?;
+            verified::append(&mut archive, name, file, fs::File::open(root.join(name))?)?;
         }
         archive.finish()?;
         let mut file = archive.into_inner()?.finish()?;
