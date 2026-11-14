@@ -21,6 +21,11 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      - name: Check the document-table domain adapters
+        run: |
+          python3 -m venv .local/document-env
+          .local/document-env/bin/python -m pip install -r examples/document-table/requirements.txt
+          .local/document-env/bin/python -B -m unittest discover -s examples/document-table/tests -v
       - name: Install repository-pinned toolchain
         run: |
           active="$(rustup show active-toolchain | awk '{print $1}')"
@@ -213,7 +218,7 @@ jobs:
 
   native-spool:
     env:
-      NATIVE_HOST_REVISION: 2064258b69ddb9aa1ac8a2b0c52f25b8852e1134
+      NATIVE_HOST_REVISION: 4a7ecd82f63ec1b048926155ad3126e250bc4c79
     runs-on: macos-latest
     timeout-minutes: 15
     steps:
