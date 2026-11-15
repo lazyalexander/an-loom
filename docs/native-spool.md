@@ -654,3 +654,9 @@ or image commands. The host privately owns image credentials, authorization,
 request IDs, publication receipts and independent task branches. Project images
 contain private kit/state and must not be included as environment package sources.
 Older bundles without this component retain their original task-local path.
+
+Manual image maintenance additionally selects the optional `image_maintenance_api`
+data component: `{"schema":"cocoon-image-maintenance-v1","manual_reclaim":true,"automatic_gc":false}`.
+It requires `image_api`; the host probes the pinned Cocoon implementation before
+use. Older bundles remain usable without cleanup. Packaging neither executes
+maintenance nor confers authority to delete resources or accepted artifacts.

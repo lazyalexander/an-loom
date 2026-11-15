@@ -137,6 +137,23 @@ fn image_api_pins_all_boot_components_and_refuses_memory_claims() -> Result<()> 
             .insert(name.into(), "contract.json".into());
     }
     validate_image_component(&root, &manifest)?;
+    validate_maintenance_component(&root, &manifest)?;
+    manifest
+        .components
+        .insert("image_maintenance_api".into(), "contract.json".into());
+    assert!(validate_maintenance_component(&root, &manifest).is_err());
+    let mut maintenance = serde_json::json!({"schema":"cocoon-image-maintenance-v1","manual_reclaim":true,"automatic_gc":false});
+    fs::write(&path, serde_json::to_vec(&maintenance)?)?;
+    validate_maintenance_component(&root, &manifest)?;
+    maintenance["automatic_gc"] = serde_json::json!(true);
+    fs::write(&path, serde_json::to_vec(&maintenance)?)?;
+    assert!(validate_maintenance_component(&root, &manifest).is_err());
+    manifest.components.remove("image_api");
+    assert!(validate_maintenance_component(&root, &manifest).is_err());
+    manifest
+        .components
+        .insert("image_api".into(), "contract.json".into());
+    fs::write(&path, serde_json::to_vec(&contract)?)?;
     contract["memory_restore_qualified"] = serde_json::json!(true);
     fs::write(&path, serde_json::to_vec(&contract)?)?;
     assert!(validate_image_component(&root, &manifest).is_err());
