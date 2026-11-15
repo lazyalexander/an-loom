@@ -16,6 +16,7 @@ OpenShell 仍然是一个可选的可替换宿主后端；在原生无头生命�
 | Rust 编写、检查、确定性打包和质量工具 | CI | CI | 不合格 | [CI 任务](../../../.github/workflows/ci.yml)；这是打包工具，不是执行隔离 |
 | 原生 spool 清单/导出适配器 | 合约测试和真实宿主交接 | 离线合约测试 | 不合格 | 现有 shell/Python 目标标识符保持不变；生成包不会启用其目标运行时 |
 | 受控构建/开发和原生 spool 执行接受 | 合格宿主通道 | 无新执行通道 | 不合格 | 固定宿主版本可保证客户端无关的事件、会话和对等执行；[接受映射](acceptance.md) 和 [CLI 案例](../tests/cli/README.md) |
+| 离线运行包与冷启动磁盘镜像交接 | 固定 macos-aarch64 包及真实宿主交接 | 仅离线数据与契约检查 | 未验收 | image_api 绑定 Cocoon 和启动字节；见[宿主镜像契约](https://github.com/lazyalexander/an-agent/blob/dev-advance/doc/daemon.md#p12-private-cold-disk-images)；打包不授予 VM 执行或内存恢复能力 |
 | 独立使用的领域程序 | 示例特定测试 | 配置的示例特定测试 | 示例特定 | 普通 CLI 成功没有托管宿主执行保证 |
 | 应用穿梭和 GPU 工作流 | 分别合格 | 分别合格 | 分别合格 | 应用程序 API、GUI 会话、驱动程序和外部服务在 Loom 的包运行时之外 |
 
