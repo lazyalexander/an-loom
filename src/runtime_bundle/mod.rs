@@ -41,6 +41,7 @@ pub fn pack(source: &Path, selection: &Path, output: &Path) -> Result<serde_json
             return Err(fail("runtime source hash mismatch"));
         }
     }
+    validate_image_component(&root, &manifest)?;
     let target = fs::OpenOptions::new()
         .create_new(true)
         .write(true)
@@ -67,6 +68,31 @@ pub fn pack(source: &Path, selection: &Path, output: &Path) -> Result<serde_json
     result?;
     Ok(serde_json::json!({"archive":output,"manifest":manifest,"execution_authorized":false}))
 }
+/// A declaration pins a finite host API; it cannot qualify VM execution or memory restore.
+fn validate_image_component(root: &Path, manifest: &Manifest) -> Result<()> {
+    let Some(path) = manifest.components.get("image_api") else {
+        return Ok(());
+    };
+    for name in ["cocoon", "runner", "kernel", "initrd", "root_image"] {
+        if !manifest.components.contains_key(name) {
+            return Err(fail(
+                "disk images require pinned Cocoon, runner and boot components",
+            ));
+        }
+    }
+    if manifest.files[path].executable {
+        return Err(fail("image API declaration must be data"));
+    }
+    let value: serde_json::Value =
+        serde_json::from_slice(&crate::files::read(&root.join(path), 4096)?)?;
+    if value
+        != serde_json::json!({"schema":"cocoon-image-api-v1","disk_images":true,"memory_restore_qualified":false})
+    {
+        return Err(fail("unsupported image API declaration"));
+    }
+    Ok(())
+}
+
 fn append<W: Write>(
     archive: &mut tar::Builder<W>,
     name: &str,

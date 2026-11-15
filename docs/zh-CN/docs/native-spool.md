@@ -276,3 +276,10 @@ Spool 会发出一个声明的 `checkpoint-input-policy.json`，与状态输出�
 不自动发现或下载依赖。拒绝目录链接和越界，内部文件别名转为普通副本；失败仅清理本次新目录。
 来源选择和获取回执保留私有，许可证及去除本机信息的来源说明随审核包交付。
 打包使用普通 USTAR 条目，拒绝需要扩展记录的路径，并在写入归档时再次验证摘要。
+
+P1.2 磁盘镜像运行包额外选择 `image_api` 数据组件，内容为
+`{"schema":"cocoon-image-api-v1","disk_images":true,"memory_restore_qualified":false}`。
+stage/pack 要求固定 `cocoon`、`runner`、`kernel`、`initrd`、`root_image` 组件，
+拒绝扩大的内存恢复声明，也不执行该声明或镜像命令。宿主私有保管管理凭据，
+负责授权、原请求 ID、发布回执和独立任务分支。项目镜像包含私有 kit 与状态，
+不得用作环境运行包来源。没有该组件的旧运行包继续使用原来的任务本地路径。

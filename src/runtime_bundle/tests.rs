@@ -104,3 +104,41 @@ fn staging_normalizes_internal_file_aliases_but_refuses_escaping_links() -> Resu
     assert!(!refused.exists());
     Ok(())
 }
+
+#[test]
+fn image_api_pins_all_boot_components_and_refuses_memory_claims() -> Result<()> {
+    let temp = tempfile::tempdir()?;
+    let root = temp.path().canonicalize()?;
+    let path = root.join("contract.json");
+    let mut components = std::collections::BTreeMap::new();
+    components.insert("image_api".into(), "contract.json".into());
+    let mut manifest = Manifest {
+        schema: "an-offline-runtime-v1".into(),
+        name: "images".into(),
+        version: "1".into(),
+        platform: "macos-aarch64".into(),
+        licenses: vec!["contract.json".into()],
+        components,
+        files: std::collections::BTreeMap::from([(
+            "contract.json".into(),
+            manifest::File {
+                sha256: "a".repeat(64),
+                bytes: 1,
+                executable: false,
+            },
+        )]),
+    };
+    let mut contract = serde_json::json!({"schema":"cocoon-image-api-v1","disk_images":true,"memory_restore_qualified":false});
+    fs::write(&path, serde_json::to_vec(&contract)?)?;
+    assert!(validate_image_component(&root, &manifest).is_err());
+    for name in ["cocoon", "runner", "kernel", "initrd", "root_image"] {
+        manifest
+            .components
+            .insert(name.into(), "contract.json".into());
+    }
+    validate_image_component(&root, &manifest)?;
+    contract["memory_restore_qualified"] = serde_json::json!(true);
+    fs::write(&path, serde_json::to_vec(&contract)?)?;
+    assert!(validate_image_component(&root, &manifest).is_err());
+    Ok(())
+}

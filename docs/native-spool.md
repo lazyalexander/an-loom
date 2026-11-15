@@ -645,3 +645,12 @@ regular copies. Failed staging removes only its new destination. Source selectio
 and acquisition receipts remain private; licenses and sanitized provenance travel
 in the reviewed payload. Pack uses regular USTAR entries, refusing paths that
 require extension records, and verifies hashes during archive writing as well.
+
+A P1.2 disk-image bundle additionally selects an `image_api` data component with
+`{"schema":"cocoon-image-api-v1","disk_images":true,"memory_restore_qualified":false}`.
+Stage/pack require pinned `cocoon`, `runner`, `kernel`, `initrd` and `root_image`
+components and reject broader memory claims. They never execute the declaration
+or image commands. The host privately owns image credentials, authorization,
+request IDs, publication receipts and independent task branches. Project images
+contain private kit/state and must not be included as environment package sources.
+Older bundles without this component retain their original task-local path.
