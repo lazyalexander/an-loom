@@ -42,6 +42,7 @@ pub fn pack(source: &Path, selection: &Path, output: &Path) -> Result<serde_json
         }
     }
     validate_image_component(&root, &manifest)?;
+    validate_maintenance_component(&root, &manifest)?;
     let target = fs::OpenOptions::new()
         .create_new(true)
         .write(true)
@@ -89,6 +90,25 @@ fn validate_image_component(root: &Path, manifest: &Manifest) -> Result<()> {
         != serde_json::json!({"schema":"cocoon-image-api-v1","disk_images":true,"memory_restore_qualified":false})
     {
         return Err(fail("unsupported image API declaration"));
+    }
+    Ok(())
+}
+
+fn validate_maintenance_component(root: &Path, manifest: &Manifest) -> Result<()> {
+    let Some(path) = manifest.components.get("image_maintenance_api") else {
+        return Ok(());
+    };
+    if !manifest.components.contains_key("image_api") || manifest.files[path].executable {
+        return Err(fail(
+            "manual maintenance requires a pinned data contract and image API",
+        ));
+    }
+    let value: serde_json::Value =
+        serde_json::from_slice(&crate::files::read(&root.join(path), 4096)?)?;
+    if value
+        != serde_json::json!({"schema":"cocoon-image-maintenance-v1","manual_reclaim":true,"automatic_gc":false})
+    {
+        return Err(fail("unsupported image maintenance declaration"));
     }
     Ok(())
 }

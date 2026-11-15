@@ -283,3 +283,8 @@ stage/pack 要求固定 `cocoon`、`runner`、`kernel`、`initrd`、`root_image`
 拒绝扩大的内存恢复声明，也不执行该声明或镜像命令。宿主私有保管管理凭据，
 负责授权、原请求 ID、发布回执和独立任务分支。项目镜像包含私有 kit 与状态，
 不得用作环境运行包来源。没有该组件的旧运行包继续使用原来的任务本地路径。
+
+手动镜像维护另选可选数据组件 `image_maintenance_api`，内容为
+`{"schema":"cocoon-image-maintenance-v1","manual_reclaim":true,"automatic_gc":false}`。
+该组件要求已有 `image_api`；宿主使用前核对固定 Cocoon 实现。旧包仍可使用，
+但不具备清理入口。打包既不执行维护，也不授予删除资源或已验收产物的权限。
