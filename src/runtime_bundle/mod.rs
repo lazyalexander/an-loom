@@ -1,4 +1,5 @@
 //! Explicit offline runtime delivery. No downloads, installers or host execution.
+mod backend;
 mod manifest;
 pub mod stage;
 mod verified;
@@ -43,6 +44,10 @@ pub fn pack(source: &Path, selection: &Path, output: &Path) -> Result<serde_json
     }
     validate_image_component(&root, &manifest)?;
     validate_maintenance_component(&root, &manifest)?;
+    backend::validate(&manifest, |path| {
+        crate::files::read(&root.join(path), 65536).map_err(|error| error.to_string())
+    })
+    .map_err(fail)?;
     let target = fs::OpenOptions::new()
         .create_new(true)
         .write(true)

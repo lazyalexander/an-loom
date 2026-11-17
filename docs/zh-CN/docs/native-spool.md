@@ -262,6 +262,12 @@ Spool 会发出一个声明的 `checkpoint-input-policy.json`，与状态输出�
 
 ## 离线运行时交付
 
+Container 包保留外层 `an-offline-runtime-v1`。非可执行的 `backend` 数据采用 `an-container-backend-v1`，包含 `backend: "apple-container"`、带摘要的 `image`、`cpus`（1–8）、`memory_mib`（256–16384）、`storage_bytes`（256 MiB–64 GiB）。这些只是资源请求，准入、实际配额与执行仍由宿主负责。
+`container_provenance` 采用 `an-container-provenance-v1`，包含 fork `repository`、40 位十六进制 `commit`、`swift_lock_sha256` 和路径到摘要的 `files` 表。
+必需组件为 `container`、`container_apiserver`、`container_runtime_linux`、`container_network_vmnet`、`container_images`、`container_kernel`、`container_init`、`container_image`、`container_swift_lock`；前五项可执行，其余为数据。image/init 为离线归档，加载后的 OCI 身份必须由宿主独立核对。
+stage/pack 与宿主导入都拒绝缺失组件、来源错配和混合 Cocoon 镜像 API。导入不执行载荷；打包成功不代表 Apple 产品生命周期已验收。
+`tests/cli/container_runtime.py --loom BINARY --host BINARY --evidence NEW_DIRECTORY` 联测实际 CLI 的篡改拒绝、不执行载荷与旧包兼容，不启动服务。
+
 `an-loom pack-runtime SOURCE MANIFEST NEW_ARCHIVE` 将明确选定的
 `an-offline-runtime-v1` 环境流式组装成可重复 gzip tar。JSON 清单包含名称、版本、
 平台 `macos-aarch64`、许可文件路径、具名组件引用及 `files` 映射；每个文件声明
