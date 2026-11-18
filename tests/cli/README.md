@@ -93,3 +93,5 @@ packages a producer, a log accumulator and an audit consumer. Its three rounds
 cover a shared fixed event, finite dispatch with explicit state, confirmed
 cancellation after client exit, actual supervisor loss and collection. The portable summary records binary
 identities, observed attempt counts and disk use. The host owns all reader records.
+
+Run `python3 tests/cli/container_runtime.py --loom BINARY --host BINARY --evidence NEW_DIRECTORY` from the repository root to exercise offline handoff between both CLIs with synthetic packages. Choose a new evidence directory.

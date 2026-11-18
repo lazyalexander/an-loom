@@ -27,6 +27,7 @@ operator observations into Loom's generic implementation to share test code.
 | `tests/task_handoff.rs` | Native kit task preparation, candidate isolation, check evidence and revocation |
 | `tests/host_handoff.rs` | Opt-in real macOS host acceptance; explicitly enabled in CI |
 | `examples/log-report/tests/` | Domain document checks owned by the example |
+| `tests/cli/container_runtime.py` | Offline packaging and host import, including tamper rejection, payload non-execution and legacy compatibility |
 | `tests/cli/native_documents.py` | Real v3 packaging and host-bound Python/binary document handoff; domain adapters remain in the example |
 | `tests/cli/native_data_state.py` | Actual fixed data/checkpoint packaging and host handoff; the host owns cancellation/fault coverage |
 | `examples/log-accumulator/tests/` | Standalone cumulative-log business validation, outside host and Loom implementations |
