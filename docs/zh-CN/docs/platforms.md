@@ -2,10 +2,10 @@
 
 [English](../../platforms.md) · 中文译文，以英文为准。 · [中文目录](../README.md)
 
-Loom 拥有创作、检查和包交付功能。宿主负责运行时支持；请使用权威的 [an-agent 运行时矩阵](https://github.com/lazyalexander/an-agent/blob/dev-container-migration/doc/platforms.md)
+Loom 拥有创作、检查和包交付功能。宿主负责运行时支持；请使用权威的 [an-agent 运行时矩阵](https://github.com/lazyalexander/an-agent/blob/dev-advance/doc/zh-CN/doc/platforms.md)
 而不是在此处重复该表格。这两份文档是平台的入口点。功能合同链接于此；历史接受报告保留其原始的操作系统、架构和版本信息。
 
-当前协调交付目标是本地、经过审查的 **无头** 打包。现有的 Linux 实现和 CI 保持不变，本阶段不会扩展 Linux 兼容性。Linux 部署仍然是一个可能的未来配置，而不是一个默认配置，不会将今天的原生发布转换为默认配置，也不会提供更广泛的访问权限。
+当前交付目标是在本地运行经过审查的无头 spool。现有的 Linux 实现和 CI 保持不变，本阶段不会扩展 Linux 兼容性。Linux 部署仍然是一个可能的未来配置，而不是一个默认配置，不会将今天的原生发布转换为默认配置，也不会提供更广泛的访问权限。
 
 OpenShell 仍然是一个可选的可替换宿主后端；在原生无头生命周期完成之前，扩展将暂停。保留其现有的合格范围和失败检查。无头并不意味着可信或安全隔离。如果所选后端无法强制执行打包的要求，宿主必须拒绝；Loom 不得重写声明或选择较弱的隔离以获得成功。
 

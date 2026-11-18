@@ -1,7 +1,7 @@
 # Platform support and qualification
 
 Loom owns authoring, checking and package handoff. The host owns runtime support;
-use the authoritative [an-agent runtime matrix](https://github.com/lazyalexander/an-agent/blob/dev-container-migration/doc/platforms.md)
+use the authoritative [an-agent runtime matrix](https://github.com/lazyalexander/an-agent/blob/dev-advance/doc/platforms.md)
 instead of duplicating that table here. These two documents are the platform
 entry points. Feature contracts link here; historical acceptance reports keep
 their original OS, architecture and revision evidence.

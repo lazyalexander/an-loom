@@ -238,9 +238,7 @@ outside the workbench.
 4. Validate the same authoring-to-release route with an independently structured
    existing silk. This is the evidence for generality before adding a visual
    editor, provider catalog or a more elaborate workflow language.
-5. Move required examples, CI references and design evidence. Then mark an-waver
-   superseded, make it private and archive it. Preserve history; avoid deleting
-   material needed to reproduce old releases.
+5. Consult the [migration record](migration.md) for source attribution and the status of the original repository.
 
 The first milestone is complete when a developer can inspect and reproduce the
 project-to-release route, replace its domain code without editing an-loom, and
