@@ -625,6 +625,20 @@ revision and both current endpoints. See the
 
 ## Offline runtime delivery
 
+Container bundles keep the outer `an-offline-runtime-v1` format. A bounded non-executable `backend`
+component uses `an-container-backend-v1` with `backend: "apple-container"`, digest-qualified `image`,
+`cpus` (1–8), `memory_mib` (256–16384), and `storage_bytes` (256 MiB–64 GiB). These request resources;
+the host still owns admission, actual quotas and execution. `container_provenance` uses
+`an-container-provenance-v1` with the fork `repository`, 40-hex `commit`, `swift_lock_sha256`,
+and a payload-path-to-digest `files` map. Required components are `container`, `container_apiserver`,
+`container_runtime_linux`, `container_network_vmnet`, `container_images`, `container_kernel`,
+`container_init`, `container_image`, `container_swift_lock`; the first five are executables, the rest data.
+Image/init archives remain offline bytes; loaded OCI identities require independent host verification.
+Stage/pack and host import reject missing components, changed provenance and mixed Cocoon image APIs.
+Import executes nothing; successful packaging does not qualify the Apple product lifecycle.
+`tests/cli/container_runtime.py --loom BINARY --host BINARY --evidence NEW_DIRECTORY` verifies the paired
+CLI contract, tamper rejection, no payload execution and legacy compatibility without starting services.
+
 `an-loom pack-runtime SOURCE MANIFEST NEW_ARCHIVE` streams an explicitly selected
 `an-offline-runtime-v1` environment into a deterministic gzip tar. The JSON manifest
 contains name, version, platform (`macos-aarch64`), license payload paths, named

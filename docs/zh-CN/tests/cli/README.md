@@ -35,3 +35,5 @@ python3 tests/cli/native_state.py --loom target/debug/an-loom \
 数据/状态烟雾也通过宿主关闭一个旧接受的生产者版本，拒绝新版本检查出/输入选择，并保留原始接受输出库存、消耗确认、检查点和保存报告。宿主套件拥有并发接纳/取消和记录故障案例。
 
 `registered_fanout.py`与`native_data_state.py`具有相同的参数。它打包一个生产者、一个日志聚合器和一个审计消费者。它的三个阶段覆盖一个共享固定事件、有限分发带显式状态、客户端退出后确认取消、实际监督丢失和收集。可移植摘要记录二进制身份、观察到的尝试次数和磁盘使用情况。宿主所有读者记录。
+
+`python3 tests/cli/container_runtime.py --loom BINARY --host BINARY --evidence NEW_DIRECTORY` 使用合成包验证两个 CLI 的离线交接。证据目录必须是新目录。

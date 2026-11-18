@@ -2,7 +2,7 @@
 
 [English](../../platforms.md) · 中文译文，以英文为准。 · [中文目录](../README.md)
 
-Loom 拥有创作、检查和包交付功能。宿主负责运行时支持；请使用权威的 [an-agent 运行时矩阵](https://github.com/lazyalexander/an-agent/blob/dev-advance/doc/platforms.md)
+Loom 拥有创作、检查和包交付功能。宿主负责运行时支持；请使用权威的 [an-agent 运行时矩阵](https://github.com/lazyalexander/an-agent/blob/dev-container-migration/doc/platforms.md)
 而不是在此处重复该表格。这两份文档是平台的入口点。功能合同链接于此；历史接受报告保留其原始的操作系统、架构和版本信息。
 
 当前协调交付目标是本地、经过审查的 **无头** 打包。现有的 Linux 实现和 CI 保持不变，本阶段不会扩展 Linux 兼容性。Linux 部署仍然是一个可能的未来配置，而不是一个默认配置，不会将今天的原生发布转换为默认配置，也不会提供更广泛的访问权限。
@@ -17,6 +17,7 @@ OpenShell 仍然是一个可选的可替换宿主后端；在原生无头生命�
 | 原生 spool 清单/导出适配器 | 合约测试和真实宿主交接 | 离线合约测试 | 不合格 | 现有 shell/Python 目标标识符保持不变；生成包不会启用其目标运行时 |
 | 受控构建/开发和原生 spool 执行接受 | 合格宿主通道 | 无新执行通道 | 不合格 | 固定宿主版本可保证客户端无关的事件、会话和对等执行；[接受映射](acceptance.md) 和 [CLI 案例](../tests/cli/README.md) |
 | 离线运行包与冷启动磁盘镜像交接 | 固定 macos-aarch64 包及真实宿主交接 | 仅离线数据与契约检查 | 未验收 | image_api 绑定 Cocoon 和启动字节；见[宿主镜像契约](https://github.com/lazyalexander/an-agent/blob/dev-advance/doc/daemon.md#p12-private-cold-disk-images)；打包不授予 VM 执行或内存恢复能力 |
+| Apple Container 离线运行包 | macos-aarch64 包与宿主导入契约 | 仅数据校验 | 未验收 | [打包契约](native-spool.md)覆盖后端声明、来源及摘要。导入不会启动服务或执行任务。 |
 | 独立使用的领域程序 | 示例特定测试 | 配置的示例特定测试 | 示例特定 | 普通 CLI 成功没有托管宿主执行保证 |
 | 应用穿梭和 GPU 工作流 | 分别合格 | 分别合格 | 分别合格 | 应用程序 API、GUI 会话、驱动程序和外部服务在 Loom 的包运行时之外 |
 

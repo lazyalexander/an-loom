@@ -26,6 +26,7 @@
 | `tests/task_handoff.rs` | 原生套件任务准备，候选隔离，检查证据和撤销 |
 | `tests/host_handoff.rs` | 选择性实macOS宿主接受；在CI中显式启用 |
 | `examples/log-report/tests/` | 由示例所有权的领域文档检查 |
+| `tests/cli/container_runtime.py` | 离线打包与宿主导入，检查篡改拒绝、载荷未执行及旧包兼容 |
 | `tests/cli/native_documents.py` | 实际的v3包装和宿主绑定的Python/二进制文档转移；领域适配器仍留在示例中 |
 | `tests/cli/native_data_state.py` | 实际固定数据/检查点包装和宿主转移；宿主拥有取消/故障覆盖 |
 | `examples/log-accumulator/tests/` | 独立的累积日志业务验证，不在宿主和Loom实现之外 |

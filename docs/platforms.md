@@ -1,7 +1,7 @@
 # Platform support and qualification
 
 Loom owns authoring, checking and package handoff. The host owns runtime support;
-use the authoritative [an-agent runtime matrix](https://github.com/lazyalexander/an-agent/blob/dev-advance/doc/platforms.md)
+use the authoritative [an-agent runtime matrix](https://github.com/lazyalexander/an-agent/blob/dev-container-migration/doc/platforms.md)
 instead of duplicating that table here. These two documents are the platform
 entry points. Feature contracts link here; historical acceptance reports keep
 their original OS, architecture and revision evidence.
@@ -25,6 +25,7 @@ Loom must not rewrite declarations or select weaker isolation to obtain success.
 | Native spool manifest/export adapter | Contract tests and real host handoff | Offline contract tests | Unqualified | Existing shell/Python target identifiers remain unchanged; producing a package does not enable its target runtime |
 | Controlled build/development and native spool execution acceptance | Qualified host lane | No new execution lane | Unqualified | Pinned host revisions qualify client-independent event, session and peer execution; [acceptance map](acceptance.md) and [CLI cases](../tests/cli/README.md) |
 | Offline runtime and cold-disk image handoff | Pinned macos-aarch64 package plus real host handoff | Offline data/contract checks only | Unqualified | The image_api component binds Cocoon and boot bytes; [host image contract](https://github.com/lazyalexander/an-agent/blob/dev-advance/doc/daemon.md#p12-private-cold-disk-images); packaging grants neither VM execution nor memory restoration |
+| Apple Container offline runtime bundle | macos-aarch64 package and host import contract | Data validation only | Unqualified | The [packaging contract](native-spool.md) covers backend declarations, provenance and digests. Import starts no services or tasks. |
 | Domain programs used independently | Example-specific tests | Example-specific tests where configured | Example-specific | Ordinary CLI success has no managed host-execution guarantee |
 | Application shuttles and GPU workflows | Separately qualified | Separately qualified | Separately qualified | Application APIs, GUI sessions, drivers and external services are outside Loom's package runtime |
 

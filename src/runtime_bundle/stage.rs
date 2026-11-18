@@ -59,6 +59,10 @@ pub fn stage(selection: &Path, destination: &Path) -> Result<serde_json::Value> 
         }
         manifest.validate().map_err(fail)?;
         validate_image_component(destination, &manifest)?;
+        backend::validate(&manifest, |path| {
+            crate::files::read(&destination.join(path), 65536).map_err(|error| error.to_string())
+        })
+        .map_err(fail)?;
         let path = destination.join("runtime.json");
         let mut file = fs::OpenOptions::new()
             .create_new(true)
